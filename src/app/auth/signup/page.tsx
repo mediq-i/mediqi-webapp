@@ -3,7 +3,7 @@
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import React, { useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import { BackArrow, LogoWhite } from "@/config/svg";
+import { BackArrow, LogoWhite } from "@/icons";
 import {
   InputOTP,
   InputOTPGroup,
@@ -26,9 +26,10 @@ function SignUp() {
   };
   const handleBack = () => {
     if (currentStep <= 1) {
-      window.location.href="/auth"
-    }else {
-    setCurrentStep((prevStep) => prevStep - 1);}
+      window.location.href = "/auth";
+    } else {
+      setCurrentStep((prevStep) => prevStep - 1);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,11 +49,19 @@ function SignUp() {
   return (
     <div className="h-screen flex">
       <div className="lg:block hidden">
-      <AuthBanner /></div>
+        <AuthBanner />
+      </div>
       <div className="lg:w-[650px] w-full">
         <div className="lg:w-[480px] w-full m-auto lg:pt-10">
-          <div className="hidden lg:block"><LogoWhite /></div>
-          <form onSubmit={handleSubmit} className={`lg:mt-[100px] lg:w-[480px] relative w-full lg:p-5 p-3 h-screen lg:h-auto ${currentStep === 2 ? " lg:h-auto bg-[#175CD3] lg:bg-white   ":""}`}>
+          <div className="hidden lg:block">
+            <LogoWhite />
+          </div>
+          <form
+            onSubmit={handleSubmit}
+            className={`lg:mt-[100px] lg:w-[480px] relative w-full lg:p-5 p-3 h-screen lg:h-auto ${
+              currentStep === 2 ? " lg:h-auto bg-[#175CD3] lg:bg-white   " : ""
+            }`}
+          >
             <div className="flex justify-between lg:justify-normal">
               <button onClick={handleBack}>
                 <BackArrow />
@@ -176,11 +185,26 @@ function SignUp() {
                 </label>{" "}
                 <InputOTP maxLength={5}>
                   <InputOTPGroup className="my-5">
-                    <InputOTPSlot index={0} className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"/>
-                    <InputOTPSlot index={1} className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"/>
-                    <InputOTPSlot index={2} className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"/>
-                    <InputOTPSlot index={3} className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"/>
-                    <InputOTPSlot index={4} className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"/>
+                    <InputOTPSlot
+                      index={0}
+                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={1}
+                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={2}
+                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={3}
+                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={4}
+                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
+                    />
                   </InputOTPGroup>
                 </InputOTP>
                 <button
@@ -193,37 +217,40 @@ function SignUp() {
               </div>
             )}
             {currentStep > 4 && (
-             <div className="my-5">
-              <div className="lg:hidden">
-                <Image src={"/auth-medic.png"} alt='' width={710} height={700}/>
+              <div className="my-5">
+                <div className="lg:hidden">
+                  <Image
+                    src={"/auth-medic.png"}
+                    alt=""
+                    width={710}
+                    height={700}
+                  />
+                </div>
+                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
+                  Welcome to Mediq-i
+                </p>
+                <label
+                  htmlFor="PassCode"
+                  className="block text-[16px] font-[500] text-[#6C7278]"
+                >
+                  Enjoy!!
+                </label>{" "}
+                <button
+                  type="button"
+                  onClick={handleContinue}
+                  className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded"
+                >
+                  Continue
+                </button>
               </div>
-             <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-             Welcome to Mediq-i
-             </p>
-             <label
-               htmlFor="PassCode"
-               className="block text-[16px] font-[500] text-[#6C7278]"
-             >
-               Enjoy!!
-             </label>{" "}
-            
-             <button
-               type="button"
-               onClick={handleContinue}
-               className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded"
-             >
-               Continue
-             </button>
-           </div>
             )}{" "}
           </form>
-          {currentStep >= 2 ? (
-           null
-          ):<p className="text-[14px] font-[400] absolute bottom-10 text-center p-3">
-          By creating an account or signing you agree to our{" "}
-          <span className="font-[700] underline">Terms and Conditions</span>
-        </p>}
-          
+          {currentStep >= 2 ? null : (
+            <p className="text-[14px] font-[400] absolute bottom-10 text-center p-3">
+              By creating an account or signing you agree to our{" "}
+              <span className="font-[700] underline">Terms and Conditions</span>
+            </p>
+          )}
         </div>
       </div>
     </div>

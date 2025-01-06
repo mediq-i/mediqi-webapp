@@ -1,4 +1,4 @@
-export const LogoWhite =() => (
+export const LogoWhite = () => (
   <svg
     width="145"
     height="30"
@@ -29,19 +29,63 @@ export const LogoWhite =() => (
   </svg>
 );
 
-export const BackArrow =() => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M9.57 5.92999L3.5 12L9.57 18.07" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20.4999 12H3.66992" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-)
+export const BackArrow = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.57 5.92999L3.5 12L9.57 18.07"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20.4999 12H3.66992"
+      stroke="#292D32"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 export const GoogleLogo = () => (
-  <svg width="23" height="24" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M22.54 12.2614C22.54 11.4459 22.4668 10.6618 22.3309 9.90909H11.5V14.3575H17.6891C17.4225 15.795 16.6123 17.013 15.3943 17.8284V20.7139H19.1109C21.2855 18.7118 22.54 15.7636 22.54 12.2614Z" fill="#4285F4"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11.4995 23.4998C14.6045 23.4998 17.2077 22.4701 19.1104 20.7137L15.3938 17.8283C14.364 18.5183 13.0467 18.926 11.4995 18.926C8.50425 18.926 5.96902 16.903 5.0647 14.1848H1.22266V17.1644C3.11493 20.9228 7.00402 23.4998 11.4995 23.4998Z" fill="#34A853"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M5.06523 14.1851C4.83523 13.4951 4.70455 12.758 4.70455 12.0001C4.70455 11.2421 4.83523 10.5051 5.06523 9.81506V6.83551H1.22318C0.444318 8.38801 0 10.1444 0 12.0001C0 13.8557 0.444318 15.6121 1.22318 17.1646L5.06523 14.1851Z" fill="#FBBC05"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11.4995 5.07386C13.1879 5.07386 14.7038 5.65409 15.8956 6.79364L19.194 3.49523C17.2024 1.63955 14.5992 0.5 11.4995 0.5C7.00402 0.5 3.11493 3.07705 1.22266 6.83545L5.0647 9.815C5.96902 7.09682 8.50425 5.07386 11.4995 5.07386Z" fill="#EA4335"/>
-</svg>
-
-)
+  <svg
+    width="23"
+    height="24"
+    viewBox="0 0 23 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M22.54 12.2614C22.54 11.4459 22.4668 10.6618 22.3309 9.90909H11.5V14.3575H17.6891C17.4225 15.795 16.6123 17.013 15.3943 17.8284V20.7139H19.1109C21.2855 18.7118 22.54 15.7636 22.54 12.2614Z"
+      fill="#4285F4"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M11.4995 23.4998C14.6045 23.4998 17.2077 22.4701 19.1104 20.7137L15.3938 17.8283C14.364 18.5183 13.0467 18.926 11.4995 18.926C8.50425 18.926 5.96902 16.903 5.0647 14.1848H1.22266V17.1644C3.11493 20.9228 7.00402 23.4998 11.4995 23.4998Z"
+      fill="#34A853"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M5.06523 14.1851C4.83523 13.4951 4.70455 12.758 4.70455 12.0001C4.70455 11.2421 4.83523 10.5051 5.06523 9.81506V6.83551H1.22318C0.444318 8.38801 0 10.1444 0 12.0001C0 13.8557 0.444318 15.6121 1.22318 17.1646L5.06523 14.1851Z"
+      fill="#FBBC05"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M11.4995 5.07386C13.1879 5.07386 14.7038 5.65409 15.8956 6.79364L19.194 3.49523C17.2024 1.63955 14.5992 0.5 11.4995 0.5C7.00402 0.5 3.11493 3.07705 1.22266 6.83545L5.0647 9.815C5.96902 7.09682 8.50425 5.07386 11.4995 5.07386Z"
+      fill="#EA4335"
+    />
+  </svg>
+);
