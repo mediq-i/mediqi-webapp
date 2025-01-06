@@ -1,26 +1,15 @@
 import {
-  MutationCallBackArgs,
-  QueryCallBackArgs,
-} from "../types/TanstackUtilTypes";
-import {
   UseMutationResult,
   useMutation,
   useQuery,
 } from "@tanstack/react-query";
+import {
+  MutationCallBackArgs,
+  QueryCallBackArgs,
+} from "../types/TanstackUtilTypes";
 
-class TanstackWrapper {
-  private static instance: TanstackWrapper;
-  private constructor() {}
-
-  public static getInstance() {
-    if (!TanstackWrapper.instance) {
-      TanstackWrapper.instance = new TanstackWrapper();
-    }
-    return TanstackWrapper.instance;
-  }
-
-  // mutation utility
-  mutation<TData, TVariables, TError = unknown, TContext = unknown>({
+export const TanstackWrapper = {
+  mutation: <TData, TVariables, TError = unknown, TContext = unknown>({
     mutationCallback,
     params,
   }: {
@@ -29,20 +18,20 @@ class TanstackWrapper {
       params,
     }: MutationCallBackArgs<TVariables>) => Promise<TData>;
     params?: string;
-  }): UseMutationResult<TData, TError, TVariables, TContext> {
+  }): UseMutationResult<TData, TError, TVariables, TContext> => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useMutation<TData, TError, TVariables, TContext>({
       mutationFn: (payload: TVariables) =>
         mutationCallback({ payload, params }),
     });
-  }
-
-  // query utility
-  query<B>({ queryCallback, queryKey, slug }: QueryCallBackArgs<B>) {
+  },
+  query: <B>({ queryCallback, queryKey, slug }: QueryCallBackArgs<B>) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useQuery({
       queryKey: queryKey,
       queryFn: () => queryCallback(slug),
     });
-  }
-}
+  },
+};
 
-export const tanstackWrapper = TanstackWrapper.getInstance();
+export default TanstackWrapper;
