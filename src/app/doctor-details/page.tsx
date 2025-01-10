@@ -12,7 +12,7 @@ function DoctorDetails() {
         <ArrowLeft />
         <p>Back</p>
       </div>
-      <div className="flex">
+      <div className="flex gap-6">
       <DoctorProfile/>
       <BookASession/>
       </div>

@@ -1,7 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { BackArrow, } from "@/icons";
+import { Progress } from "@/components/ui/progress"
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea"
+
+
 import {
   InputOTP,
   InputOTPGroup,
@@ -11,6 +15,7 @@ import Image from "next/image";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
@@ -56,191 +61,180 @@ function BookASession() {
           >
             <div className="">
               <p>Select date and time</p>
-              <Progress value={getProgress()} className="w-[60%] mt-2 bg-[#0000001A]" />
+              <Progress
+                value={getProgress()}
+                className="w-[60%] mt-2 bg-[#0000001A]"
+              />
             </div>
             {currentStep === 1 && (
               <div className="my-5">
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  Whats your email
-                </p>
-                <label
-                  htmlFor="Email"
-                  className="block lg:text-[16px] font-[500] text-[#6C7278]"
-                >
-                  Enter the email address you will like to sign in with Mediq-i{" "}
-                </label>{" "}
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Email Address"
-                  className="my-5 block lg:w-[416px] w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md border flex justify-center"
                 />
-                <p className="text-[#101323] font-[500] lg:text-[14px] text-[10px] mt-3 ">
-                  Once your account is created we’ll send you a verification
-                  link.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="my-5 lg:block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded hidden "
-                >
-                  Continue
-                </button>
-                <p className="my-5 text-[#6C7278] lg:text-[16px] text-[12px] font-[600] lg: text-center">
-                  Already have an account?{" "}
-                  <a href="/auth/login" className="text-[#54A6FF]">
-                    Login
-                  </a>
-                </p>
+
+                <div className="mt-10">
+                  <div className="mb-5">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={"/morning.svg"}
+                        alt=""
+                        height={24}
+                        width={24}
+                      />
+                      <p className="font-[500] text-[16px]">Morning</p>
+                    </div>
+                    <div className="mt-5 flex gap-3">
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          9:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          10:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          11:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-5">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={"/afternoon.svg"}
+                        alt=""
+                        height={24}
+                        width={24}
+                      />
+                      <p className="font-[500] text-[16px]">Afternoon</p>
+                    </div>
+                    <div className="mt-5 flex gap-3">
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          9:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          10:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          11:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-5">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={"/morning.svg"}
+                        alt=""
+                        height={24}
+                        width={24}
+                      />
+                      <p className="font-[500] text-[16px]">Night</p>
+                    </div>
+                    <div className="mt-5 flex gap-3">
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          9:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          10:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                        <label
+                          htmlFor="terms"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          11:00 AM
+                        </label>
+                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}{" "}
             {currentStep === 2 && (
-              <div className="lg:my-5 bottom-16 right-0 absolute lg:static p-3 text-center  w-full">
-                <p className="lg:text-[#1C2634] font-[700] lg:text-[32px] text-[24px] mb-5 text-white">
-                  Confirm your email
-                </p>
-                <label
-                  htmlFor="Email"
-                  className="block text-[16px] font-[500] lg:text-[#6C7278] text-white"
-                >
-                  We just sent you an email to emmyugwuoti@gmail.com{" "}
-                </label>{" "}
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="lg:my-5 my-2 block lg:bg-[#1570EF] bg-[white] lg:w-[416px] w-full lg:text-white text-[#194185] px-4 py-2 rounded"
-                >
-                  Open Email App
-                </button>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="lg:my-5 block lg:border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded text-white lg:text-black"
-                >
-                  I didnt receive my email
-                </button>
-                <p className="my-5 text-[#6C7278] text-[16px] font-[600] text-center hidden lg:block">
-                  Already have an account?{" "}
-                  <a href="/auth" className="text-[#54A6FF]">
-                    Login
-                  </a>
-                </p>
+              <div className=" mt-10">
+                <div className="mb-5">
+                <label className="text-[#1D2939] text-[16px] font-[500]">What symptoms have you been experiencing?</label>
+                <Textarea className="h-[89px]"/>
+                </div>
+                <div className="mb-5">
+                <label className="text-[#1D2939] text-[16px] font-[500]">How long have you been experiencing these symptoms?</label>
+                <Textarea className="h-[89px]"/>
+                </div>
+                <div className="mb-5">
+                <label className="text-[#1D2939] text-[16px] font-[500]">Please specify how you are feeling</label>
+                <Textarea className="h-[89px]"/>
+                </div>
               </div>
             )}{" "}
             {currentStep === 3 && (
               <div className="my-5 relative h-full">
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  About you
-                </p>
-                <label
-                  htmlFor="Name"
-                  className="block text-[16px] font-[500] text-[#6C7278]"
-                >
-                  Enter your full name
-                </label>{" "}
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  className="my-5 block border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded"
-                ></input>
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  onKeyPress={handleKeyPress}
-                  className="my-5 block border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded"
-                ></input>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="my-5 lg:hidden bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded block absolute bottom-10 lg:static "
-                >
-                  Continue
-                </button>
+               
               </div>
             )}
             {currentStep === 4 && (
               <div className="my-5 h-full relative">
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  Create passcode
-                </p>
-                <label
-                  htmlFor="PassCode"
-                  className="block text-[16px] font-[500] text-[#6C7278]"
-                >
-                  You will be able to login using the following passcode
-                </label>{" "}
-                <InputOTP maxLength={5}>
-                  <InputOTPGroup className="my-5">
-                    <InputOTPSlot
-                      index={0}
-                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
-                    />
-                    <InputOTPSlot
-                      index={1}
-                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
-                    />
-                    <InputOTPSlot
-                      index={2}
-                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
-                    />
-                    <InputOTPSlot
-                      index={3}
-                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
-                    />
-                    <InputOTPSlot
-                      index={4}
-                      className="mr-3 border rounded-md lg:w-[76px] w-[61px] h-[74px] bg-[#E4E7EC]"
-                    />
-                  </InputOTPGroup>
-                </InputOTP>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded absolute bottom-10 lg:static"
-                >
-                  Continue
-                </button>
+               
               </div>
             )}
             {currentStep > 4 && (
               <div className="my-5">
-                <div className="lg:hidden">
-                  <Image
-                    src={"/auth-medic.png"}
-                    alt=""
-                    width={710}
-                    height={700}
-                  />
-                </div>
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  Welcome to Mediq-i
-                </p>
-                <label
-                  htmlFor="PassCode"
-                  className="block text-[16px] font-[500] text-[#6C7278]"
-                >
-                  Continue to your dashboard to start using Mediq-i.
-                </label>{" "}
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded"
-                >
-                  Continue
-                </button>
+                
               </div>
-            )}{" "}
+            )}
+            <div className="p-3 flex justify-between border-t fixed bottom-0 w-[480px] bg-white">
+              <button className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl" onClick={handleBack}>Previous</button>
+              <button className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white" onClick={handleContinue}>Next</button>
+            </div>
           </form>
-          {currentStep >= 2 ? null : (
-            <p className="text-[14px] font-[400] absolute bottom-10 text-center p-3">
-              By creating an account or signing you agree to our{" "}
-              <span className="font-[700] underline">Terms and Conditions</span>
-            </p>
-          )}
         </div>
       </div>
     </div>
