@@ -233,7 +233,8 @@ function SignUp() {
                   htmlFor="PassCode"
                   className="block text-[16px] font-[500] text-[#6C7278]"
                 >
-                  Continue to your dashboard to start using Mediq-i.
+                  Continue to your dashboard to start using Mediq-i
+                  
                 </label>{" "}
                 <button
                   type="button"
