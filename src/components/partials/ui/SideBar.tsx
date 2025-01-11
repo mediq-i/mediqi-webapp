@@ -30,12 +30,9 @@ const Sidebar: React.FC = () => {
               }`}
             >
               <House />
-              <a
-                href="#"
-                className="block  rounded transition duration-200 hover:bg-gray-200"
-              >
+              <div className="block  rounded transition duration-200 hover:bg-gray-200">
                 Home
-              </a>
+              </div>
             </div>
           </Link>
           <Link href={""}>
@@ -47,12 +44,9 @@ const Sidebar: React.FC = () => {
               }`}
             >
               <Cross />
-              <a
-                href="#"
-                className="block rounded transition duration-200 hover:bg-gray-200"
-              >
+              <div className="block rounded transition duration-200 hover:bg-gray-200">
                 Session
-              </a>
+              </div>
             </div>
           </Link>
           <Link href={""}>
@@ -64,12 +58,9 @@ const Sidebar: React.FC = () => {
               }`}
             >
               <Wallet />
-              <a
-                href="#"
-                className="block rounded transition duration-200 hover:bg-gray-200"
-              >
+              <div className="block rounded transition duration-200 hover:bg-gray-200">
                 Profile
-              </a>
+              </div>
             </div>
           </Link>
           <Link href={""}>
@@ -81,12 +72,9 @@ const Sidebar: React.FC = () => {
               }`}
             >
               <CircleUser />
-              <a
-                href="#"
-                className="block rounded transition duration-200 hover:bg-gray-200"
-              >
+              <div className="block rounded transition duration-200 hover:bg-gray-200">
                 Payment
-              </a>
+              </div>
             </div>
           </Link>
           <Link href={""}>
@@ -98,21 +86,30 @@ const Sidebar: React.FC = () => {
               }`}
             >
               <EllipsisVertical />
-              <a
-                href="#"
-                className="block rounded transition duration-200 hover:bg-gray-200"
-              >
+              <div className="block rounded transition duration-200 hover:bg-gray-200">
                 More
-              </a>
+              </div>
             </div>
           </Link>
         </nav>
       </div>
       <div className="w-[240px] m-auto h-[221px]  bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-3 pt-14 relative">
-        <Image src={"aero.svg"} alt="" width={150} height={150} className="absolute top-[-50px] left-[45px]"/>
-        <p className="text-white font-[600] text-[18px] my-2">Refer A Friend & Earn</p>
-        <p className="text-white font-[400] text-[14px] my-2">Invite your friends to use Mediq and earn ₦1,000 in your wallet</p>
-        <button className="border-4 border-[#11111133] bg-[#FFBC0B] w-[212px] rounded-3xl p-2">Refer A Friend</button>
+        <Image
+          src={"aero.svg"}
+          alt=""
+          width={150}
+          height={150}
+          className="absolute top-[-50px] left-[45px]"
+        />
+        <p className="text-white font-[600] text-[18px] my-2">
+          Refer A Friend & Earn
+        </p>
+        <p className="text-white font-[400] text-[14px] my-2">
+          Invite your friends to use Mediq and earn ₦1,000 in your wallet
+        </p>
+        <button className="border-4 border-[#11111133] bg-[#FFBC0B] w-[212px] rounded-3xl p-2">
+          Refer A Friend
+        </button>
       </div>
     </div>
   );

@@ -1,16 +1,16 @@
 "use client";
+
 import React, { useState } from "react";
-import { Progress } from "@/components/ui/progress"
+import { Progress } from "@/components/ui/progress";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea";
 
-
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+// import {
+//   InputOTP,
+//   InputOTPGroup,
+//   InputOTPSlot,
+// } from "@/components/ui/input-otp";
 import Image from "next/image";
 
 function BookASession() {
@@ -29,25 +29,26 @@ function BookASession() {
   const getProgress = () => {
     return (currentStep / 5) * 100; // Assuming 3 steps plus submit button
   };
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
   };
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleContinue();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent) => {
+  //   if (e.key === "Enter") {
+  //     e.preventDefault();
+  //     handleContinue();
+  //   }
+  // };
 
   return (
     <div>
@@ -87,32 +88,41 @@ function BookASession() {
                       <p className="font-[500] text-[16px]">Morning</p>
                     </div>
                     <div className="mt-5 flex gap-3">
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           9:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           10:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           11:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
                     </div>
                   </div>
@@ -127,32 +137,41 @@ function BookASession() {
                       <p className="font-[500] text-[16px]">Afternoon</p>
                     </div>
                     <div className="mt-5 flex gap-3">
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           9:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           10:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           11:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
                     </div>
                   </div>
@@ -167,32 +186,41 @@ function BookASession() {
                       <p className="font-[500] text-[16px]">Night</p>
                     </div>
                     <div className="mt-5 flex gap-3">
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           9:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           10:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
-                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">                        
+                      <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
                           htmlFor="terms"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           11:00 AM
                         </label>
-                        <Checkbox id="terms" className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white " />
+                        <Checkbox
+                          id="terms"
+                          className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
+                        />
                       </div>
                     </div>
                   </div>
@@ -202,37 +230,41 @@ function BookASession() {
             {currentStep === 2 && (
               <div className=" mt-10">
                 <div className="mb-5">
-                <label className="text-[#1D2939] text-[16px] font-[500]">What symptoms have you been experiencing?</label>
-                <Textarea className="h-[89px]"/>
+                  <label className="text-[#1D2939] text-[16px] font-[500]">
+                    What symptoms have you been experiencing?
+                  </label>
+                  <Textarea className="h-[89px]" />
                 </div>
                 <div className="mb-5">
-                <label className="text-[#1D2939] text-[16px] font-[500]">How long have you been experiencing these symptoms?</label>
-                <Textarea className="h-[89px]"/>
+                  <label className="text-[#1D2939] text-[16px] font-[500]">
+                    How long have you been experiencing these symptoms?
+                  </label>
+                  <Textarea className="h-[89px]" />
                 </div>
                 <div className="mb-5">
-                <label className="text-[#1D2939] text-[16px] font-[500]">Please specify how you are feeling</label>
-                <Textarea className="h-[89px]"/>
+                  <label className="text-[#1D2939] text-[16px] font-[500]">
+                    Please specify how you are feeling
+                  </label>
+                  <Textarea className="h-[89px]" />
                 </div>
               </div>
             )}{" "}
-            {currentStep === 3 && (
-              <div className="my-5 relative h-full">
-               
-              </div>
-            )}
-            {currentStep === 4 && (
-              <div className="my-5 h-full relative">
-               
-              </div>
-            )}
-            {currentStep > 4 && (
-              <div className="my-5">
-                
-              </div>
-            )}
+            {currentStep === 3 && <div className="my-5 relative h-full"></div>}
+            {currentStep === 4 && <div className="my-5 h-full relative"></div>}
+            {currentStep > 4 && <div className="my-5"></div>}
             <div className="p-3 flex justify-between border-t fixed bottom-0 w-[480px] bg-white">
-              <button className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl" onClick={handleBack}>Previous</button>
-              <button className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white" onClick={handleContinue}>Next</button>
+              <button
+                className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl"
+                onClick={handleBack}
+              >
+                Previous
+              </button>
+              <button
+                className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
+                onClick={handleContinue}
+              >
+                Next
+              </button>
             </div>
           </form>
         </div>

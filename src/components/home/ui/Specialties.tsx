@@ -58,7 +58,6 @@ const specialties = [
     description: "General practitioner",
     bg: "bg-[#7A5AF81A]",
   },
-  
 ];
 
 function Specialties() {
