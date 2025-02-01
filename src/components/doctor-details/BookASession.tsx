@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog } from "@headlessui/react";
 
 // import {
 //   InputOTP,
@@ -12,10 +13,30 @@ import { Textarea } from "@/components/ui/textarea";
 //   InputOTPSlot,
 // } from "@/components/ui/input-otp";
 import Image from "next/image";
+import { Input } from "../ui/input";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
+  // const [checked, setChecked] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [otherOption, setOtherOption] = useState("");
+
+  const handleOptionChange = (option: string) => {
+    if (option === "Other" && selectedOptions.includes("Other")) {
+      setSelectedOptions(selectedOptions.filter((o) => o !== "Other"));
+      setOtherOption("");
+    } else if (option === "Other") {
+      setSelectedOptions([...selectedOptions, option]);
+    } else {
+      setSelectedOptions((prev) =>
+        prev.includes(option)
+          ? prev.filter((o) => o !== option)
+          : [...prev, option]
+      );
+    }
+  };
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
@@ -49,11 +70,12 @@ function BookASession() {
   //     handleContinue();
   //   }
   // };
+  const options = ["Option 1", "Option 2", "Option 3", "Other"];
 
   return (
     <div>
-      <div className=" w-full">
-        <div className="lg:w-[480px] w-full m-auto">
+      <div className="">
+        <div>
           <form
             onSubmit={handleSubmit}
             className={` lg:w-[480px] relative w-full lg:p-5 p-3 h-screen lg:h-auto ${
@@ -90,37 +112,37 @@ function BookASession() {
                     <div className="mt-5 flex gap-3">
                       <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
-                          htmlFor="terms"
+                          htmlFor="9"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           9:00 AM
                         </label>
                         <Checkbox
-                          id="terms"
+                          id="9"
                           className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
                         />
                       </div>
                       <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
-                          htmlFor="terms"
+                          htmlFor="10"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           10:00 AM
                         </label>
                         <Checkbox
-                          id="terms"
+                          id="10"
                           className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
                         />
                       </div>
                       <div className="flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center">
                         <label
-                          htmlFor="terms"
+                          htmlFor="11"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           11:00 AM
                         </label>
                         <Checkbox
-                          id="terms"
+                          id="11"
                           className="border-none shadow-none data-[state=checked]:text-[#2E90FA] data-[state=checked]:bg-white "
                         />
                       </div>
@@ -233,8 +255,27 @@ function BookASession() {
                   <label className="text-[#1D2939] text-[16px] font-[500]">
                     What symptoms have you been experiencing?
                   </label>
-                  <Textarea className="h-[89px]" />
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="px-4 py-2 my-3 h-[63px] w-full border rounded"
+                  >
+                    {selectedOptions.length > 0
+                      ? selectedOptions.join(", ")
+                      : "Select Symptoms"}
+                  </button>
                 </div>
+                {selectedOptions.includes("Other") && (
+                  <div className="my-4">
+                    <label className="text-[#1D2939] text-[16px] font-[500]">
+                      Please specify how you are feeling
+                      <Textarea
+                        value={otherOption}
+                        onChange={(e) => setOtherOption(e.target.value)}
+                        className="h-[89px]"
+                      />
+                    </label>
+                  </div>
+                )}
                 <div className="mb-5">
                   <label className="text-[#1D2939] text-[16px] font-[500]">
                     How long have you been experiencing these symptoms?
@@ -246,6 +287,60 @@ function BookASession() {
                     Please specify how you are feeling
                   </label>
                   <Textarea className="h-[89px]" />
+                </div>
+
+                <div className="p-6">
+                  {/* <button
+                    onClick={() => setIsOpen(true)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                  >
+                    {selectedOptions.length > 0
+                      ? selectedOptions.join(", ")
+                      : "Select Options"}
+                  </button> */}
+
+                  <Dialog
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    className="relative z-10"
+                  >
+                    <div className="fixed inset-0 bg-black bg-opacity-30" />
+
+                    <div className="fixed inset-0 flex items-center justify-center">
+                      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md z-20">
+                        <Dialog.Title className="text-xl font-semibold mb-4">
+                          <Input
+                            placeholder="Search symptoms"
+                            className="p-5"
+                          />
+                        </Dialog.Title>
+                        <div className="flex flex-wrap gap-2">
+                          {options.map((option) => (
+                            <button
+                              key={option}
+                              className={`px-4 py-2 rounded-3xl cursor-pointer transition duration-200 ${
+                                selectedOptions.includes(option)
+                                  ? "bg-[#1D2939] text-white"
+                                  : "bg-[#E4E7EC]"
+                              }`}
+                              onClick={() => handleOptionChange(option)}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                          <button
+                            onClick={() => setIsOpen(false)}
+                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                          >
+                            Done
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </Dialog>
                 </div>
               </div>
             )}{" "}

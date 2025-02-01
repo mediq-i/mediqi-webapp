@@ -70,7 +70,7 @@ function Specialties() {
         </a>
       </div>
 
-      <div className="p-3 flex flex-wrap gap-3">
+      <div className="py-3 flex flex-wrap gap-3">
         {specialties.map((specialty, index) => {
           return (
             <div

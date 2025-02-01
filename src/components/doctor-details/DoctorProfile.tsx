@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function DoctorProfile() {
   return (
-    <div className="w-[544px] mt-16">
+    <div className="w-[544px]  border-r pr-10">
       <div className="flex justify-between ">
         <div className="flex gap-5 relative">
           <div className="bg-[#EAEEF4] rounded-md w-[100px]">
@@ -60,7 +60,7 @@ function DoctorProfile() {
           <p className="font-[500] text-[14px] text-[#667085]">Reviews</p>
         </div>
       </div>
-      <Tabs defaultValue="account" className="w-full mt-10">
+      <Tabs defaultValue="about" className="w-full mt-10">
         <TabsList className="w-full bg-white justify-between">
           <TabsTrigger
             value="about"

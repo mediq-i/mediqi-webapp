@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/providers";
@@ -15,18 +15,22 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-const requireLayout = (pathname: string): boolean => { 
-const authPaths = ['/auth/login', '/auth/signup', '/auth'];
-return !authPaths.includes(pathname); };
-
-
+const requireLayout = (pathname: string): boolean => {
+  const authPaths = [
+    "/auth/login",
+    "/auth/signup",
+    "/auth",
+    "/auth/email-confirmation",
+  ];
+  return !authPaths.includes(pathname);
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   const showLayout = requireLayout(pathname);
   if (!showLayout) {
     return (

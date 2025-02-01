@@ -45,7 +45,7 @@ function TopDoctors() {
         </a>
       </div>
 
-      <div className="p-3 flex flex-wrap gap-3">
+      <div className="py-3 flex flex-wrap gap-3">
         {doctors.map((doctor, index) => {
           return (
             <Link 
