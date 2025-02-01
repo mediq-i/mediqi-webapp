@@ -1,14 +1,14 @@
 "use client";
 
 import AuthBanner from "@/components/partials/ui/AuthBanner";
-import React, { useState } from "react";
+import React, { Suspense, useState} from "react";
 import { LogoWhite } from "@/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
 import { useRouter, useSearchParams } from "next/navigation";
 
-function EmailConfirmation() {
+function EmailVerificationDetails () {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tokenHash = searchParams.get("token_hash");
@@ -90,45 +90,54 @@ function EmailConfirmation() {
     triggerUserCreation();
   }, []);
 
+  return(
+    <div className="lg:w-[650px] w-full">
+    <div className="lg:w-[480px] w-full m-auto lg:pt-10">
+      <div className="hidden lg:block">
+        <LogoWhite />
+      </div>
+      <div className="my-[150px]">
+        <div className="lg:hidden">
+          <Image src={"/auth-medic.png"} alt="" width={710} height={700} />
+        </div>
+        {verified ? (
+          <div>
+            <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
+              Your email has been verified !
+            </p>
+            <p className="block text-[16px] font-[500] text-[#6C7278]">
+              Welcome to MEDIQ-i
+            </p>{" "}
+          </div>
+        ) : (
+          <p className="text-[#1C2634] font-[700] text-[32px] mb-5 italic">
+            Please wait your email is being verified...
+          </p>
+        )}
+        <Link href={"/auth/login"}>
+          <button
+            type="button"
+            className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded"
+          >
+            Proceed to Login
+          </button>
+        </Link>
+      </div>
+    </div>
+  </div>
+  )
+
+}
+function EmailConfirmation() {
+  
   return (
     <div className="h-screen flex">
       <div className="lg:block hidden">
         <AuthBanner />
       </div>
-      <div className="lg:w-[650px] w-full">
-        <div className="lg:w-[480px] w-full m-auto lg:pt-10">
-          <div className="hidden lg:block">
-            <LogoWhite />
-          </div>
-          <div className="my-[150px]">
-            <div className="lg:hidden">
-              <Image src={"/auth-medic.png"} alt="" width={710} height={700} />
-            </div>
-            {verified ? (
-              <div>
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  Your email has been verified !
-                </p>
-                <p className="block text-[16px] font-[500] text-[#6C7278]">
-                  Welcome to MEDIQ-i
-                </p>{" "}
-              </div>
-            ) : (
-              <p className="text-[#1C2634] font-[700] text-[32px] mb-5 italic">
-                Please wait your email is being verified...
-              </p>
-            )}
-            <Link href={"/auth/login"}>
-              <button
-                type="button"
-                className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded"
-              >
-                Proceed to Login
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <Suspense>
+        <EmailVerificationDetails/>
+      </Suspense>
     </div>
   );
 }
