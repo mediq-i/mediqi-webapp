@@ -4,13 +4,14 @@ import TanstackWrapper from "./utils/tanstack-wrapper";
 import { MutationCallBackArgs } from "./types/TanstackUtilTypes";
 
 // api service initilizer
-const userService = new ApiService("protected/user");
+const userService = new ApiService("patients/");
 const useUserMutation = TanstackWrapper.mutation;
 const useUserQuery = TanstackWrapper.query;
 
 const UserAdapter = {
-  getUserProfile: async (params: string | undefined): Promise<UserProfile> => {
-    const response = await userService.fetch<UserProfile>(`/profile/${params}`);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getUserProfile: async (params: string | null): Promise<any> => {
+    const response = await userService.fetch<UserProfile>(`get-patient/${params}`);
 
     return response;
   },

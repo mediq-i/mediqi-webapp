@@ -11,12 +11,19 @@ import {
 } from "@/components/ui/input-otp";
 import Image from "next/image";
 import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation";
+
+
 function SignUp() {
+  const { toast } = useToast()
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     firstName: "",
     lastName: "",
+    otp: "",
   });
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -24,6 +31,10 @@ function SignUp() {
     mutationCallback: AuthAdapter.signUp,
     params: "patient",
   });
+  const verifyEmailAuthMutation = useAuthMutation({
+      mutationCallback: AuthAdapter.verifyEmailAuth,
+    });
+  
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
@@ -35,12 +46,49 @@ function SignUp() {
         password: formData.password,
       });
       saveToLocalStorage(formData);
-
       localStorage.setItem("auth_id", res.data.auth_id);
-      console.log(res);
+      toast({
+        title: "Registration Successful",
+        description: "Check your Email for OTP"
+      })
       setCurrentStep(4);
-    } catch (error) {
-      console.log(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+          title: "Error",
+          description: error?.response?.data?.message,
+        })
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleOTPSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+
+      const res = await verifyEmailAuthMutation.mutateAsync({
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        otp:formData.otp,
+        userType: "patient",
+        auth_id: localStorage.getItem("auth_id")!,
+      });
+      console.log(res)
+      toast({
+        title: "Email Confirmed",
+        description: "Welcome To Mediq-i"
+      })
+      
+      router.push("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+          title: "Error",
+          description: error?.response?.data?.message,
+        })
     }
   };
 
@@ -73,6 +121,9 @@ function SignUp() {
     //   handleContinue();
     // }
   };
+  const handleOTPChange = (value: string) => {
+    setFormData({ ...formData, ["otp"]: value });
+  };
 
   const getProgress = () => {
     return (currentStep / 5) * 100;
@@ -91,7 +142,7 @@ function SignUp() {
           <form
             // onSubmit={handleSubmit}
             className={`lg:mt-[100px] lg:w-[480px] relative w-full lg:p-5 p-3 h-screen lg:h-auto ${
-              currentStep === 2 ? " lg:h-auto bg-[#175CD3] lg:bg-white   " : ""
+              currentStep === 2 ? " lg:h-auto lg:bg-white   " : ""
             }`}
           >
             <div className="flex justify-between lg:justify-normal">
@@ -140,37 +191,55 @@ function SignUp() {
               </div>
             )}{" "}
             {currentStep === 4 && (
-              <div className="lg:my-5 bottom-16 right-0 absolute lg:static p-3 text-center  w-full">
-                <p className="lg:text-[#1C2634] font-[700] lg:text-[32px] text-[24px] mb-5 text-white">
-                  Confirm your email
-                </p>
-                <label
-                  htmlFor="Email"
-                  className="block text-[16px] font-[500] lg:text-[#6C7278] text-white"
-                >
-                  We just sent you an email to emmyugwuoti@gmail.com{" "}
-                </label>{" "}
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="lg:my-5 my-2 block lg:bg-[#1570EF] bg-[white] lg:w-[416px] w-full lg:text-white text-[#194185] px-4 py-2 rounded"
-                >
-                  Open Email App
-                </button>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="lg:my-5 block lg:border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded text-white lg:text-black"
-                >
-                  I didnt receive my email
-                </button>
-                <p className="my-5 text-[#6C7278] text-[16px] font-[600] text-center hidden lg:block">
-                  Already have an account?{" "}
-                  <a href="/auth" className="text-[#54A6FF]">
-                    Login
-                  </a>
-                </p>
-              </div>
+              <div className="my-5 h-full relative">
+              <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
+              Confirm your email
+              </p>
+              <label
+                htmlFor="PassCode"
+                className="block text-[16px] font-[500] text-[#6C7278]"
+              >
+                Enter the token we sent to {formData?.email}
+              </label>{" "}
+              <InputOTP
+                maxLength={6}
+                value={formData.otp}
+                onChange={handleOTPChange}
+              >
+                <InputOTPGroup className="my-5">
+                  <InputOTPSlot
+                    index={0}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"                 />
+                  <InputOTPSlot
+                    index={1}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                  />
+                  <InputOTPSlot
+                    index={2}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                  />
+                  <InputOTPSlot
+                    index={3}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                  />
+                  <InputOTPSlot
+                    index={4}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                  />
+                  <InputOTPSlot
+                    index={5}
+                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                  />
+                </InputOTPGroup>
+              </InputOTP>
+              <button
+                type="button"
+                onClick={(e) => handleOTPSubmit(e)}
+                className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded absolute bottom-10 lg:static"
+              >
+                Continue
+              </button>
+            </div>
             )}{" "}
             {currentStep === 2 && (
               <div className="my-5 relative h-full">
@@ -227,27 +296,27 @@ function SignUp() {
                   <InputOTPGroup className="my-5">
                     <InputOTPSlot
                       index={0}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
-                    />
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+   mx-1                  />
                     <InputOTPSlot
                       index={1}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
                     />
                     <InputOTPSlot
                       index={2}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
                     />
                     <InputOTPSlot
                       index={3}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
                     />
                     <InputOTPSlot
                       index={4}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
                     />
                     <InputOTPSlot
                       index={5}
-                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[74px] bg-[#E4E7EC]"
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
                     />
                   </InputOTPGroup>
                 </InputOTP>

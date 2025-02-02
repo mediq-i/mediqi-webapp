@@ -1,6 +1,7 @@
 import ApiService from "./utils/api-service";
 import {
   CreatePatientPayload,
+  LoginPayload,
   SignUpPayload,
   SignUpResponse,
   VerifyEmailAuthPayload,
@@ -50,6 +51,19 @@ const AuthAdapter = {
       payload: {
         firstName: payload.firstName,
         lastName: payload.lastName,
+        email: payload.email,
+      },
+      type: "JSON",
+      method: "POST",
+    });
+    return response;
+  },
+  login: async ({ payload }: MutationCallBackArgs<LoginPayload>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await authService.mutate<any,any>({
+      slug: `login`,
+      payload: {
+        password: payload.password,
         email: payload.email,
       },
       type: "JSON",

@@ -1,3 +1,4 @@
+"use client"
 import {
   CircleUser,
   Cross,
@@ -7,10 +8,22 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const Sidebar: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profile, setProfile] = useState<any>()
+  
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        const userProfileString = localStorage.getItem('userProfile');
+        if (userProfileString) {
+          const userProfile = JSON.parse(userProfileString);
+          setProfile(userProfile);
+        }
+      }
+    }, []);
   const pathname = usePathname();
   return (
     <div className="w-64 h-full bg-white shadow-lg fixed p-1">
@@ -19,7 +32,7 @@ const Sidebar: React.FC = () => {
           <Image src={"/mediqi-logo.svg"} alt="" width={30} height={30} />
         </div>
         <div className="mt-4">
-          <div className="text-lg font-semibold">User Name</div>
+          <div className="text-lg font-semibold">{profile?.first_name} {profile?.last_name}</div>
           <div className="text-sm text-gray-600">How are you doing today?</div>
         </div>
         <nav className="mt-8">

@@ -11,7 +11,12 @@ export type SignUpResponse = {
 };
 
 export type VerifyEmailAuthPayload = {
-  tokenHash: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  auth_id: string;
+  otp: string;
+  userType: string;
 };
 
 export type VerifyEmailAuthResponse = {
@@ -24,4 +29,8 @@ export type CreatePatientPayload = {
   lastName: string;
   email: string;
   authId: string;
+};
+export type LoginPayload = {  
+  password: string;
+  email: string;
 };

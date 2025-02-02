@@ -1,10 +1,14 @@
 "use client";
 
+
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import { GoogleLogo, LogoWhite } from "@/icons";
 import Link from "next/link";
 
+
 function Auth() {
+
+  
   return (
     <div className="h-screen lg:flex">
       <AuthBanner />

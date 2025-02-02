@@ -1,10 +1,12 @@
 "use client";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/providers";
 import Sidebar from "@/components/partials/ui/SideBar";
 import Navbar from "@/components/partials/ui/NavBar";
 import { usePathname } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +40,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <Toaster/>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </body>
       </html>
@@ -54,6 +57,7 @@ export default function RootLayout({
           <div className="flex-1 flex flex-col ml-64">
             {" "}
             <Navbar />
+            <Toaster/>
             <ReactQueryProvider>{children}</ReactQueryProvider>
           </div>{" "}
         </div>

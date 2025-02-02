@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +20,20 @@ function HomeHero() {
   const [open, setOpen] = useState<boolean>(false);
   const [priceOpen, setPriceOpen] = useState<boolean>(false);
   const [languageOpen, setLanguageOpen] = useState<boolean>(false);
+  // const userProfileString = localStorage.getItem('userProfile');
+  // const userProfile = JSON.parse(userProfileString!);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profile, setProfile] = useState<any>()
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userProfileString = localStorage.getItem('userProfile');
+      if (userProfileString) {
+        const userProfile = JSON.parse(userProfileString);
+        setProfile(userProfile);
+      }
+    }
+  }, []);
 
   const handleClose = (setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
     setOpen(false);
@@ -28,7 +42,7 @@ function HomeHero() {
     <div className="h-[300px] bg-[#E7F0FE] rounded-md">
       <div className="flex flex-col items-center justify-center gap-10 h-full">
         <div className="w-[495px] text-xl font-semibold">
-          <p>Hello Emmy, lets find top-rated doctors for you</p>
+          <p>Hello {profile?.first_name}, lets find top-rated doctors for you</p>
         </div>
         <div className="w-[911px] h-[64px] bg-white rounded-[300px] flex items-center justify-center p-3 gap-10">
           <DropdownMenu>
