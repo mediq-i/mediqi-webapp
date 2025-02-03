@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   CircleUser,
   Cross,
@@ -8,23 +8,20 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
+import { useUserQuery, UserAdapter } from "@/adapters/UserAdapter";
+import { queryKeys } from "@/constants";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Sidebar: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [profile, setProfile] = useState<any>()
-  
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        const userProfileString = localStorage.getItem('userProfile');
-        if (userProfileString) {
-          const userProfile = JSON.parse(userProfileString);
-          setProfile(userProfile);
-        }
-      }
-    }, []);
   const pathname = usePathname();
+
+  const { data, isPending } = useUserQuery({
+    queryCallback: UserAdapter.getUserProfile,
+    queryKey: [queryKeys.USER_PROFILE],
+  });
+
   return (
     <div className="w-64 h-full bg-white shadow-lg fixed p-1">
       <div className="p-6">
@@ -32,7 +29,13 @@ const Sidebar: React.FC = () => {
           <Image src={"/mediqi-logo.svg"} alt="" width={30} height={30} />
         </div>
         <div className="mt-4">
-          <div className="text-lg font-semibold">{profile?.first_name} {profile?.last_name}</div>
+          {!isPending ? (
+            <div className="text-lg font-semibold">
+              {data?.user.first_name} {data?.user.last_name}
+            </div>
+          ) : (
+            <Skeleton className="w-[150px] h-[25px]" />
+          )}
           <div className="text-sm text-gray-600">How are you doing today?</div>
         </div>
         <nav className="mt-8">

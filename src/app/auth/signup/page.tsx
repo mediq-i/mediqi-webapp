@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/input-otp";
 import Image from "next/image";
 import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-
+import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 
 function SignUp() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -32,9 +33,8 @@ function SignUp() {
     params: "patient",
   });
   const verifyEmailAuthMutation = useAuthMutation({
-      mutationCallback: AuthAdapter.verifyEmailAuth,
-    });
-  
+    mutationCallback: AuthAdapter.verifyEmailAuth,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
@@ -49,16 +49,16 @@ function SignUp() {
       localStorage.setItem("auth_id", res.data.auth_id);
       toast({
         title: "Registration Successful",
-        description: "Check your Email for OTP"
-      })
+        description: "Check your Email for OTP",
+      });
       setCurrentStep(4);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         variant: "destructive",
-          title: "Error",
-          description: error?.response?.data?.message,
-        })
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
     }
   };
 
@@ -71,24 +71,28 @@ function SignUp() {
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        otp:formData.otp,
+        otp: formData.otp,
         userType: "patient",
         auth_id: localStorage.getItem("auth_id")!,
       });
-      console.log(res)
+
+      localStorage.clear();
+      localStorage.setItem("token", res.data.session.access_token);
+      localStorage.setItem("refreshToken", res.data.session.refresh_token);
+
       toast({
         title: "Email Confirmed",
-        description: "Welcome To Mediq-i"
-      })
-      
+        description: "Welcome To Mediq-i, Redirecting you",
+      });
+
       router.push("/");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         variant: "destructive",
-          title: "Error",
-          description: error?.response?.data?.message,
-        })
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
     }
   };
 
@@ -169,19 +173,15 @@ function SignUp() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email Address"
-                  className="my-5 block lg:w-[416px] w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="my-5 block border border-[#E1E1E1] w-full px-6 py-4 rounded-[8px] font-medium"
                 />
-                <p className="text-[#101323] font-[500] lg:text-[14px] text-[10px] mt-3 ">
-                  Once your account is created we’ll send you a verification
-                  link.
-                </p>
-                <button
+                <Button
                   type="button"
                   onClick={handleContinue}
-                  className="my-5 lg:block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded absolute bottom-[150px] right-0 left-0 lg:static "
+                  className="w-full bg-[#1570EF] py-[22px] text-base"
                 >
                   Continue
-                </button>
+                </Button>
                 <p className="my-5 text-[#6C7278] lg:text-[16px] text-[12px] font-[600] lg: text-center">
                   Already have an account?{" "}
                   <a href="/auth/login" className="text-[#54A6FF]">
@@ -192,112 +192,25 @@ function SignUp() {
             )}{" "}
             {currentStep === 4 && (
               <div className="my-5 h-full relative">
-              <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-              Confirm your email
-              </p>
-              <label
-                htmlFor="PassCode"
-                className="block text-[16px] font-[500] text-[#6C7278]"
-              >
-                Enter the token we sent to {formData?.email}
-              </label>{" "}
-              <InputOTP
-                maxLength={6}
-                value={formData.otp}
-                onChange={handleOTPChange}
-              >
-                <InputOTPGroup className="my-5">
-                  <InputOTPSlot
-                    index={0}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"                 />
-                  <InputOTPSlot
-                    index={1}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                  />
-                  <InputOTPSlot
-                    index={2}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                  />
-                  <InputOTPSlot
-                    index={3}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                  />
-                  <InputOTPSlot
-                    index={4}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                  />
-                  <InputOTPSlot
-                    index={5}
-                    className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                  />
-                </InputOTPGroup>
-              </InputOTP>
-              <button
-                type="button"
-                onClick={(e) => handleOTPSubmit(e)}
-                className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded absolute bottom-10 lg:static"
-              >
-                Continue
-              </button>
-            </div>
-            )}{" "}
-            {currentStep === 2 && (
-              <div className="my-5 relative h-full">
                 <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  About you
-                </p>
-                <label
-                  htmlFor="Name"
-                  className="block text-[16px] font-[500] text-[#6C7278]"
-                >
-                  Enter your full name
-                </label>{" "}
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  name="firstName"
-                  onChange={handleChange}
-                  placeholder="First Name"
-                  className="my-5 block border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded"
-                ></input>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  name="lastName"
-                  onChange={handleChange}
-                  placeholder="Last Name"
-                  className="my-5 block border border-[#667085] lg:w-[416px] w-full px-4 py-2 rounded"
-                ></input>
-                <button
-                  type="button"
-                  onClick={handleContinue}
-                  className="my-5 bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded block absolute bottom-10 lg:static "
-                >
-                  Continue
-                </button>
-              </div>
-            )}
-            {currentStep === 3 && (
-              <div className="my-5 h-full relative">
-                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-                  Create passcode
+                  Confirm your email
                 </p>
                 <label
                   htmlFor="PassCode"
                   className="block text-[16px] font-[500] text-[#6C7278]"
                 >
-                  You will be able to login using the following passcode
+                  Enter the token we sent to {formData?.email}
                 </label>{" "}
                 <InputOTP
                   maxLength={6}
-                  value={formData.password}
-                  onChange={handlePassCodeChange}
+                  value={formData.otp}
+                  onChange={handleOTPChange}
                 >
                   <InputOTPGroup className="my-5">
                     <InputOTPSlot
                       index={0}
                       className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-   mx-1                  />
+                    />
                     <InputOTPSlot
                       index={1}
                       className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
@@ -320,13 +233,111 @@ function SignUp() {
                     />
                   </InputOTPGroup>
                 </InputOTP>
-                <button
+                <Button
                   type="button"
-                  onClick={(e) => handleSubmit(e)}
-                  className="my-5 block bg-[#1570EF] lg:w-[416px] w-full text-white px-4 py-2 rounded absolute bottom-10 lg:static"
+                  onClick={(e) => handleOTPSubmit(e)}
+                  className="w-full bg-[#1570EF] py-[22px] text-base rounded-[8px]"
+                  disabled={verifyEmailAuthMutation.isPending}
+                >
+                  {verifyEmailAuthMutation.isPending ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    " Continue"
+                  )}
+                </Button>
+              </div>
+            )}{" "}
+            {currentStep === 2 && (
+              <div className="my-5 relative h-full">
+                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
+                  About you
+                </p>
+                <label
+                  htmlFor="Name"
+                  className="block text-[16px] font-[500] text-[#6C7278]"
+                >
+                  Enter your full name
+                </label>{" "}
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  name="firstName"
+                  onChange={handleChange}
+                  placeholder="First Name"
+                  className="my-5 block border border-[#E1E1E1] w-full px-6 py-4 rounded-[8px] font-medium"
+                ></input>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  name="lastName"
+                  onChange={handleChange}
+                  placeholder="Last Name"
+                  className="my-5 block border border-[#E1E1E1] w-full px-6 py-4 rounded-[8px] font-medium"
+                ></input>
+                <Button
+                  type="button"
+                  onClick={handleContinue}
+                  className="w-full bg-[#1570EF] py-[22px] text-base rounded-[8px]"
                 >
                   Continue
-                </button>
+                </Button>
+              </div>
+            )}
+            {currentStep === 3 && (
+              <div className="my-5 h-full relative">
+                <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
+                  Create passcode
+                </p>
+                <label
+                  htmlFor="PassCode"
+                  className="block text-[16px] font-[500] text-[#6C7278]"
+                >
+                  You will be able to login using the following passcode
+                </label>{" "}
+                <InputOTP
+                  maxLength={6}
+                  value={formData.password}
+                  onChange={handlePassCodeChange}
+                >
+                  <InputOTPGroup className="my-5 space-x-4">
+                    <InputOTPSlot
+                      index={0}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={1}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={2}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={3}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={4}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                    <InputOTPSlot
+                      index={5}
+                      className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
+                    />
+                  </InputOTPGroup>
+                </InputOTP>
+                <Button
+                  type="button"
+                  onClick={(e) => handleSubmit(e)}
+                  className="w-full bg-[#1570EF] py-[22px] text-base rounded-[8px]"
+                  disabled={signUpMutation.isPending}
+                >
+                  {signUpMutation.isPending ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    " Continue"
+                  )}
+                </Button>
               </div>
             )}
             {currentStep > 4 && (

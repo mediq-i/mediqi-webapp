@@ -3,14 +3,16 @@
 import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GoogleLogo, LogoWhite } from "@/icons";
+import { LogoWhite } from "@/icons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 
 function Auth() {
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,7 +27,7 @@ function Auth() {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
 
@@ -34,18 +36,19 @@ function Auth() {
         password: formData.password,
       });
       localStorage.setItem("token", res?.data?.session?.access_token);
-      document.cookie = `authToken=${res?.data?.session?.access_token}; path=/`
+      localStorage.setItem("refreshToken", res.data.session.refresh_token);
+      document.cookie = `authToken=${res?.data?.session?.access_token}; path=/`;
       toast({
         title: "Login Successful",
-      })
+      });
       router.push("/");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         variant: "destructive",
-          title: "Error",
-          description: error?.response?.data?.message,
-        })
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
     }
   };
 
@@ -97,23 +100,29 @@ function Auth() {
                   Forgot Password
                 </p>
               </div>
-              <button
+
+              <Button
                 type="button"
                 onClick={handleSubmit}
-                className="my-5 block bg-[#1570EF] lg:w-full w-[350px] m-auto text-white px-4 py-2 rounded lg:static absolute bottom-10 right-0 left-0"
+                className="w-full bg-[#1570EF] py-[22px] text-base"
+                disabled={loginMutation.isPending}
               >
-                Continue
-              </button>
+                {loginMutation.isPending ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  " Continue"
+                )}
+              </Button>
             </div>
 
-            <div className=" flex justify-center lg:w-[416px] lg:static absolute bottom-1 right-0 left-0">
+            {/* <div className=" flex justify-center lg:w-[416px] lg:static absolute bottom-1 right-0 left-0">
               <div className=" lg:py-5 pt-5 mx-3">
                 <GoogleLogo />
               </div>
               <p className="my-5 text-[16px] font-[600] text-center">
                 Sign in with Google
               </p>
-            </div>
+            </div> */}
             <p className="my-5 text-[#6C7278] lg:text-[16px] text-[12px] font-[600] lg:text-center">
               Dont have an account?{" "}
               <a href="/auth/signup" className="text-[#54A6FF]">

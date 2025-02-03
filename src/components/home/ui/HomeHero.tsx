@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,40 +9,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider"
-
+import { Slider } from "@/components/ui/slider";
 
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { UserAdapter, useUserQuery } from "@/adapters/UserAdapter";
+import { queryKeys } from "@/constants";
 
 function HomeHero() {
   const [selected, setSelected] = useState("option1");
   const [open, setOpen] = useState<boolean>(false);
   const [priceOpen, setPriceOpen] = useState<boolean>(false);
   const [languageOpen, setLanguageOpen] = useState<boolean>(false);
-  // const userProfileString = localStorage.getItem('userProfile');
-  // const userProfile = JSON.parse(userProfileString!);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [profile, setProfile] = useState<any>()
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userProfileString = localStorage.getItem('userProfile');
-      if (userProfileString) {
-        const userProfile = JSON.parse(userProfileString);
-        setProfile(userProfile);
-      }
-    }
-  }, []);
+  const { data } = useUserQuery({
+    queryCallback: UserAdapter.getUserProfile,
+    queryKey: [queryKeys.USER_PROFILE],
+  });
 
-  const handleClose = (setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
+  const handleClose = (
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     setOpen(false);
   };
   return (
     <div className="h-[300px] bg-[#E7F0FE] rounded-md">
       <div className="flex flex-col items-center justify-center gap-10 h-full">
         <div className="w-[495px] text-xl font-semibold">
-          <p>Hello {profile?.first_name}, lets find top-rated doctors for you</p>
+          <p>
+            Hello {data?.user.first_name}, lets find top-rated doctors for you
+          </p>
         </div>
         <div className="w-[911px] h-[64px] bg-white rounded-[300px] flex items-center justify-center p-3 gap-10">
           <DropdownMenu>
@@ -182,17 +178,17 @@ function HomeHero() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[347px] p-3">
               <div className="flex justify-between px-2">
-              <DropdownMenuLabel>Ratings</DropdownMenuLabel>
-              <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
-                {" "}
-                <button
-                  onClick={()=> handleClose(setOpen)}
-                  className="text-black hover:text-red-700"
-                >
+                <DropdownMenuLabel>Ratings</DropdownMenuLabel>
+                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
                   {" "}
-                  &#10005;{" "}
-                </button>{" "}
-              </div>
+                  <button
+                    onClick={() => handleClose(setOpen)}
+                    className="text-black hover:text-red-700"
+                  >
+                    {" "}
+                    &#10005;{" "}
+                  </button>{" "}
+                </div>
               </div>
               <DropdownMenuRadioGroup
                 // value={""}
@@ -247,18 +243,18 @@ function HomeHero() {
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[347px] p-3">
-            <div className="flex justify-between">
-              <DropdownMenuLabel>Price</DropdownMenuLabel>
-              <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
-                {" "}
-                <button
-                  onClick={()=> handleClose(setPriceOpen)}
-                  className="text-black hover:text-red-700"
-                >
+              <div className="flex justify-between">
+                <DropdownMenuLabel>Price</DropdownMenuLabel>
+                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
                   {" "}
-                  &#10005;{" "}
-                </button>{" "}
-              </div>
+                  <button
+                    onClick={() => handleClose(setPriceOpen)}
+                    className="text-black hover:text-red-700"
+                  >
+                    {" "}
+                    &#10005;{" "}
+                  </button>{" "}
+                </div>
               </div>
               <div className="flex justify-center gap-3 my-5">
                 <Input placeholder="Min" className="w-[150px]" />
@@ -269,9 +265,13 @@ function HomeHero() {
                   <p className="text-[#1D2939] font-[600] text-[12px]">N0</p>
                   <p className="text-[#1D2939] font-[600] text-[12px]">N1m</p>
                 </div>
-              <Slider defaultValue={[35]} max={100} step={1} className="my-3"/>
+                <Slider
+                  defaultValue={[35]}
+                  max={100}
+                  step={1}
+                  className="my-3"
+                />
               </div>
-
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -283,18 +283,18 @@ function HomeHero() {
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[250px] flex flex-col gap-6 p-3">
-            <div className="flex justify-between">
-              <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
-              <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
-                {" "}
-                <button
-                  onClick={()=> handleClose(setLanguageOpen)}
-                  className="text-black hover:text-red-700"
-                >
+              <div className="flex justify-between">
+                <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
+                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
                   {" "}
-                  &#10005;{" "}
-                </button>{" "}
-              </div>
+                  <button
+                    onClick={() => handleClose(setLanguageOpen)}
+                    className="text-black hover:text-red-700"
+                  >
+                    {" "}
+                    &#10005;{" "}
+                  </button>{" "}
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox />

@@ -6,7 +6,8 @@ import { ReactQueryProvider } from "@/providers";
 import Sidebar from "@/components/partials/ui/SideBar";
 import Navbar from "@/components/partials/ui/NavBar";
 import { usePathname } from "next/navigation";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { UserProvider } from "@/providers/user-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,8 +41,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <Toaster/>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <Toaster />
+          <UserProvider>
+            <ReactQueryProvider>{children}</ReactQueryProvider>
+          </UserProvider>
         </body>
       </html>
     );
@@ -51,16 +54,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex h-screen">
-          {" "}
-          <Sidebar />{" "}
-          <div className="flex-1 flex flex-col ml-64">
-            {" "}
-            <Navbar />
-            <Toaster/>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
-          </div>{" "}
-        </div>
+        <UserProvider>
+          <ReactQueryProvider>
+            <div className="flex h-screen">
+              {" "}
+              <Sidebar />{" "}
+              <div className="flex-1 flex flex-col ml-64">
+                {" "}
+                <Navbar />
+                <Toaster />
+                {children}
+              </div>{" "}
+            </div>
+          </ReactQueryProvider>
+        </UserProvider>
       </body>
     </html>
   );
