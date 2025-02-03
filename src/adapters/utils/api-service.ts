@@ -1,3 +1,4 @@
+"use client"
 import { AxiosResponse } from "axios";
 import { apiInstance } from "@/config";
 
