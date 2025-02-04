@@ -51,7 +51,7 @@ const Sidebar: React.FC = () => {
               </div>
             </div>
           </Link>
-          <Link href={""}>
+          <Link href={"/session"}>
             <div
               className={`flex items-center gap-2 my-3 p-3 ${
                 pathname === "/session"
