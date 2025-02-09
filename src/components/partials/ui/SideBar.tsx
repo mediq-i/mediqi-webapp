@@ -1,9 +1,10 @@
 "use client";
 import {
+  CalendarPlus2,
   CircleUser,
-  Cross,
   EllipsisVertical,
   House,
+  Store,
   Wallet,
 } from "lucide-react";
 import Image from "next/image";
@@ -23,7 +24,7 @@ const Sidebar: React.FC = () => {
   });
 
   return (
-    <div className="w-64 h-full bg-white shadow-lg fixed p-1">
+    <div className="w-[250px] h-full bg-white shadow-lg fixed p-1">
       <div className="p-6">
         <div className="text-xl font-bold">
           <Image src={"/mediqi-logo.svg"} alt="" width={30} height={30} />
@@ -41,8 +42,8 @@ const Sidebar: React.FC = () => {
         <nav className="mt-8">
           <Link href={"/"}>
             <div
-              className={`flex items-center gap-2 my-3 p-3 ${
-                pathname === "/" ? "bg-[#1570EF] rounded p-3 text-white" : ""
+               className={`flex items-center gap-2  p-3 hover:border hover:border-[#1570EF] ${
+                pathname === "/" ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg" : ""
               }`}
             >
               <House />
@@ -53,41 +54,41 @@ const Sidebar: React.FC = () => {
           </Link>
           <Link href={"/session"}>
             <div
-              className={`flex items-center gap-2 my-3 p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
                 pathname === "/session"
-                  ? "bg-[#1570EF] rounded p-3 text-white"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
                   : ""
               }`}
             >
-              <Cross />
+              <CalendarPlus2 />
               <div className="block rounded transition duration-200 hover:bg-gray-200">
                 Session
               </div>
             </div>
           </Link>
-          <Link href={""}>
+          <Link href={"/store"}>
             <div
-              className={`flex items-center gap-2 my-3 p-3 ${
-                pathname === "/profile"
-                  ? "bg-[#1570EF] rounded p-3 text-white"
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+                pathname === "/session"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
                   : ""
               }`}
             >
-              <Wallet />
+              <Store />
               <div className="block rounded transition duration-200 hover:bg-gray-200">
-                Profile
+                Store
               </div>
             </div>
           </Link>
           <Link href={""}>
             <div
-              className={`flex items-center gap-2 my-3 p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
                 pathname === "/payment"
-                  ? "bg-[#1570EF] rounded p-3 text-white"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
                   : ""
               }`}
             >
-              <CircleUser />
+              <Wallet />
               <div className="block rounded transition duration-200 hover:bg-gray-200">
                 Payment
               </div>
@@ -95,9 +96,23 @@ const Sidebar: React.FC = () => {
           </Link>
           <Link href={""}>
             <div
-              className={`flex items-center gap-2 my-3 p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+                pathname === "/profile"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+                  : ""
+              }`}
+            >
+              <CircleUser />
+              <div className="block rounded transition duration-200 hover:bg-gray-200">
+                Profile
+              </div>
+            </div>
+          </Link>
+          <Link href={""}>
+            <div
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
                 pathname === "/more"
-                  ? "bg-[#1570EF] rounded p-3 text-white"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
                   : ""
               }`}
             >
@@ -109,13 +124,13 @@ const Sidebar: React.FC = () => {
           </Link>
         </nav>
       </div>
-      <div className="w-[240px] m-auto h-[221px]  bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-3 pt-14 relative">
+      <div className="w-[240px] m-auto h-[221px] mt-[60px]  bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-3 pt-14 relative">
         <Image
           src={"aero.svg"}
           alt=""
           width={150}
           height={150}
-          className="absolute top-[-50px] left-[45px]"
+          className="absolute top-[-100]"
         />
         <p className="text-white font-[600] text-[18px] my-2">
           Refer A Friend & Earn

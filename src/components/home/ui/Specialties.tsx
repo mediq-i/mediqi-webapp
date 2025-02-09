@@ -18,9 +18,9 @@ const specialties = [
   },
   {
     id: 1,
-    name: "General",
+    name: "Dentist",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Get expert care for your teeth",
     bg: "bg-[#FDE6D5]",
   },
   {

@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function DoctorProfile() {
   return (
-    <div className="w-[544px]  border-r pr-10">
+    <div className="w-[50%]  border-r pr-10">
       <div className="flex justify-between ">
         <div className="flex gap-5 relative">
           <div className="bg-[#EAEEF4] rounded-md w-[100px]">
