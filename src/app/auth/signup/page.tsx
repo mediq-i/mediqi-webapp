@@ -35,6 +35,9 @@ function SignUp() {
   const verifyEmailAuthMutation = useAuthMutation({
     mutationCallback: AuthAdapter.verifyEmailAuth,
   });
+  const resendOTPMutation = useAuthMutation({
+    mutationCallback: AuthAdapter.resendOTP,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
@@ -44,6 +47,8 @@ function SignUp() {
       const res = await signUpMutation.mutateAsync({
         email: formData.email,
         password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       });
       saveToLocalStorage(formData);
       localStorage.setItem("auth_id", res.data.auth_id);
@@ -52,6 +57,26 @@ function SignUp() {
         description: "Check your Email for OTP",
       });
       setCurrentStep(4);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resendOTP = async (e: any) => {
+    try {
+      e.preventDefault();
+       await resendOTPMutation.mutateAsync({
+        email: formData.email,
+      });
+      toast({
+        title: "OTP Resent",
+        description: "Check your Email for OTP",
+      });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
@@ -233,6 +258,7 @@ function SignUp() {
                     />
                   </InputOTPGroup>
                 </InputOTP>
+                <p className="my-3 text-center">{"Didn't get Token?"} <span className="text-[#1570EF] cursor-pointer" onClick={(e)=> resendOTP(e)}>{resendOTPMutation.isPending ? (<Loader2Icon className="animate-spin inline" />): "Resend OTP"}</span></p>
                 <Button
                   type="button"
                   onClick={(e) => handleOTPSubmit(e)}

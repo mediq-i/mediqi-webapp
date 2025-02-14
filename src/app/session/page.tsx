@@ -210,7 +210,7 @@ function Session() {
                     Reschedule session
                   </button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-h-[700px] overflow-auto">
                   <DialogHeader className="border-b pb-5">
                     <DialogTitle>Select reschedule date</DialogTitle>
                   </DialogHeader>
@@ -325,7 +325,7 @@ function Session() {
                     Re-Book
                   </button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-h-[700px] overflow-auto">
                   <DialogHeader className="border-b pb-5">
                     <DialogTitle>Select reschedule date</DialogTitle>
                   </DialogHeader>

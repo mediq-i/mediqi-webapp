@@ -42,21 +42,21 @@ const Sidebar: React.FC = () => {
         <nav className="mt-8">
           <Link href={"/"}>
             <div
-               className={`flex items-center gap-2  p-3 hover:border hover:border-[#1570EF] ${
-                pathname === "/" ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg" : ""
+               className={`flex items-center gap-2  p-3 hover:border hover:border-[#1570EF] font-[500] ${
+                pathname === "/" ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]" : ""
               }`}
             >
               <House />
-              <div className="block  rounded transition duration-200 hover:bg-gray-200">
+              <div className="block  rounded transition duration-20">
                 Home
               </div>
             </div>
           </Link>
           <Link href={"/session"}>
             <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
                 pathname === "/session"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
                   : ""
               }`}
             >
@@ -66,11 +66,11 @@ const Sidebar: React.FC = () => {
               </div>
             </div>
           </Link>
-          <Link href={"/store"}>
+          <Link href={""}>
             <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
-                pathname === "/session"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
+                pathname === "/store"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
                   : ""
               }`}
             >
@@ -82,9 +82,9 @@ const Sidebar: React.FC = () => {
           </Link>
           <Link href={""}>
             <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
                 pathname === "/payment"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
                   : ""
               }`}
             >
@@ -96,9 +96,9 @@ const Sidebar: React.FC = () => {
           </Link>
           <Link href={""}>
             <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
                 pathname === "/profile"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
                   : ""
               }`}
             >
@@ -110,9 +110,9 @@ const Sidebar: React.FC = () => {
           </Link>
           <Link href={""}>
             <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 ${
+              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
                 pathname === "/more"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg"
+                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
                   : ""
               }`}
             >

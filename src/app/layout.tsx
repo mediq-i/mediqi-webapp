@@ -24,6 +24,7 @@ const requireLayout = (pathname: string): boolean => {
     "/auth/signup",
     "/auth",
     "/auth/email-confirmation",
+    "/auth/reset-password",
   ];
   return !authPaths.includes(pathname);
 };

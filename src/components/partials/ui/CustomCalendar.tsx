@@ -5,18 +5,17 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function CustomCalendar() {
-  const { headers, body, view } = useCalendar();
-  console.log("headers", headers);
-  console.log("body", body);
-  console.log("view", view);
+  const {body, view } = useCalendar();
   const currentDate = new Date();
   const formattedDate = format(currentDate, "MMMM, yyyy");
   const [selectedDate, setSelectedDate] = useState(currentDate);
 
   useEffect(() => {
     view.showWeekView()
-  })
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  
+  
   return (
     <div>
       <p className="text-[16px] text-[#1D2939] font-[500]">
@@ -101,7 +100,8 @@ export default function CustomCalendar() {
       <button
       className="font-[500] text-[14px] text-[#1570EF] flex items-center gap-1"
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault()
           if (view.isMonthView) {
             view.showWeekView();
           } else if (view.isWeekView) {

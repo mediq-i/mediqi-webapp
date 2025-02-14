@@ -3,6 +3,8 @@ import { User, Session } from "@/lib/types/user";
 export type SignUpPayload = {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
 };
 
 export type SignUpResponse = {
@@ -30,7 +32,17 @@ export type CreatePatientPayload = {
   email: string;
   authId: string;
 };
-export type LoginPayload = {  
+export type LoginPayload = {
   password: string;
+  email: string;
+};
+export type ForgotPasswordPayload = {
+  email: string;
+};
+export type ResetPasswordPayload = {
+  password: string;
+  refreshToken: string;
+};
+export type ResendOTPPayload = {
   email: string;
 };

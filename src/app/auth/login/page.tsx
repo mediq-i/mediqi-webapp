@@ -25,7 +25,26 @@ function Auth() {
   const loginMutation = useAuthMutation({
     mutationCallback: AuthAdapter.login,
   });
-
+  const forgotPasswordMutation = useAuthMutation({
+    mutationCallback: AuthAdapter.forgotPassword,
+  });
+  const forgotPassword = async () =>{
+    try {
+    await forgotPasswordMutation.mutateAsync({
+      email: formData.email,
+    });
+    toast({
+      title: "Password reset email sent successfully",
+    });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }catch(error:any){
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: error?.response?.data?.message,
+    });
+  }
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
     try {
@@ -96,9 +115,9 @@ function Auth() {
                     Remember me
                   </label>
                 </div>
-                <p className="text-[#54A6FF] text-[16px] font-[600]">
+                <button onClick={()=> {forgotPassword()}} className="text-[#54A6FF] text-[16px] font-[600]">
                   Forgot Password
-                </p>
+                </button>
               </div>
 
               <Button
