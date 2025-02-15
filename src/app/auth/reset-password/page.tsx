@@ -28,6 +28,7 @@ function Auth() {
     mutationCallback: AuthAdapter.resetPassword ,
   });
   const resetPassword = async () =>{
+    localStorage.setItem("token",params.access_token!)
     try {
     await resetPasswordMutation.mutateAsync({
       password: formData.password,
@@ -47,8 +48,7 @@ function Auth() {
   }
   }
   const [params, setParams] = useState<Record<string, string | null>>({});
-  localStorage.setItem("token",params.access_token!)
-  console.log("token",localStorage.getItem("token"))
+  
 
 
   useEffect(() => {
