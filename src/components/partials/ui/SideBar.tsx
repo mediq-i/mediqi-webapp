@@ -1,4 +1,5 @@
 "use client";
+
 import {
   CalendarPlus2,
   CircleUser,
@@ -15,9 +16,17 @@ import { useUserQuery, UserAdapter } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const NAV_ITEMS = [
+  { name: "Home", href: "/", icon: House },
+  { name: "Session", href: "/session", icon: CalendarPlus2 },
+  { name: "Store", href: "#1", icon: Store },
+  { name: "Payment", href: "#2", icon: Wallet },
+  { name: "Profile", href: "#3", icon: CircleUser },
+  { name: "More", href: "#4", icon: EllipsisVertical },
+];
+
 const Sidebar: React.FC = () => {
   const pathname = usePathname();
-
   const { data, isPending } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
@@ -26,112 +35,40 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-[250px] h-full bg-white shadow-lg fixed p-1">
       <div className="p-6">
-        <div className="text-xl font-bold">
-          <Image src={"/mediqi-logo.svg"} alt="" width={30} height={30} />
-        </div>
+        <Image src="/mediqi-logo.svg" alt="Logo" width={30} height={30} />
+
         <div className="mt-4">
-          {!isPending ? (
+          {isPending ? (
+            <Skeleton className="w-[150px] h-[25px]" />
+          ) : (
             <div className="text-lg font-semibold">
               {data?.user.first_name} {data?.user.last_name}
             </div>
-          ) : (
-            <Skeleton className="w-[150px] h-[25px]" />
           )}
           <div className="text-sm text-gray-600">How are you doing today?</div>
         </div>
-        <nav className="mt-8">
-          <Link href={"/"}>
-            <div
-               className={`flex items-center gap-2  p-3 hover:border hover:border-[#1570EF] font-[500] ${
-                pathname === "/" ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]" : ""
-              }`}
-            >
-              <House />
-              <div className="block  rounded transition duration-20">
-                Home
+
+        <nav className="mt-8 flex flex-col gap-1">
+          {NAV_ITEMS.map(({ name, href, icon: Icon }) => (
+            <Link key={href} href={href}>
+              <div
+                className={`flex items-center group gap-2 px-4 py-3 border-2 font-[600] hover:border-2 hover:border-[#1570EF] rounded-xl transition-all duration-75 ${
+                  pathname === href
+                    ? "border-[#1570EF] text-[#1570EF] border-2 font-[600]"
+                    : "border-white"
+                }`}
+              >
+                <Icon className="group-hover:stroke-[#1570EF] stroke-[1.5px]" />
+                <span className="group-hover:text-[#1570EF] text-sm">
+                  {name}
+                </span>
               </div>
-            </div>
-          </Link>
-          <Link href={"/session"}>
-            <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
-                pathname === "/session"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
-                  : ""
-              }`}
-            >
-              <CalendarPlus2 />
-              <div className="block rounded transition duration-200 hover:bg-gray-200">
-                Session
-              </div>
-            </div>
-          </Link>
-          <Link href={""}>
-            <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
-                pathname === "/store"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
-                  : ""
-              }`}
-            >
-              <Store />
-              <div className="block rounded transition duration-200 hover:bg-gray-200">
-                Store
-              </div>
-            </div>
-          </Link>
-          <Link href={""}>
-            <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
-                pathname === "/payment"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
-                  : ""
-              }`}
-            >
-              <Wallet />
-              <div className="block rounded transition duration-200 hover:bg-gray-200">
-                Payment
-              </div>
-            </div>
-          </Link>
-          <Link href={""}>
-            <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
-                pathname === "/profile"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
-                  : ""
-              }`}
-            >
-              <CircleUser />
-              <div className="block rounded transition duration-200 hover:bg-gray-200">
-                Profile
-              </div>
-            </div>
-          </Link>
-          <Link href={""}>
-            <div
-              className={`flex items-center hover:border hover:border-[#1570EF] gap-2  p-3 font-[500] ${
-                pathname === "/more"
-                  ? "border-[#1570EF] p-3 text-[#1570EF] border-2 rounded-lg font-[600]"
-                  : ""
-              }`}
-            >
-              <EllipsisVertical />
-              <div className="block rounded transition duration-200 hover:bg-gray-200">
-                More
-              </div>
-            </div>
-          </Link>
+            </Link>
+          ))}
         </nav>
       </div>
-      <div className="w-[240px] m-auto h-[221px] mt-[60px]  bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-3 pt-14 relative">
-        <Image
-          src={"aero.svg"}
-          alt=""
-          width={150}
-          height={150}
-          className="absolute top-[-100]"
-        />
+
+      <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative">
         <p className="text-white font-[600] text-[18px] my-2">
           Refer A Friend & Earn
         </p>
