@@ -78,7 +78,7 @@ function Session() {
                   <DialogHeader className="border-b pb-4">
                     <DialogTitle>Session Detail</DialogTitle>
                     <DialogDescription>
-                      <p className="">Feb 18, 2024 - 02:30 pm </p>
+                      Feb 18, 2024 - 02:30 pm
                     </DialogDescription>
                   </DialogHeader>
                   <div className="border bg-[#F2F4F7] flex justify-between rounded-lg h-[40px]">
@@ -116,8 +116,12 @@ function Session() {
                       <div className="min-h-[80px]">
                         <p className="text-[14px] text-[#7D8593]">Symptoms</p>
                         <div className="flex gap-3 mt-2 flex-wrap">
-                          <p className="p-1 border rounded-3xl">Anxiety</p>
-                          <p className="p-1 border rounded-3xl">Other</p>
+                          <p className="px-2.5 py-1 text-sm border rounded-3xl">
+                            Anxiety
+                          </p>
+                          <p className="px-2.5 py-1 text-sm border rounded-3xl">
+                            Other
+                          </p>
                         </div>
                       </div>
                       <div className="min-h-[80px]">
