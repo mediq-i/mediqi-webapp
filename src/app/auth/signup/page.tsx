@@ -15,6 +15,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign Up / MEDQI-I",
+  description: "MEDQI-I",
+};
 
 function SignUp() {
   const { toast } = useToast();
@@ -70,7 +76,7 @@ function SignUp() {
   const resendOTP = async (e: any) => {
     try {
       e.preventDefault();
-       await resendOTPMutation.mutateAsync({
+      await resendOTPMutation.mutateAsync({
         email: formData.email,
       });
       toast({
@@ -258,7 +264,19 @@ function SignUp() {
                     />
                   </InputOTPGroup>
                 </InputOTP>
-                <p className="my-3 text-center">{"Didn't get Token?"} <span className="text-[#1570EF] cursor-pointer" onClick={(e)=> resendOTP(e)}>{resendOTPMutation.isPending ? (<Loader2Icon className="animate-spin inline" />): "Resend OTP"}</span></p>
+                <p className="my-3 text-center">
+                  {"Didn't get Token?"}{" "}
+                  <span
+                    className="text-[#1570EF] cursor-pointer"
+                    onClick={(e) => resendOTP(e)}
+                  >
+                    {resendOTPMutation.isPending ? (
+                      <Loader2Icon className="animate-spin inline" />
+                    ) : (
+                      "Resend OTP"
+                    )}
+                  </span>
+                </p>
                 <Button
                   type="button"
                   onClick={(e) => handleOTPSubmit(e)}

@@ -16,6 +16,13 @@ import {
   RebookSession,
 } from "@/components/session/modules";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sessions / MEDQI-I",
+  description: "MEDQI-I",
+};
+
 function Session() {
   return (
     <div className="p-6">

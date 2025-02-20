@@ -9,6 +9,12 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login / MEDQI-I",
+  description: "MEDQI-I",
+};
 
 function Auth() {
   const router = useRouter();
@@ -28,23 +34,23 @@ function Auth() {
   const forgotPasswordMutation = useAuthMutation({
     mutationCallback: AuthAdapter.forgotPassword,
   });
-  const forgotPassword = async () =>{
+  const forgotPassword = async () => {
     try {
-    await forgotPasswordMutation.mutateAsync({
-      email: formData.email,
-    });
-    toast({
-      title: "Password reset email sent successfully",
-    });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }catch(error:any){
-    toast({
-      variant: "destructive",
-      title: "Error",
-      description: error?.response?.data?.message,
-    });
-  }
-  }
+      await forgotPasswordMutation.mutateAsync({
+        email: formData.email,
+      });
+      toast({
+        title: "Password reset email sent successfully",
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
     try {
@@ -115,7 +121,12 @@ function Auth() {
                     Remember me
                   </label>
                 </div>
-                <button onClick={()=> {forgotPassword()}} className="text-[#54A6FF] text-[16px] font-[600]">
+                <button
+                  onClick={() => {
+                    forgotPassword();
+                  }}
+                  className="text-[#54A6FF] text-[16px] font-[600]"
+                >
                   Forgot Password
                 </button>
               </div>
