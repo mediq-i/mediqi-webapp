@@ -4,58 +4,60 @@ import React from "react";
 const specialties = [
   {
     id: 1,
-    name: "General",
+    name: "General Physician",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Provides primary healthcare and treats common illnesses.",
     bg: "bg-[#DDEAFD]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 2,
+    name: "Cardiologist",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Specializes in heart diseases and cardiovascular conditions.",
     bg: "bg-[#FCCFE8]",
   },
   {
-    id: 1,
-    name: "Dentist",
+    id: 3,
+    name: "Dermatologist",
     img: "/dark-man.png",
-    description: "Get expert care for your teeth",
+    description: "Focuses on skin, hair, and nail disorders.",
     bg: "bg-[#FDE6D5]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 4,
+    name: "Pediatrician",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description:
+      "Provides medical care for infants, children, and adolescents.",
     bg: "bg-[#FCCFCF]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 5,
+    name: "Orthopedic Surgeon",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Treats bone, joint, and musculoskeletal disorders.",
     bg: "bg-[#D3F8DF]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 6,
+    name: "Neurologist",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Diagnoses and treats brain and nervous system disorders.",
     bg: "bg-[#7A5AF81A]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 7,
+    name: "Oncologist",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description: "Specializes in diagnosing and treating cancer.",
     bg: "bg-[#7A5AF81A]",
   },
   {
-    id: 1,
-    name: "General",
+    id: 8,
+    name: "Psychiatrist",
     img: "/dark-man.png",
-    description: "General practitioner",
+    description:
+      "Focuses on mental health, including depression and anxiety disorders.",
     bg: "bg-[#7A5AF81A]",
   },
 ];
@@ -70,12 +72,12 @@ function Specialties() {
         </a>
       </div>
 
-      <div className="py-3 flex flex-wrap gap-3">
+      <div className="py-3 grid grid-cols-4 gap-3">
         {specialties.map((specialty, index) => {
           return (
             <div
               key={index}
-              className={`w-[265px] border border-[#E5E7EB] rounded-md p-3 ${specialty.bg}`}
+              className={` border border-[#E5E7EB] rounded-md p-3 ${specialty.bg}`}
             >
               <Image
                 src={specialty.img}

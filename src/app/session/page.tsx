@@ -1,4 +1,3 @@
-"use client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
 import {
   Dialog,
@@ -8,43 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-import {
-  ChevronRight,
-  Clock,
-  Copy,
-  Star,
-  StickyNote,
-} from "lucide-react";
+import { Copy, StickyNote } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
-import SelectDateAndTime from "@/components/partials/SelectDateAndTime";
-import { Input } from "@/components/ui/input";
+import {
+  AcceptSessionRequest,
+  AddReview,
+  RescheduleSession,
+  RebookSession,
+} from "@/components/session/modules";
 
 function Session() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const options = [
-    "Arrived early",
-    "Clear and concise",
-    "Helpful",
-    "Nice and Collected",
-    "Difficult",
-    "Comfortable",
-  ];
-  const handleOptionChange = (option: string) => {
-    if (option === "Other" && selectedOptions.includes("Other")) {
-      setSelectedOptions(selectedOptions.filter((o) => o !== "Other"));
-    } else if (option === "Other") {
-      setSelectedOptions([...selectedOptions, option]);
-    } else {
-      setSelectedOptions((prev) =>
-        prev.includes(option)
-          ? prev.filter((o) => o !== option)
-          : [...prev, option]
-      );
-    }
-  };
   return (
     <div className="p-6">
       <Tabs defaultValue="upcoming" className="w-full mt-10">
@@ -98,13 +70,11 @@ function Session() {
 
             <div className="flex items-center mt-5 gap-1">
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
                   {" "}
-                  <button className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
-                    Session Details
-                  </button>
+                  Session Details
                 </DialogTrigger>
-                <DialogContent className="">
+                <DialogContent className="max-h-[600px] overflow-y-auto">
                   <DialogHeader className="border-b pb-4">
                     <DialogTitle>Session Detail</DialogTitle>
                     <DialogDescription>
@@ -203,86 +173,7 @@ function Session() {
                 </DialogContent>
               </Dialog>
 
-              <Dialog>
-                <DialogTrigger>
-                  {" "}
-                  <button className="w-[247px] p-3 bg-[#1570EF] rounded-3xl text-white">
-                    Reschedule session
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-h-[700px] overflow-auto">
-                  <DialogHeader className="border-b pb-5">
-                    <DialogTitle>Select reschedule date</DialogTitle>
-                  </DialogHeader>
-
-                  <SelectDateAndTime />
-                  <button
-                    className=" p-3 bg-[#1570EF] rounded-3xl text-white"
-                    onClick={() => setIsOpen(true)}
-                  >
-                    Reschedule session
-                  </button>
-                </DialogContent>
-              </Dialog>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent>
-                  <DialogTitle>
-                    <div className="text-center">
-                      <Image
-                        src={"/success.svg"}
-                        alt="success"
-                        height={83}
-                        width={83}
-                        className="m-auto"
-                      />
-                      <p className="text-[#0C1523] font-[500] texxt-[18px]">
-                        Your appointment has been updated
-                      </p>
-                    </div>
-                  </DialogTitle>
-                  <div className="border rounded-sm p-3 mt-3">
-                    <div className="flex p-3 justify-between">
-                      <p className="flex gap-1">
-                        <Image src={"/doc.png"} alt="" width={20} height={20} />{" "}
-                        Dr Lisa Haruna
-                      </p>
-                      <p className="text-[#1570EF]">#ME88010</p>
-                    </div>
-                    <div className="p-2 bg-[#F2F4F7] rounded-sm flex justify-center ">
-                      <div className="flex border-l border-[#2E90FA] justify-center  pl-2 items-center">
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] line-through">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1 line-through">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                        <p className="flex">
-                          <ChevronRight className="text-[#00000033]" />
-                          <ChevronRight className="text-[#00000066]" />
-                          <ChevronRight className="text-[#00000099]" />
-                          <ChevronRight className="text-[#000000CC]" />
-                        </p>
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] ">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    className="p-3 border font-[600] text-[#1570EF] text-[16px] rounded-3xl mt-5"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Done
-                  </button>
-                </DialogContent>
-              </Dialog>
+              <RescheduleSession />
             </div>
           </div>
         </TabsContent>
@@ -318,159 +209,9 @@ function Session() {
             </div>
 
             <div className="flex items-center mt-5 gap-1">
-              <Dialog>
-                <DialogTrigger>
-                  {" "}
-                  <button className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
-                    Re-Book
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-h-[700px] overflow-auto">
-                  <DialogHeader className="border-b pb-5">
-                    <DialogTitle>Select reschedule date</DialogTitle>
-                  </DialogHeader>
+              <RebookSession />
 
-                  <SelectDateAndTime />
-                  <button
-                    className=" p-3 bg-[#1570EF] rounded-3xl text-white"
-                    onClick={() => setIsOpen(true)}
-                  >
-                    Reschedule session
-                  </button>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog>
-                <DialogTrigger>
-                  {" "}
-                  <button className="w-[247px] p-3 bg-[#1570EF] rounded-3xl text-white">
-                    Add Review
-                  </button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader className="">
-                    <DialogTitle>
-                      {" "}
-                      <div className=" gap-5 p-2 text-center">
-                        <div>
-                          <Image
-                            src={"/doctor-detail-pic.png"}
-                            alt=""
-                            height={48}
-                            width={48}
-                            className="m-auto"
-                          />
-                        </div>
-                        <div>
-                          <p className="text-[#090909] font-[700] text-[16px] my-2">
-                            Dr. Emily Harper, MD
-                          </p>
-                          <p className="text-[#667085] font-[400] text-[14px] my-2">
-                            Cardiologist
-                          </p>
-                        </div>
-                      </div>
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div>
-                    <div className="flex gap-3 justify-center">
-                      <Star />
-                      <Star />
-                      <Star />
-                      <Star />
-                      <Star />
-                    </div>
-                    <div className="flex flex-wrap gap-2 justify-center my-5">
-                      {options.map((option) => (
-                        <button
-                          key={option}
-                          className={`px-4 py-2 rounded-3xl cursor-pointer transition duration-200 hover:bg-[#1D2939] hover:text-white ${
-                            selectedOptions.includes(option)
-                              ? "bg-[#1D2939] text-white"
-                              : "bg-[#E4E7EC]"
-                          }`}
-                          onClick={() => handleOptionChange(option)}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                    <div>
-                      <Input
-                        placeholder="Add feedback"
-                        className="p-3 h-[51px]"
-                      />
-                      <div className="flex gap-3 my-3 justify-center">
-                        <button className="w-[210px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
-                          Cancel
-                        </button>
-                        <button className="w-[210px] p-3 bg-[#1570EF] rounded-3xl text-white">
-                          Submit
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent>
-                  <DialogTitle>
-                    <div className="text-center">
-                      <Image
-                        src={"/success.svg"}
-                        alt="success"
-                        height={83}
-                        width={83}
-                        className="m-auto"
-                      />
-                      <p className="text-[#0C1523] font-[500] texxt-[18px]">
-                        Your appointment has been updated
-                      </p>
-                    </div>
-                  </DialogTitle>
-                  <div className="border rounded-sm p-3 mt-3">
-                    <div className="flex p-3 justify-between">
-                      <p className="flex gap-1">
-                        <Image src={"/doc.png"} alt="" width={20} height={20} />{" "}
-                        Dr Lisa Haruna
-                      </p>
-                      <p className="text-[#1570EF]">#ME88010</p>
-                    </div>
-                    <div className="p-2 bg-[#F2F4F7] rounded-sm flex justify-center ">
-                      <div className="flex border-l border-[#2E90FA] justify-center  pl-2 items-center">
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] line-through">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1 line-through">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                        <p className="flex">
-                          <ChevronRight className="text-[#00000033]" />
-                          <ChevronRight className="text-[#00000066]" />
-                          <ChevronRight className="text-[#00000099]" />
-                          <ChevronRight className="text-[#000000CC]" />
-                        </p>
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] ">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    className="p-3 border font-[600] text-[#1570EF] text-[16px] rounded-3xl mt-5"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Done
-                  </button>
-                </DialogContent>
-              </Dialog>
+              <AddReview />
             </div>
           </div>
         </TabsContent>
@@ -536,15 +277,15 @@ function Session() {
 
             <div className="flex items-center mt-5 gap-1">
               <Dialog>
-                <DialogTrigger>
-                  {" "}
-                  <button className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
-                    View Details
-                  </button>
+                <DialogTrigger className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
+                  View Details
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-h-[600px] overflow-y-auto">
                   <DialogHeader className="border-b pb-5">
-                    <DialogTitle>Request Appointment <span className="text-[#1570EF]"> #ME88010</span></DialogTitle>
+                    <DialogTitle>
+                      Request Appointment{" "}
+                      <span className="text-[#1570EF]"> #ME88010</span>
+                    </DialogTitle>
                   </DialogHeader>
 
                   <div className="flex gap-5 border rounded-lg p-2">
@@ -623,74 +364,7 @@ function Session() {
                 </DialogContent>
               </Dialog>
 
-              <Dialog>
-                <DialogTrigger>
-                  {" "}
-                  <button className="w-[247px] p-3 bg-[#1570EF] rounded-3xl text-white">
-                    Accept Request
-                  </button>
-                </DialogTrigger>
-                
-              </Dialog>
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent>
-                  <DialogTitle>
-                    <div className="text-center">
-                      <Image
-                        src={"/success.svg"}
-                        alt="success"
-                        height={83}
-                        width={83}
-                        className="m-auto"
-                      />
-                      <p className="text-[#0C1523] font-[500] texxt-[18px]">
-                        Your appointment has been updated
-                      </p>
-                    </div>
-                  </DialogTitle>
-                  <div className="border rounded-sm p-3 mt-3">
-                    <div className="flex p-3 justify-between">
-                      <p className="flex gap-1">
-                        <Image src={"/doc.png"} alt="" width={20} height={20} />{" "}
-                        Dr Lisa Haruna
-                      </p>
-                      <p className="text-[#1570EF]">#ME88010</p>
-                    </div>
-                    <div className="p-2 bg-[#F2F4F7] rounded-sm flex justify-center ">
-                      <div className="flex border-l border-[#2E90FA] justify-center  pl-2 items-center">
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] line-through">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1 line-through">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                        <p className="flex">
-                          <ChevronRight className="text-[#00000033]" />
-                          <ChevronRight className="text-[#00000066]" />
-                          <ChevronRight className="text-[#00000099]" />
-                          <ChevronRight className="text-[#000000CC]" />
-                        </p>
-                        <div>
-                          <p className="text-[14px] text-[#667085] font-[500] ">
-                            Wed,12 July
-                          </p>
-                          <p className="text-[14px] text-[#98A2B3] font-[500] flex gap-1">
-                            <Clock /> 10:00am - 11:00am
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    className="p-3 border font-[600] text-[#1570EF] text-[16px] rounded-3xl mt-5"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Done
-                  </button>
-                </DialogContent>
-              </Dialog>
+              <AcceptSessionRequest />
             </div>
           </div>
         </TabsContent>
