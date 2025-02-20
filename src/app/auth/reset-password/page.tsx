@@ -1,31 +1,30 @@
 import AuthBanner from "@/components/partials/ui/AuthBanner";
-import React from "react";
 import { LogoWhite } from "@/icons";
 import { Metadata } from "next";
-import { SignupForm } from "@/components/auth/modules";
+import { ResetPasswordForm } from "@/components/auth/modules";
 
 export const metadata: Metadata = {
-  title: "Sign Up / MEDQI-I",
+  title: "Reset Password / MEDQI-i",
   description: "MEDQI-I",
 };
 
-function SignUp() {
+function Auth() {
   return (
-    <div className="h-screen flex">
-      <div className="lg:block hidden">
+    <div className="h-screen lg:flex">
+      <div className="hidden lg:block">
         <AuthBanner />
       </div>
       <div className="lg:w-[650px] w-full">
-        <div className="lg:w-[480px] w-full m-auto lg:pt-10">
+        <div className="lg:w-[480px] w-full m-auto lg:pt-10 h-full">
           <div className="hidden lg:block">
             <LogoWhite />
           </div>
 
-          <SignupForm />
+          <ResetPasswordForm />
         </div>
       </div>
     </div>
   );
 }
 
-export default SignUp;
+export default Auth;

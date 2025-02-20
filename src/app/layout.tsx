@@ -24,6 +24,7 @@ const requireLayout = (pathname: string): boolean => {
     "/auth/signup",
     "/auth",
     "/auth/email-confirmation",
+    "/auth/reset-password",
   ];
   return !authPaths.includes(pathname);
 };
@@ -59,7 +60,7 @@ export default function RootLayout({
             <div className="flex h-screen">
               {" "}
               <Sidebar />{" "}
-              <div className="flex-1 flex flex-col ml-64">
+              <div className="flex-1 flex flex-col ml-[250px]">
                 {" "}
                 <Navbar />
                 <Toaster />

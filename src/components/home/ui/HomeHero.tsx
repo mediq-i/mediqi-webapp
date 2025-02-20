@@ -9,23 +9,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
+// import { Slider } from "@/components/ui/slider";
 
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UserAdapter, useUserQuery } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
 
+const specialties = ["General", "Cardiologist", "Dermatologist", "Dentist"];
+const ratings = ["Any", "5.0", "4.0", "3.0", "2.0", "1.0"];
+const languages = ["English", "Igbo", "Yoruba", "Hausa"];
+
 function HomeHero() {
-  const [selected, setSelected] = useState("option1");
   const [open, setOpen] = useState<boolean>(false);
-  const [priceOpen, setPriceOpen] = useState<boolean>(false);
   const [languageOpen, setLanguageOpen] = useState<boolean>(false);
+
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
+    null
+  );
+  const [selectedRating, setSelectedRating] = useState<string | null>(null);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
   const { data } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
   });
+
+  const toggleLanguage = (language: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(language)
+        ? prev.filter((lang) => lang !== language)
+        : [...prev, language]
+    );
+  };
 
   const handleClose = (
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -35,17 +51,17 @@ function HomeHero() {
   return (
     <div className="h-[300px] bg-[#E7F0FE] rounded-md">
       <div className="flex flex-col items-center justify-center gap-10 h-full">
-        <div className="w-[495px] text-xl font-semibold">
-          <p>
+        <div className="text-xl w-[90%] mx-auto font-semibold">
+          <p className="text-center">
             Hello {data?.user.first_name}, lets find top-rated doctors for you
           </p>
         </div>
-        <div className="w-[911px] h-[64px] bg-white rounded-[300px] flex items-center justify-center p-3 gap-10">
+        <div className=" bg-white rounded-[300px] flex items-center justify-center px-8  py-3.5 gap-4">
           <DropdownMenu>
-            <DropdownMenuTrigger className="text-left border-r px-3">
+            <DropdownMenuTrigger className="text-left border-r pr-4">
               <p className="font-[600] text-[12px]">Specialty</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
-                What type of doctors?
+                {selectedSpecialty ?? "What type of doctor"}
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[347px]">
@@ -56,124 +72,42 @@ function HomeHero() {
                 className="mt-3"
               />
               <DropdownMenuRadioGroup
-                value={selected}
-                onValueChange={(value) => setSelected(value)}
+                value={selectedSpecialty ?? ""}
+                onValueChange={(value) => setSelectedSpecialty(value)}
                 className="flex flex-wrap p-1 gap-3 my-5"
               >
-                <DropdownMenuRadioItem
-                  value="1"
-                  className="w-[151px] border border-[#E5E7EB] rounded-md p-3 bg-white block"
-                >
-                  <div className="flex justify-end">
-                    <input
-                      type="radio"
-                      checked={selected === "1"}
-                      readOnly
-                      className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
+                {specialties.map((specialty) => (
+                  <DropdownMenuRadioItem
+                    key={specialty}
+                    value={specialty}
+                    className="w-[151px] border border-[#E5E7EB] rounded-md p-3"
+                  >
+                    <div className="flex justify-end">
+                      <input
+                        type="radio"
+                        checked={selectedSpecialty === specialty}
+                        readOnly
+                        className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
+                      />
+                    </div>
+                    <Image
+                      src={"/dark-man.png"}
+                      alt="doctor"
+                      width={42}
+                      height={42}
                     />
-                  </div>
-                  <Image
-                    src={"/dark-man.png"}
-                    alt="man"
-                    width={42}
-                    height={42}
-                    className="block"
-                  />
-                  <p>General</p>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="2"
-                  className="w-[151px] border border-[#E5E7EB] rounded-md p-3 bg-white block"
-                >
-                  <div className="flex justify-end">
-                    <input
-                      type="radio"
-                      checked={selected === "2"}
-                      readOnly
-                      className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
-                    />
-                  </div>
-                  <Image
-                    src={"/dark-man.png"}
-                    alt="man"
-                    width={42}
-                    height={42}
-                    className="block"
-                  />
-                  <p>General</p>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="3"
-                  className="w-[151px] border border-[#E5E7EB] rounded-md p-3 bg-white block"
-                >
-                  <div className="flex justify-end">
-                    <input
-                      type="radio"
-                      checked={selected === "3"}
-                      readOnly
-                      className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
-                    />
-                  </div>
-                  <Image
-                    src={"/dark-man.png"}
-                    alt="man"
-                    width={42}
-                    height={42}
-                    className="block"
-                  />
-                  <p>General</p>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="4"
-                  className="w-[151px] border border-[#E5E7EB] rounded-md p-3 bg-white block"
-                >
-                  <div className="flex justify-end">
-                    <input
-                      type="radio"
-                      checked={selected === "4"}
-                      readOnly
-                      className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
-                    />
-                  </div>
-                  <Image
-                    src={"/dark-man.png"}
-                    alt="man"
-                    width={42}
-                    height={42}
-                    className="block"
-                  />
-                  <p>General</p>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="5"
-                  className="w-[151px] border border-[#E5E7EB] rounded-md p-3 bg-white block"
-                >
-                  <div className="flex justify-end">
-                    <input
-                      type="radio"
-                      checked={selected === "5"}
-                      readOnly
-                      className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
-                    />
-                  </div>
-                  <Image
-                    src={"/dark-man.png"}
-                    alt="man"
-                    width={42}
-                    height={42}
-                    className="block"
-                  />
-                  <p>General</p>
-                </DropdownMenuRadioItem>
+                    <p>{specialty}</p>
+                  </DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <DropdownMenu open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger className="text-left border-r px-3">
+            <DropdownMenuTrigger className="text-left border-r pr-4">
               <p className="font-[600] text-[12px]">Ratings</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
-                Choose ratings
+                {selectedRating ?? "Choose ratings"}
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[347px] p-3">
@@ -191,55 +125,30 @@ function HomeHero() {
                 </div>
               </div>
               <DropdownMenuRadioGroup
-                // value={""}
-                // onValueChange={}
+                value={selectedRating ?? ""}
+                onValueChange={(value) => setSelectedRating(value)}
                 className="flex flex-wrap p-2 gap-3 my-5"
               >
-                <DropdownMenuRadioItem
-                  value="Any"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>Any</p>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="5.0"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>5.0</p>
-                </DropdownMenuRadioItem>{" "}
-                <DropdownMenuRadioItem
-                  value="4.0"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>4.0</p>
-                </DropdownMenuRadioItem>{" "}
-                <DropdownMenuRadioItem
-                  value="3.0"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>3.0</p>
-                </DropdownMenuRadioItem>{" "}
-                <DropdownMenuRadioItem
-                  value="2.0"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>2.0</p>
-                </DropdownMenuRadioItem>{" "}
-                <DropdownMenuRadioItem
-                  value="1.0"
-                  className=" rounded-3xl px-5 py-3 bg-[#F2F4F7] block hover:text-white hover:bg-black"
-                >
-                  <p>1.0</p>
-                </DropdownMenuRadioItem>
+                {ratings.map((rating) => (
+                  <DropdownMenuRadioItem
+                    key={rating}
+                    value={rating}
+                    className="rounded-3xl px-5 py-3 bg-[#F2F4F7] hover:bg-black hover:text-white"
+                  >
+                    {rating}
+                  </DropdownMenuRadioItem>
+                ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu open={priceOpen} onOpenChange={setPriceOpen}>
-            <DropdownMenuTrigger className="text-left border-r px-3">
+          {/* <DropdownMenu open={priceOpen} onOpenChange={setPriceOpen}>
+            <DropdownMenuTrigger className="text-left border-r pr-4">
               <p className="font-[600] text-[12px]">Price</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
-                Set your price
+                {priceRange[0] !== 0 || priceRange[1] !== 100
+                  ? `N${priceRange[0]} - N${priceRange[1]}`
+                  : "Set your price"}
               </p>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[347px] p-3">
@@ -273,16 +182,20 @@ function HomeHero() {
                 />
               </div>
             </DropdownMenuContent>
-          </DropdownMenu>
+
+          
+          </DropdownMenu> */}
 
           <DropdownMenu open={languageOpen} onOpenChange={setLanguageOpen}>
-            <DropdownMenuTrigger className="text-left px-3">
+            <DropdownMenuTrigger className="text-left pr-">
               <p className="font-[600] text-[12px]">Language spoken</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
-                Add languages
+                {selectedLanguages.length
+                  ? selectedLanguages.join(", ")
+                  : "Add languages"}
               </p>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[250px] flex flex-col gap-6 p-3">
+            {/* <DropdownMenuContent className="w-[250px] flex flex-col gap-6 p-3">
               <div className="flex justify-between">
                 <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
                 <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
@@ -350,10 +263,25 @@ function HomeHero() {
                   Pidgin
                 </label>
               </div>
+            </DropdownMenuContent> */}
+
+            <DropdownMenuContent className="w-[250px] p-3">
+              <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
+              <div className="space-y-3">
+                {languages.map((lang) => (
+                  <div key={lang} className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={selectedLanguages.includes(lang)}
+                      onCheckedChange={() => toggleLanguage(lang)}
+                    />
+                    <label className="text-sm font-medium">{lang}</label>
+                  </div>
+                ))}
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button className="bg-[#1570EF] rounded-3xl mx-3 p-2 h-[48px] text-white font-semibold">
+          <button className="bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold">
             Find Now
           </button>
         </div>

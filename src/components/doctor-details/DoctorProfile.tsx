@@ -1,11 +1,11 @@
 import React from "react";
-import { ArrowLeft, ArrowRight, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function DoctorProfile() {
   return (
-    <div className="w-[544px]  border-r pr-10">
+    <div className="w-[50%]  border-r pr-10">
       <div className="flex justify-between ">
         <div className="flex gap-5 relative">
           <div className="bg-[#EAEEF4] rounded-md w-[100px]">
@@ -28,14 +28,14 @@ function DoctorProfile() {
             </p>
           </div>
         </div>
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <div className="bg-[#F8F8F8] rounded-3xl w-[48px] p-1 flex items-center justify-center h-[36px]">
             <ArrowLeft />
           </div>
           <div className="bg-[#F8F8F8] rounded-3xl w-[48px] p-1 flex items-center justify-center h-[36px]">
             <ArrowRight />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex mt-10 p-3 gap-[35px] border rounded-2xl justify-center">
         <div className="border-r w-[150px]">

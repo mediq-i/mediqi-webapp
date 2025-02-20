@@ -23,6 +23,7 @@ class ApiService {
   private get token(): string | null {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
+      console.log("the fetch", token)
       return token;
     }
     return null;
@@ -50,7 +51,7 @@ class ApiService {
       type === "FormData" ? "multipart/form-data" : "application/json";
     const url = `${this.url}${slug ? "/" + slug : ""}`;
     const headers = {
-      Authorization: token ? token : "",
+      Authorization: token ? `Bearer ${token}` : "",
       "Content-Type": contentType,
     };
 

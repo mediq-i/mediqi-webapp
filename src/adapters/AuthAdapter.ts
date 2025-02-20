@@ -1,7 +1,10 @@
 import ApiService from "./utils/api-service";
 import {
   CreatePatientPayload,
+  ForgotPasswordPayload,
   LoginPayload,
+  ResendOTPPayload,
+  ResetPasswordPayload,
   SignUpPayload,
   SignUpResponse,
   VerifyEmailAuthPayload,
@@ -68,6 +71,46 @@ const AuthAdapter = {
       },
       type: "JSON",
       method: "POST",
+    });
+    return response;
+  },
+  forgotPassword: async ({ payload }: MutationCallBackArgs<ForgotPasswordPayload>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await authService.mutate<any,any>({
+      slug: `password-recovery`,
+      payload: {
+        email: payload.email,
+      },
+      type: "JSON",
+      method: "POST",
+    });
+    return response;
+  },
+  resetPassword: async ({ payload }: MutationCallBackArgs<ResetPasswordPayload>,) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await authService.mutate<any,any>({
+      slug: `reset-password`,
+      payload: {
+        password: payload.password,
+        refreshToken: payload.refreshToken,
+      },
+      type: "JSON",
+      method: "PATCH",
+      
+    });
+    return response;
+  },
+  resendOTP: async ({ payload }: MutationCallBackArgs<ResendOTPPayload>,) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response = await authService.mutate<any,any>({
+      slug: `resend-otp`,
+      payload: {
+        email: payload.email,
+        
+      },
+      type: "JSON",
+      method: "POST",
+      
     });
     return response;
   },
