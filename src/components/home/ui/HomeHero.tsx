@@ -49,7 +49,7 @@ function HomeHero() {
     setOpen(false);
   };
   return (
-    <div className="h-[300px] bg-[#E7F0FE] rounded-md">
+    <div className="h-[300px] bg-[#E7F0FE] rounded-md relative">
       <div className="flex flex-col items-center justify-center gap-10 h-full">
         <div className="text-xl w-[90%] mx-auto font-semibold">
           <p className="text-center">
@@ -293,6 +293,11 @@ function HomeHero() {
           </p>
         </div>
       </div>
+      <Image src={"/hero-bg.png"} alt="" height={125} width={125} className="absolute top-0 left-0"/>
+      <Image src={"/hero-bg-2.png"} alt="" height={125} width={125} className="absolute top-5 right-[0]"/>
+      <Image src={"/hero-bg-3.png"} alt="" height={125} width={125} className="absolute bottom-5 left-[230px]"/>
+
+
     </div>
   );
 }
