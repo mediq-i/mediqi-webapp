@@ -5,6 +5,7 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ChevronRight, Info } from "lucide-react";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 function ProfileNameForm() {
   const { data } = useUserQuery({
@@ -42,18 +43,27 @@ function ProfileNameForm() {
           <div className="flex gap-3">
             <div className="w-[50%]">
               <label>First Name</label>
-              <Input />
+              <Input 
+              placeholder={data?.user.first_name}
+              />
             </div>
             <div className="w-[50%]">
               <label>Last Name</label>
-              <Input />
+              <Input 
+              placeholder={data?.user.last_name}
+              />
             </div>
           </div>
           <div className="my-3">
             <label>Email</label>
-            <Input type="email" className="bg-[#F9F9F9] text-[#999999]" value={data?.user.email}/>
+            <Input
+              type="email"
+              className="bg-[#F9F9F9]"
+              placeholder={data?.user.email}
+            />
           </div>
         </div>
+        <Button className="bg-[#1570EF] rounded-full p-6 my-3">Save Changes</Button>
       </div>
     </div>
   );
