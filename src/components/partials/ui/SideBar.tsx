@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { name: "Session", href: "/session", icon: CalendarPlus2 },
   { name: "Store", href: "#1", icon: Store },
   { name: "Payment", href: "#2", icon: Wallet },
-  { name: "Profile", href: "#3", icon: CircleUser },
+  { name: "Profile", href: "/profile", icon: CircleUser },
   { name: "More", href: "#4", icon: EllipsisVertical },
 ];
 
