@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import CustomCalendar from "../partials/ui/CustomCalendar";
 import Image from "next/image";
 import { Check } from "lucide-react";
@@ -21,11 +21,16 @@ const times = [
     img: "/morning.svg",
   },
 ];
-function SelectDateAndTime() {
-  const [selectedDate, setSelectedDate] = useState("");
+function SelectDateAndTime({selectDate}:{selectDate?: Dispatch<SetStateAction<Date | undefined>>}) {
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState("");
+  if (selectDate) {
+    selectDate(selectedDate)
+  }
+  
   return (
     <div className="my-8 pb-5">
-      <CustomCalendar />
+      <CustomCalendar selectDate={setSelectedDate}/>
       <div className="">
         {times.map((time, index) => {
           return (
@@ -39,13 +44,13 @@ function SelectDateAndTime() {
                   return (
                     <div
                       className={`flex items-center space-x-2 w-[150px] border rounded-2xl p-3 justify-center cursor-pointer ${
-                        selectedDate === time &&
+                        selectedTime === time &&
                         "border-[#2E90FA] text-[#2E90FA]"
                       }`}
                       key={index}
                       onClick={() => {
                         console.log("hmmmm", time)
-                        setSelectedDate(time);
+                        setSelectedTime(time);
                       }}
                     >
                       <label
@@ -55,7 +60,7 @@ function SelectDateAndTime() {
                         {time}
                       </label>
                       
-                      <Check className={`w-4 h-4 text-[#2E90FA] ${selectedDate === time ? "block":"hidden"}`} />
+                      <Check className={`w-4 h-4 text-[#2E90FA] ${selectedTime === time ? "block":"hidden"}`} />
                     </div>
                   );
                 })}

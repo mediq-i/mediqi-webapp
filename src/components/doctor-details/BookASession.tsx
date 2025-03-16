@@ -9,14 +9,29 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import { FileText, FileUp, Trash2 } from "lucide-react";
 import SelectDateAndTime from "../partials/SelectDateAndTime";
+import { useSearchParams } from "next/navigation";
+import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
+import { useToast } from "@/hooks/use-toast";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
   // const [checked, setChecked] = useState(false);
+  const { toast } = useToast();
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [otherOption, setOtherOption] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const searchParams = useSearchParams();
+  const providerId = searchParams.get("id");
+  const [sessionData, setSessionData] = useState({
+    appointment_date: selectedDate,
+    patient_symptoms: selectedOptions,
+    patient_ailment_description: otherOption,
+    patient_symptom_duration: "",
+    status: "pending",
+    service_provider_id: providerId,
+  });
 
   console.log("files", files);
 
@@ -47,26 +62,46 @@ function BookASession() {
   const getProgress = () => {
     return (currentStep / 5) * 100; // Assuming 3 steps plus submit button
   };
-  const [formData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setSessionData({ ...sessionData, [name]: value });
   };
-  // const handleKeyPress = (e: React.KeyboardEvent) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     handleContinue();
-  //   }
-  // };
+
+  console.log("ailment", sessionData.patient_symptom_duration);
+  const bookAppointmentMutation = useBookingMutation({
+    mutationCallback: BookingAdapter.bookAppointment,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+
+      const res = await bookAppointmentMutation.mutateAsync({
+        appointment_date: sessionData.appointment_date,
+        patient_symptoms: sessionData.patient_symptoms,
+        patient_ailment_description: sessionData.patient_ailment_description,
+        patient_symptom_duration: sessionData.patient_symptom_duration,
+        status: "pending",
+        service_provider_id: sessionData.service_provider_id,
+      });
+      localStorage.setItem("auth_id", res.data.auth_id);
+      toast({
+        title: "Booking Successful",
+        description: "Check your Email for OTP",
+      });
+      setCurrentStep(4);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
+  };
+
   const options = [
     "Others",
     "Anxiety",
@@ -101,7 +136,9 @@ function BookASession() {
                 className="w-[60%] mt-2 bg-[#0000001A]"
               />
             </div>
-            {currentStep === 1 && <SelectDateAndTime />}{" "}
+            {currentStep === 1 && (
+              <SelectDateAndTime selectDate={setSelectedDate} />
+            )}{" "}
             {currentStep === 2 && (
               <div className=" mt-10">
                 <div className="mb-5 cursor-pointer">
@@ -157,7 +194,12 @@ function BookASession() {
                   <label className="text-[#1D2939] text-[16px] font-[500]">
                     How long have you been experiencing these symptoms?
                   </label>
-                  <Textarea className="h-[89px]" />
+                  <Textarea
+                    className="h-[89px]"
+                    value={sessionData.patient_symptom_duration}
+                    name="patient_symptom_duration"
+                    onChange={(e) => handleChange(e)}
+                  />
                 </div>
                 {/* <div className="mb-5">
                   <label className="text-[#1D2939] text-[16px] font-[500]">

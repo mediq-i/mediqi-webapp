@@ -2,14 +2,14 @@
 import { useCalendar } from "@h6s/calendar";
 import { format } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export default function CustomCalendar() {
+export default function CustomCalendar({selectDate}:{selectDate: Dispatch<SetStateAction<Date | undefined>>}) {
   const {body, view } = useCalendar();
   const currentDate = new Date();
   const formattedDate = format(currentDate, "MMMM, yyyy");
   const [selectedDate, setSelectedDate] = useState(currentDate);
-
+  selectDate(selectedDate)
   useEffect(() => {
     view.showWeekView()
   // eslint-disable-next-line react-hooks/exhaustive-deps

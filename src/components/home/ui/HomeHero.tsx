@@ -15,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UserAdapter, useUserQuery } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
+import Link from "next/link";
 
-const specialties = ["General", "Cardiologist", "Dermatologist", "Dentist"];
+const specialties = ["General", "Cardiology", "Dermatologist", "Dentist"];
 const ratings = ["Any", "5.0", "4.0", "3.0", "2.0", "1.0"];
 const languages = ["English", "Igbo", "Yoruba", "Hausa"];
 
@@ -29,7 +30,7 @@ function HomeHero() {
   );
   const [selectedRating, setSelectedRating] = useState<string | null>(null);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-
+  const serializedLanguages = selectedLanguages.join(',');
   const { data } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
@@ -42,6 +43,7 @@ function HomeHero() {
         : [...prev, language]
     );
   };
+  
 
   const handleClose = (
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -281,9 +283,16 @@ function HomeHero() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button className="bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold">
-            Find Now
-          </button>
+          <Link
+            href={`/service-providers?specialty=${selectedSpecialty}&ratings=${selectedRating}&languages=${serializedLanguages}`}
+          >
+            <button
+              // onClick={FindProvider}
+              className="bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold"
+            >
+              Find Now
+            </button>
+          </Link>
         </div>
         <div className="flex items-center gap-3">
           <Image src={"/badge.svg"} alt="" height={24} width={24} />
@@ -293,11 +302,27 @@ function HomeHero() {
           </p>
         </div>
       </div>
-      <Image src={"/hero-bg.png"} alt="" height={125} width={125} className="absolute top-0 left-0"/>
-      <Image src={"/hero-bg-2.png"} alt="" height={125} width={125} className="absolute top-5 right-[0]"/>
-      <Image src={"/hero-bg-3.png"} alt="" height={125} width={125} className="absolute bottom-5 left-[230px]"/>
-
-
+      <Image
+        src={"/hero-bg.png"}
+        alt=""
+        height={125}
+        width={125}
+        className="absolute top-0 left-0"
+      />
+      <Image
+        src={"/hero-bg-2.png"}
+        alt=""
+        height={125}
+        width={125}
+        className="absolute top-5 right-[0]"
+      />
+      <Image
+        src={"/hero-bg-3.png"}
+        alt=""
+        height={125}
+        width={125}
+        className="absolute bottom-5 left-[230px]"
+      />
     </div>
   );
 }
