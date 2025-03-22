@@ -40,7 +40,21 @@ const NAV_ITEMS = [
       { name: "Order History", href: "/profile/order-history" },
     ],
   },
-  { name: "More", href: "#4", icon: EllipsisVertical },
+  {
+    name: "More",
+    href: "#4",
+    icon: EllipsisVertical,
+    childPages: [
+      { name: "Payment Method", href: "/payment-method" },
+      { name: "FAQs", href: "/faqs" },
+      { name: "Get Help", href: "/help" },
+      { name: "Feedback", href: "/feedback" },
+      { name: "HealthPedia", href: "/healthpedia" },
+      { name: "About Us", href: "/about-us" },
+      { name: "Terms and Policy", href: "/terms" },
+
+    ],
+  },
 ];
 
 const Sidebar: React.FC = () => {
@@ -71,7 +85,7 @@ const Sidebar: React.FC = () => {
           {NAV_ITEMS.map(({ name, href, icon: Icon, childPages }) => {
             if (childPages) {
               return (
-                <Link key={href} href={href}>
+                <div key={href}>
                   <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                     <div
                       className={`flex items-center justify-between group gap-2 px-4 py-3 border-2 font-[600] hover:border-2 hover:border-[#1570EF] rounded-xl transition-all duration-75 ${
@@ -124,7 +138,7 @@ const Sidebar: React.FC = () => {
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                </Link>
+                </div>
               );
             } else {
               return (

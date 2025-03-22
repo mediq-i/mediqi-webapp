@@ -22,9 +22,9 @@ function DoctorProfile() {
     <div className="w-[50%]  border-r pr-10">
       <div className="flex justify-between ">
         <div className="flex gap-5 relative">
-          <div className="bg-[#EAEEF4] rounded-md w-[100px]">
+          <div className="bg-[#EAEEF4] rounded-md w-[100px] h-[100px]">
             <Image
-              src={"/doctor-detail-pic.png"}
+              src={"/doctor-passport.png"}
               alt=""
               height={100}
               width={100}

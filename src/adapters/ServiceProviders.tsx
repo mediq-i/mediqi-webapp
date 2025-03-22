@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { SearchServiceProvider } from "./types/ServiceProviderTypes";
 import ApiService from "./utils/api-service";
 import TanstackWrapper from "./utils/tanstack-wrapper";
 
@@ -15,8 +18,8 @@ const ServiceProviderAdapter = {
     specialty: string | null;
     languages: string[] | undefined;
     rating: string | null;
-  }): Promise<any> => {
-    const response = await userService.fetch<any>(
+  }): Promise<SearchServiceProvider> => {
+    const response = await userService.fetch<SearchServiceProvider>(
       `search?specialty=${specialty}&languages=${languages}&rating=${rating}`
     );
 

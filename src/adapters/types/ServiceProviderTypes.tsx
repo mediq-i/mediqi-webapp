@@ -1,17 +1,20 @@
 export type SearchServiceProvider = {
-    user: {
-        id: string;
-        created_at: string;
-        updated_at: string;
-        first_name: string;
-        last_name: string;
-        dob: string | null;
-        email: string;
-        phone_number: string | null;
-        profile_completed: boolean | null;
-        gender: string | null;
-        blood_type: string | null;
-        blood_group: string | null;
-        appointments: null;
-      };
-}
+  data:[ {
+    created_at: string;
+    updated_at: string;
+    languages: string[];
+    specialty: string;
+    rating: number;
+    price: string | number | null;
+    practice_start_date: string | null;
+    verified: boolean | null;
+    status: string | null;
+    email: string;
+    service_type: string | null;
+    working_hours: string | null;
+    first_name: string;
+    last_name: string;
+    id: string;
+    bio: string | null;
+  }]
+};

@@ -1,13 +1,14 @@
 import ServiceProviders from "@/components/service-providers/ServiceProviders";
-
+import { Suspense } from "react";
 
 function ServiceProvidersPage() {
-    
-    return (
-        <div className="p-6">
-            <ServiceProviders/>
-        </div>
-    );
+  return (
+    <Suspense>
+      <div className="p-6">
+        <ServiceProviders />
+      </div>
+    </Suspense>
+  );
 }
 
 export default ServiceProvidersPage;

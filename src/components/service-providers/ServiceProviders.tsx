@@ -24,7 +24,7 @@ function ServiceProviders() {
     queryKey: [queryKeys.PROVIDER_DATA],
   });
   console.log("providers", providerData);
-
+  
   return (
     <div className="py-5">
       <div className="flex justify-between">

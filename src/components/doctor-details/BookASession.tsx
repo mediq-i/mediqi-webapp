@@ -7,7 +7,7 @@ import { Dialog } from "@headlessui/react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { FileText, FileUp, Trash2 } from "lucide-react";
+import { Calendar, FileText, FileUp, Trash2, User } from "lucide-react";
 import SelectDateAndTime from "../partials/SelectDateAndTime";
 import { useSearchParams } from "next/navigation";
 import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
@@ -68,8 +68,6 @@ function BookASession() {
     const { name, value } = e.target;
     setSessionData({ ...sessionData, [name]: value });
   };
-
-  console.log("ailment", sessionData.patient_symptom_duration);
   const bookAppointmentMutation = useBookingMutation({
     mutationCallback: BookingAdapter.bookAppointment,
   });
@@ -129,6 +127,8 @@ function BookASession() {
                   ? "How are you feeling?"
                   : currentStep === 3
                   ? "Upload any medical document (optional)"
+                  : currentStep === 4
+                  ? "Summary"
                   : ""}
               </p>
               <Progress
@@ -320,7 +320,59 @@ function BookASession() {
                 })}
               </div>
             )}
-            {currentStep === 4 && <div className="my-5 h-full relative"></div>}
+            {currentStep === 4 && (
+              <div className="my-5 h-full relative">
+                <div>
+                  <div className=" pb-4 border-b border-dashed">
+                    <p className="font-[500] text-[#353535] text-[18px]">{`Cardiology session`}</p>
+                    <div className="flex items-center gap-2 my-4">
+                      <Calendar />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">{`Sat,9th November`}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 my-4">
+                      <User />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Treatment overview`}</p>
+                  <div className="my-4 pb-4 border-b border-dashed">
+                    <p className="font-[500] text-[#1D2939] text-[14px]">{`Symptoms`}</p>
+
+                    <div>
+                      <div className="px-4 py-2 my-3 min-h-[63px] w-full rounded flex gap-3 flex-wrap relative">
+                        {selectedOptions?.map((symptom, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="bg-white border rounded-3xl p-2 flex gap-3 items-center"
+                            >
+                              {symptom}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="font-[500] text-[#1D2939] text-[14px]">{`Notes`}</p>
+                      <div className="bg-[#F9FAFB] h-[66px] p-3">
+                        <p className="flex gap-2 items-center">
+                          <FileText />
+                          {otherOption}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {currentStep > 4 && <div className="my-5"></div>}
             <div className="p-3 flex justify-between border-t fixed bottom-0 m-auto w-[500px]  bg-white">
               <button
@@ -330,12 +382,18 @@ function BookASession() {
               >
                 Previous
               </button>
-              <button
-                className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
-                onClick={handleContinue}
-              >
-                Next
-              </button>
+              {currentStep === 4 ? (
+                <button className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white" type="submit">
+                  Payment
+                </button>
+              ) : (
+                <button
+                  className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
+                  onClick={handleContinue}
+                >
+                  Next
+                </button>
+              )}
             </div>
           </form>
         </div>
