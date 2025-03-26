@@ -30,7 +30,9 @@ function SelectDateAndTime({selectDate}:{selectDate?: Dispatch<SetStateAction<Da
   
   return (
     <div className="my-8 pb-5">
-      <CustomCalendar selectDate={setSelectedDate}/>
+      <CustomCalendar 
+      selectDate={setSelectedDate}
+      />
       <div className="">
         {times.map((time, index) => {
           return (

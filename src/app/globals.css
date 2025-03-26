@@ -73,3 +73,9 @@
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  .bg-radial-gradient {
+    background: radial-gradient(circle, #2567FF, #1542AA);
+  }
+}
+

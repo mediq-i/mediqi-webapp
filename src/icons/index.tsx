@@ -89,3 +89,115 @@ export const GoogleLogo = () => (
     />
   </svg>
 );
+export const DepositIcon = () => (
+  <svg
+    width="25"
+    height="24"
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="0.599609"
+      width="24"
+      height="24"
+      rx="12"
+      fill="url(#paint0_linear_3070_39382)"
+    />
+    <path
+      d="M12.5998 7.80313V16.2031M12.5998 16.2031L16.7998 12.0031M12.5998 16.2031L8.39981 12.0031"
+      stroke="#05603A"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_3070_39382"
+        x1="6.59961"
+        y1="6.66667"
+        x2="24.5996"
+        y2="40.6667"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#D1FADF" />
+        <stop offset="1" stop-color="#6CE9A6" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+export const WithdrawIcon = () => (
+  <svg
+    width="25"
+    height="24"
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="0.599609"
+      width="24"
+      height="24"
+      rx="12"
+      fill="url(#paint0_linear_3070_39394)"
+    />
+    <path
+      d="M12.5994 16.2047V7.80469M12.5994 7.80469L8.39941 12.0047M12.5994 7.80469L16.7994 12.0047"
+      stroke="#912018"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_3070_39394"
+        x1="6.59961"
+        y1="6.66667"
+        x2="24.5996"
+        y2="40.6667"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#FEE4E2" />
+        <stop offset="1" stop-color="#FDA29B" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+export const SessionPaymentIcon = () => (
+  <svg
+    width="25"
+    height="24"
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="0.599609"
+      width="24"
+      height="24"
+      rx="12"
+      fill="url(#paint0_linear_3070_39400)"
+    />
+    <path
+      d="M12.5994 16.2047V7.80469M12.5994 7.80469L8.39941 12.0047M12.5994 7.80469L16.7994 12.0047"
+      stroke="#1849A9"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_3070_39400"
+        x1="6.59961"
+        y1="6.66667"
+        x2="24.5996"
+        y2="40.6667"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#D1E9FF" />
+        <stop offset="1" stop-color="#84CAFF" />
+      </linearGradient>
+    </defs>
+  </svg>
+);

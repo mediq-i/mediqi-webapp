@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { name: "Home", href: "/", icon: House },
   { name: "Session", href: "/session", icon: CalendarPlus2 },
   { name: "Store", href: "#1", icon: Store },
-  { name: "Payment", href: "#2", icon: Wallet },
+  { name: "Payment", href: "/payment", icon: Wallet },
   {
     name: "Profile",
     href: "/profile",

@@ -8,7 +8,7 @@ import {
   differenceInDays,
   isSameMonth,
 } from "date-fns";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
 
 interface CalendarSectionProps {
   title: string;
@@ -139,7 +139,7 @@ function CalendarSection({
   );
 }
 
-export default function CustomCalendar() {
+export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetStateAction<Date | undefined>>}) {
   const currentDate = new Date();
   const isCloseToMonthEnd =
     differenceInDays(endOfMonth(currentDate), currentDate) < 7;
@@ -152,13 +152,16 @@ export default function CustomCalendar() {
 
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const initialSetupDone = useRef(false);
-
+  if (selectDate) {
+    selectDate(selectedDate)
+  }
   useEffect(() => {
     if (!initialSetupDone.current) {
       currentMonthCalendar.view.showMonthView();
       nextMonthCalendar.view.showMonthView();
       initialSetupDone.current = true;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
