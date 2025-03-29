@@ -12,10 +12,11 @@ import SelectDateAndTime from "../partials/SelectDateAndTime";
 import { useSearchParams } from "next/navigation";
 import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
 import { useToast } from "@/hooks/use-toast";
+import PayForSessionModal from "./PayForSessionModal";
+import { PaymentAdapter, usePaymentMutation } from "@/adapters/PaymentAdapter";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
-  // const [checked, setChecked] = useState(false);
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +33,8 @@ function BookASession() {
     status: "pending",
     service_provider_id: providerId,
   });
-
-  console.log("files", files);
+  const [patientId, setPatientId] = useState()
+  const [appointmentId, setAppointmentId] = useState()
 
   const handleOptionChange = (option: string) => {
     if (option === "Other" && selectedOptions.includes("Other")) {
@@ -60,7 +61,7 @@ function BookASession() {
     }
   };
   const getProgress = () => {
-    return (currentStep / 5) * 100; // Assuming 3 steps plus submit button
+    return (currentStep / 5) * 100;
   };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -71,25 +72,29 @@ function BookASession() {
   const bookAppointmentMutation = useBookingMutation({
     mutationCallback: BookingAdapter.bookAppointment,
   });
+  const createPaymentIntentMutation = usePaymentMutation({
+    mutationCallback: PaymentAdapter.createPaymentIntent,
+  });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
     try {
       e.preventDefault();
-
-      const res = await bookAppointmentMutation.mutateAsync({
-        appointment_date: sessionData.appointment_date,
+        const res = await bookAppointmentMutation.mutateAsync({
+        appointment_date: selectedDate,
         patient_symptoms: sessionData.patient_symptoms,
         patient_ailment_description: sessionData.patient_ailment_description,
         patient_symptom_duration: sessionData.patient_symptom_duration,
         status: "pending",
         service_provider_id: sessionData.service_provider_id,
       });
-      localStorage.setItem("auth_id", res.data.auth_id);
+      setPatientId(res.data.appointment.patient_id);
+      console.log("patient id",res.data.appointment.patient_id);
+      setAppointmentId(res.data.appointment.id);
+
       toast({
         title: "Booking Successful",
-        description: "Check your Email for OTP",
+        description: "Appointment request sent successfully",
       });
-      setCurrentStep(4);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
@@ -99,6 +104,32 @@ function BookASession() {
       });
     }
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const createPaymentIntent = async (e: any) => {
+    try {
+      e.preventDefault();
+      const res = await createPaymentIntentMutation.mutateAsync({
+        patientId:patientId,
+        providerId:providerId,
+        appointmentId:appointmentId,
+        amount: 40000,
+        currency:"NGN",
+        description: "Payment"
+    });
+    toast({
+      title: "Payment Initiated",
+      description: res.data?.message,
+    });
+    window.location.href = res?.data?.data?.paystack_authorization_url
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
+  }
 
   const options = [
     "Others",
@@ -329,7 +360,9 @@ function BookASession() {
                       <Calendar />
                       <div>
                         <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
-                        <p className="font-[400] text-[#667085] text-[14px]">{`Sat,9th November`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {JSON.stringify(selectedDate)}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 my-4">
@@ -373,25 +406,71 @@ function BookASession() {
                 </div>
               </div>
             )}
-            {currentStep > 4 && <div className="my-5"></div>}
+            {currentStep > 4 && (
+              <div className="my-5 h-full relative">
+                <div>
+                  <div className=" pb-4 border-b border-dashed">
+                  <p className="font-[400] text-[#353535] text-[14  px]">{`Booking Fee`}</p>
+                    <p className="font-[500] text-[18px]">{`40,000`}</p>
+                   
+                  </div>
+
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Session overview`}</p>
+                  <div className="my-4 pb-4 border-b border-dashed">
+                  <div className="flex items-center gap-2 my-4">
+                      <Calendar />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {JSON.stringify(selectedDate)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 my-4">
+                      <User />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="my-4">
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Payment detail`}</p>
+                  <div className="pb-1 my-3 border-b flex justify-between">
+                    <p className="font-[400] text-[14px] text-[#4B5563]">Fee</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
+                  </div>
+                  <div className="pb-1 my-3 border-b flex justify-between">
+                    <p className="font-[400] text-[14px] text-[#4B5563]">Tax</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 199.00</p>
+                  </div>
+                  <div className="pb-1 my-3 flex justify-between">
+                    <p className="font-[600] text-[14px]">Total Payment</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="p-3 flex justify-between border-t fixed bottom-0 m-auto w-[500px]  bg-white">
               <button
                 className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl"
                 onClick={handleBack}
                 disabled={currentStep <= 1}
+                type="button"
               >
                 Previous
               </button>
-              {currentStep === 4 ? (
-                <button className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white" type="submit">
-                  Payment
-                </button>
+              {currentStep === 5 ? (
+                
+               <PayForSessionModal createPaymentIntent={createPaymentIntent}/>
               ) : (
                 <button
                   className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
                   onClick={handleContinue}
+                  type={currentStep === 4 ? "submit":"button"}
                 >
-                  Next
+                 {currentStep === 4 ? "Payment":"Next"}
                 </button>
               )}
             </div>
