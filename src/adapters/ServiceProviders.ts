@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { SearchServiceProvider } from "./types/ServiceProviderTypes";
+import {
+  SearchServiceProvider,
+  ServiceProviderDetails,
+} from "./types/ServiceProviderTypes";
 import ApiService from "./utils/api-service";
 import TanstackWrapper from "./utils/tanstack-wrapper";
 
@@ -27,11 +30,11 @@ const ServiceProviderAdapter = {
   },
 
   getServiceProviderDetails: async ({
-    id
+    id,
   }: {
     id: string | null;
-  }): Promise<any> => {
-    const response = await userService.fetch<any>(
+  }): Promise<ServiceProviderDetails> => {
+    const response = await userService.fetch<ServiceProviderDetails>(
       `get-service-provider/${id}`
     );
 
