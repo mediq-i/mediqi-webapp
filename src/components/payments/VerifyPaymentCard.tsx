@@ -26,7 +26,7 @@ export default function VerifyPaymentPage() {
   });
 
   useEffect(() => {
-    const reference = searchParams.get("txtref");
+    const reference = searchParams.get("reference");
 
     if (!reference) {
       setVerificationStatus("error");
