@@ -25,11 +25,17 @@ export const TanstackWrapper = {
         mutationCallback({ payload, params }),
     });
   },
-  query: <B>({ queryCallback, queryKey, slug }: QueryCallBackArgs<B>) => {
+  query: <B>({
+    queryCallback,
+    queryKey,
+    slug,
+    enabled,
+  }: QueryCallBackArgs<B>) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     return useQuery({
       queryKey: queryKey,
       queryFn: () => queryCallback(slug),
+      enabled: enabled,
     });
   },
 };

@@ -30,10 +30,8 @@ function SendMoneyAction() {
   });
   return (
     <Dialog>
-      <DialogTrigger>
-        <button className="flex items-center gap-1 bg-white p-3 text-black rounded-lg">
-          Send Money <ArrowUpRight />
-        </button>
+      <DialogTrigger className="flex items-center gap-1 bg-white p-3 text-black rounded-lg">
+        Send Money <ArrowUpRight />
       </DialogTrigger>
       <DialogContent className="w-[400px]">
         <DialogHeader>

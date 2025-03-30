@@ -3,6 +3,7 @@ import TanstackWrapper from "./utils/tanstack-wrapper";
 import { MutationCallBackArgs } from "./types/TanstackUtilTypes";
 import {
   CreatePaymentIntent,
+  TransactionHistory,
   VerifyPaymentPayload,
 } from "./types/PaymentAdapterTypes";
 
@@ -43,9 +44,11 @@ const PaymentAdapter = {
   }: {
     id: string | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): Promise<any> => {
+  }): Promise<TransactionHistory> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await paymentService.fetch<any>(`/history/${id}`);
+    const response = await paymentService.fetch<TransactionHistory>(
+      `/history/${id}`
+    );
 
     return response;
   },
