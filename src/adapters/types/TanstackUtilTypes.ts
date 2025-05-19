@@ -17,4 +17,5 @@ export type QueryCallBackArgs<TResponse> = {
   slug?: string;
   queryCallback: QueryCallBack<TResponse>;
   queryKey: string[];
+  enabled?: boolean;
 };

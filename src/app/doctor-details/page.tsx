@@ -1,4 +1,5 @@
 "use client"
+import { Suspense } from 'react';
 import BookASession from "@/components/doctor-details/BookASession";
 import DoctorProfile from "@/components/doctor-details/DoctorProfile";
 import {
@@ -14,6 +15,7 @@ function DoctorDetails() {
     router.back();
   };
   return (
+    <Suspense>
     <div className="p-6 w-[100%]">
       <div className="bg-[#F8F8F8] w-[100px] rounded-3xl flex items-center p-3 gap-[6px] cursor-pointer" onClick={handleBack}>
         <ArrowLeft />
@@ -23,7 +25,7 @@ function DoctorDetails() {
       <DoctorProfile/>
       <BookASession/>
       </div>
-    </div>
+    </div></Suspense>
   );
 }
 
