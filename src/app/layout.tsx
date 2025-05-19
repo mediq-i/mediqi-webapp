@@ -8,6 +8,14 @@ import Navbar from "@/components/partials/ui/NavBar";
 import { usePathname } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { UserProvider } from "@/providers/user-provider";
+// import AgoraWrapper from "@/providers/agora-wrapper";
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const AgoraWrapper = dynamic(() => import("@/providers/agora-wrapper"), {
+  ssr: false,
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +44,8 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const showLayout = requireLayout(pathname);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (!showLayout) {
     return (
       <html lang="en">
@@ -50,24 +60,53 @@ export default function RootLayout({
       </html>
     );
   }
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <UserProvider>
-          <ReactQueryProvider>
-            <div className="flex h-screen">
-              {" "}
-              <Sidebar />{" "}
-              <div className="flex-1 flex flex-col ml-[250px]">
-                {" "}
-                <Navbar />
-                <Toaster />
-                {children}
-              </div>{" "}
-            </div>
-          </ReactQueryProvider>
+          <AgoraWrapper>
+            <ReactQueryProvider>
+              <div className="flex h-screen">
+                {/* Mobile Sidebar Overlay */}
+                {sidebarOpen && (
+                  <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                  />
+                )}
+
+                {/* Sidebar */}
+                <div
+                  className={`
+                  fixed md:static z-50 transform transition-transform duration-300 ease-in-out
+                  ${
+                    sidebarOpen
+                      ? "translate-x-0"
+                      : "-translate-x-full md:translate-x-0"
+                  }
+                `}
+                >
+                  <Sidebar onClose={() => setSidebarOpen(false)} />
+                </div>
+
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col md:ml-[0px] w-full">
+                  <div className="flex items-center justify-between p-4 md:hidden">
+                    <button onClick={() => setSidebarOpen(true)}>
+                      <Menu className="h-6 w-6" />
+                    </button>
+                    <div className="font-bold">MEDIQ-i</div>
+                  </div>
+                  <Navbar />
+                  <Toaster />
+                  <main className="flex-1 overflow-y-auto">{children}</main>
+                </div>
+              </div>
+            </ReactQueryProvider>
+          </AgoraWrapper>
         </UserProvider>
       </body>
     </html>

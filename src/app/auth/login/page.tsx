@@ -1,12 +1,14 @@
+"use client";
+
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import { LogoWhite } from "@/icons";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import { LoginForm } from "@/components/auth/modules";
 
-export const metadata: Metadata = {
-  title: "Login / MEDQI-i",
-  description: "MEDQI-i",
-};
+// export const metadata: Metadata = {
+//   title: "Login / MEDQI-i",
+//   description: "MEDQI-i",
+// };
 
 function Login() {
   return (

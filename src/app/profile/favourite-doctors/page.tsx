@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
 
 function page() {
   return (
     <div className="p-6">
-        <p className="text-lg font-bold">My Favourite Doctors</p>
+      <p className="text-lg font-bold">My Favourite Doctors</p>
       <div className="flex gap-3 mt-3">
         <div className={` border border-[#E5E7EB] rounded-md p-3  w-[350px]`}>
           <Image
@@ -32,7 +34,7 @@ function page() {
               />
               <span className="text-[#667085]">(12k Reviews)</span>
             </p>
-            <p className="font-black">NGN 40000</p>
+            <p className="font-black">NGN 1,500</p>
           </div>
         </div>
         <div className={` border border-[#E5E7EB] rounded-md p-3  w-[350px]`}>

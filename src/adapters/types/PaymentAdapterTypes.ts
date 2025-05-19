@@ -5,6 +5,7 @@ export type CreatePaymentIntent = {
   amount: number;
   currency: string;
   description: string;
+  subAccountId: string | undefined;
 };
 
 export type VerifyPaymentPayload = {

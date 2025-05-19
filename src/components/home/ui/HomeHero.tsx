@@ -30,7 +30,7 @@ function HomeHero() {
   );
   const [selectedRating, setSelectedRating] = useState<string | null>(null);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const serializedLanguages = selectedLanguages.join(',');
+  const serializedLanguages = selectedLanguages.join(",");
   const { data } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
@@ -43,7 +43,6 @@ function HomeHero() {
         : [...prev, language]
     );
   };
-  
 
   const handleClose = (
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -51,22 +50,24 @@ function HomeHero() {
     setOpen(false);
   };
   return (
-    <div className="h-[300px] bg-[#E7F0FE] rounded-md relative">
-      <div className="flex flex-col items-center justify-center gap-10 h-full">
-        <div className="text-xl w-[90%] mx-auto font-semibold">
+    <div className="min-h-[300px] bg-[#E7F0FE] rounded-md relative px-4 py-6 md:px-8 md:py-0 ">
+      <div className="flex flex-col items-center justify-center gap-6 md:gap-10 h-full">
+        <div className="text-lg md:text-xl w-full md:w-[90%] mx-auto font-semibold">
           <p className="text-center">
             Hello {data?.user.first_name}, lets find top-rated doctors for you
           </p>
         </div>
-        <div className=" bg-white rounded-[300px] flex items-center justify-center px-8  py-3.5 gap-4">
+
+        {/* Search Container */}
+        <div className="w-full bg-white rounded-[30px] flex flex-col md:flex-row items-center justify-center px-4 md:px-8 py-3.5 gap-4">
           <DropdownMenu>
-            <DropdownMenuTrigger className="text-left border-r pr-4">
+            <DropdownMenuTrigger className="w-full md:w-auto text-left border-b md:border-b-0 md:border-r pr-4 pb-4 md:pb-0">
               <p className="font-[600] text-[12px]">Specialty</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
                 {selectedSpecialty ?? "What type of doctor"}
               </p>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[347px]">
+            <DropdownMenuContent className="w-[90vw] md:w-[347px]">
               <DropdownMenuLabel>Specialty</DropdownMenuLabel>
               <Input
                 placeholder="Search specialty, symptoms"
@@ -106,7 +107,10 @@ function HomeHero() {
           </DropdownMenu>
 
           <DropdownMenu open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger className="text-left border-r pr-4">
+            <DropdownMenuTrigger
+              disabled
+              className="text-left border-b pb-4 md:border-r md:border-b-0 md:pr-4  md:pb-0 disabled:opacity-50 w-full md:w-auto"
+            >
               <p className="font-[600] text-[12px]">Ratings</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
                 {selectedRating ?? "Choose ratings"}
@@ -115,7 +119,7 @@ function HomeHero() {
             <DropdownMenuContent className="w-[347px] p-3">
               <div className="flex justify-between px-2">
                 <DropdownMenuLabel>Ratings</DropdownMenuLabel>
-                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
+                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px] ">
                   {" "}
                   <button
                     onClick={() => handleClose(setOpen)}
@@ -189,7 +193,7 @@ function HomeHero() {
           </DropdownMenu> */}
 
           <DropdownMenu open={languageOpen} onOpenChange={setLanguageOpen}>
-            <DropdownMenuTrigger className="text-left pr-">
+            <DropdownMenuTrigger className="text-left w-full md:w-auto">
               <p className="font-[600] text-[12px]">Language spoken</p>
               <p className="text-[#6B7280] font-[500] text-[14px]">
                 {selectedLanguages.length
@@ -284,17 +288,21 @@ function HomeHero() {
           </DropdownMenu>
 
           <Link
-            href={`/service-providers?specialty=${selectedSpecialty}&ratings=${selectedRating}&languages=${serializedLanguages}`}
+            href={`/service-providers?specialty=${
+              selectedSpecialty || ""
+            }&ratings=${selectedRating || ""}&languages=${
+              serializedLanguages || ""
+            }`}
+            className="w-full md:w-auto"
           >
-            <button
-              // onClick={FindProvider}
-              className="bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold"
-            >
+            <button className="w-full bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold">
               Find Now
             </button>
           </Link>
         </div>
-        <div className="flex items-center gap-3">
+
+        {/* Badge Section */}
+        <div className="flex flex-col md:flex-row items-center gap-3 text-center md:text-left">
           <Image src={"/badge.svg"} alt="" height={24} width={24} />
           <p className="text-[#333333] text-[14px] font-[400]">
             Our doctors are fully licensed by the Medical and Dental Council of
@@ -302,27 +310,31 @@ function HomeHero() {
           </p>
         </div>
       </div>
-      <Image
-        src={"/hero-bg.png"}
-        alt=""
-        height={125}
-        width={125}
-        className="absolute top-0 left-0"
-      />
-      <Image
-        src={"/hero-bg-2.png"}
-        alt=""
-        height={125}
-        width={125}
-        className="absolute top-5 right-[0]"
-      />
-      <Image
-        src={"/hero-bg-3.png"}
-        alt=""
-        height={125}
-        width={125}
-        className="absolute bottom-5 left-[230px]"
-      />
+
+      {/* Background Images - Hide on mobile */}
+      <div className="hidden md:block">
+        <Image
+          src={"/hero-bg.png"}
+          alt=""
+          height={125}
+          width={125}
+          className="absolute top-0 left-0"
+        />
+        <Image
+          src={"/hero-bg-2.png"}
+          alt=""
+          height={125}
+          width={125}
+          className="absolute top-5 right-[0]"
+        />
+        <Image
+          src={"/hero-bg-3.png"}
+          alt=""
+          height={125}
+          width={125}
+          className="absolute bottom-5 left-[230px]"
+        />
+      </div>
     </div>
   );
 }

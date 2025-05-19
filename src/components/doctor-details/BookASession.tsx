@@ -7,18 +7,30 @@ import { Dialog } from "@headlessui/react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { Calendar, FileText, FileUp, Trash2, User } from "lucide-react";
+import { Calendar, FileText, FileUp, Trash2 } from "lucide-react";
 import SelectDateAndTime from "../partials/SelectDateAndTime";
 import { useSearchParams } from "next/navigation";
 import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
 import { useToast } from "@/hooks/use-toast";
 import PayForSessionModal from "./PayForSessionModal";
 import { PaymentAdapter, usePaymentMutation } from "@/adapters/PaymentAdapter";
+import { queryKeys } from "@/constants";
+import {
+  ServiceProviderAdapter,
+  useUserQuery,
+} from "@/adapters/ServiceProviders";
+import FormData from "form-data";
+import {
+  combineDateAndTime,
+  getErrorMessage,
+  getFormattedDateAndTime,
+} from "@/utils";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [otherOption, setOtherOption] = useState("");
@@ -33,8 +45,18 @@ function BookASession() {
     status: "pending",
     service_provider_id: providerId,
   });
-  const [patientId, setPatientId] = useState()
-  const [appointmentId, setAppointmentId] = useState()
+  const [patientId, setPatientId] = useState();
+  const [appointmentId, setAppointmentId] = useState();
+
+  const { data: provider, isLoading } = useUserQuery({
+    queryCallback: () =>
+      ServiceProviderAdapter.getServiceProviderDetails({
+        id: providerId,
+      }),
+    queryKey: [queryKeys.PROVIDER_DETAILS],
+  });
+
+  console.log(selectedDate?.toLocaleDateString(), selectedTime);
 
   const handleOptionChange = (option: string) => {
     if (option === "Other" && selectedOptions.includes("Other")) {
@@ -75,26 +97,71 @@ function BookASession() {
   const createPaymentIntentMutation = usePaymentMutation({
     mutationCallback: PaymentAdapter.createPaymentIntent,
   });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
-        const res = await bookAppointmentMutation.mutateAsync({
-        appointment_date: selectedDate,
-        patient_symptoms: sessionData.patient_symptoms,
-        patient_ailment_description: sessionData.patient_ailment_description,
-        patient_symptom_duration: sessionData.patient_symptom_duration,
-        status: "pending",
-        service_provider_id: sessionData.service_provider_id,
+
+      // Create FormData instance
+      const formData = new FormData();
+
+      // Clean up the time string (remove AM/PM for parsing)
+      const cleanTime = selectedTime.replace(/\s/g, "");
+
+      // Combine date and time into ISO string
+      const appointmentDateTime = combineDateAndTime(selectedDate, cleanTime);
+
+      // Add basic appointment data
+      formData.append("appointment_date", appointmentDateTime);
+      formData.append("patient_symptoms", JSON.stringify(selectedOptions));
+      formData.append("patient_ailment_description", otherOption);
+      formData.append(
+        "patient_symptom_duration",
+        sessionData.patient_symptom_duration
+      );
+      formData.append("status", "pending");
+      formData.append("service_provider_id", providerId || "");
+
+      // Add medical documents if they exist
+      files.forEach((file) => {
+        formData.append(`medical_document`, file);
       });
+
+      //@ts-expect-error form-data is not typed
+      const res = await bookAppointmentMutation.mutateAsync(formData);
+
       setPatientId(res.data.appointment.patient_id);
-      console.log("patient id",res.data.appointment.patient_id);
       setAppointmentId(res.data.appointment.id);
 
       toast({
         title: "Booking Successful",
         description: "Appointment request sent successfully",
       });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: getErrorMessage(error),
+      });
+    }
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const createPaymentIntent = async (e: any) => {
+    try {
+      e.preventDefault();
+      const res = await createPaymentIntentMutation.mutateAsync({
+        patientId: patientId,
+        providerId: providerId,
+        appointmentId: appointmentId,
+        amount: 1500,
+        currency: "NGN",
+        description: "Payment",
+        subAccountId: provider?.data?.sub_account_id,
+      });
+      toast({
+        title: "Payment Initiated",
+        description: res.data?.message,
+      });
+      window.location.href = res?.data?.data?.paystack_authorization_url;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
@@ -104,32 +171,6 @@ function BookASession() {
       });
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const createPaymentIntent = async (e: any) => {
-    try {
-      e.preventDefault();
-      const res = await createPaymentIntentMutation.mutateAsync({
-        patientId:patientId,
-        providerId:providerId,
-        appointmentId:appointmentId,
-        amount: 40000,
-        currency:"NGN",
-        description: "Payment"
-    });
-    toast({
-      title: "Payment Initiated",
-      description: res.data?.message,
-    });
-    window.location.href = res?.data?.data?.paystack_authorization_url
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error?.response?.data?.message,
-      });
-    }
-  }
 
   const options = [
     "Others",
@@ -146,12 +187,12 @@ function BookASession() {
   ];
 
   return (
-    <div className="w-[50%]">
+    <div className="w-full lg:w-[50%] pb-10">
       <div>
         <div>
-          <form onSubmit={handleSubmit} className={`relative w-full p-3 `}>
-            <div className="">
-              <p className="font-[500] text-[20px]">
+          <form onSubmit={handleSubmit} className="relative w-full p-3">
+            <div>
+              <p className="font-[500] text-[18px] md:text-[20px]">
                 {currentStep === 1
                   ? "Select date and time"
                   : currentStep === 2
@@ -164,11 +205,17 @@ function BookASession() {
               </p>
               <Progress
                 value={getProgress()}
-                className="w-[60%] mt-2 bg-[#0000001A]"
+                className="w-full md:w-[60%] mt-2 bg-[#0000001A]"
               />
             </div>
             {currentStep === 1 && (
-              <SelectDateAndTime selectDate={setSelectedDate} />
+              <SelectDateAndTime
+                provider={provider}
+                isLoading={isLoading}
+                selectDate={setSelectedDate}
+                //@ts-expect-error setSelectedTime is not typed
+                selectTime={setSelectedTime}
+              />
             )}{" "}
             {currentStep === 2 && (
               <div className=" mt-10">
@@ -355,21 +402,15 @@ function BookASession() {
               <div className="my-5 h-full relative">
                 <div>
                   <div className=" pb-4 border-b border-dashed">
-                    <p className="font-[500] text-[#353535] text-[18px]">{`Cardiology session`}</p>
                     <div className="flex items-center gap-2 my-4">
                       <Calendar />
                       <div>
-                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
-                        <p className="font-[400] text-[#667085] text-[14px]">
-                          {JSON.stringify(selectedDate)}
+                        <p className="font-[500] text-[#1D2939] text-[16px]">
+                          30 Mins Session
                         </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 my-4">
-                      <User />
-                      <div>
-                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
-                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {getFormattedDateAndTime(selectedDate)}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -392,16 +433,6 @@ function BookASession() {
                         })}
                       </div>
                     </div>
-
-                    <div>
-                      <p className="font-[500] text-[#1D2939] text-[14px]">{`Notes`}</p>
-                      <div className="bg-[#F9FAFB] h-[66px] p-3">
-                        <p className="flex gap-2 items-center">
-                          <FileText />
-                          {otherOption}
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -410,51 +441,55 @@ function BookASession() {
               <div className="my-5 h-full relative">
                 <div>
                   <div className=" pb-4 border-b border-dashed">
-                  <p className="font-[400] text-[#353535] text-[14  px]">{`Booking Fee`}</p>
+                    <p className="font-[400] text-[#353535] text-[14  px]">{`Booking Fee`}</p>
                     <p className="font-[500] text-[18px]">{`40,000`}</p>
-                   
                   </div>
 
                   <p className="font-[500] text-[#667085] text-[18px]">{`Session overview`}</p>
                   <div className="my-4 pb-4 border-b border-dashed">
-                  <div className="flex items-center gap-2 my-4">
+                    <div className="flex items-center gap-2 my-4">
                       <Calendar />
                       <div>
-                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
-                        <p className="font-[400] text-[#667085] text-[14px]">
-                          {JSON.stringify(selectedDate)}
+                        <p className="font-[500] text-[#1D2939] text-[16px]">
+                          30 Mins Session
                         </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 my-4">
-                      <User />
-                      <div>
-                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
-                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {getFormattedDateAndTime(selectedDate)}
+                        </p>
                       </div>
                     </div>
                   </div>
                   <div className="my-4">
-                  <p className="font-[500] text-[#667085] text-[18px]">{`Payment detail`}</p>
-                  <div className="pb-1 my-3 border-b flex justify-between">
-                    <p className="font-[400] text-[14px] text-[#4B5563]">Fee</p>
-                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
-                  </div>
-                  <div className="pb-1 my-3 border-b flex justify-between">
-                    <p className="font-[400] text-[14px] text-[#4B5563]">Tax</p>
-                    <p className="font-[500] text-[14px] text-[#111827]">NGN 199.00</p>
-                  </div>
-                  <div className="pb-1 my-3 flex justify-between">
-                    <p className="font-[600] text-[14px]">Total Payment</p>
-                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
-                  </div>
+                    <p className="font-[500] text-[#667085] text-[18px]">{`Payment Details`}</p>
+                    <div className="pb-1 my-3 border-b flex justify-between">
+                      <p className="font-[400] text-[14px] text-[#4B5563]">
+                        Fee
+                      </p>
+                      <p className="font-[500] text-[14px] text-[#111827]">
+                        NGN 40,000.00
+                      </p>
+                    </div>
+                    <div className="pb-1 my-3 border-b flex justify-between">
+                      <p className="font-[400] text-[14px] text-[#4B5563]">
+                        Tax
+                      </p>
+                      <p className="font-[500] text-[14px] text-[#111827]">
+                        NGN 199.00
+                      </p>
+                    </div>
+                    <div className="pb-1 my-3 flex justify-between">
+                      <p className="font-[600] text-[14px]">Total Payment</p>
+                      <p className="font-[500] text-[14px] text-[#111827]">
+                        NGN 40,000.00
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
-            <div className="p-3 flex justify-between border-t fixed bottom-0 m-auto w-[500px]  bg-white">
+            <div className="p-3 flex justify-between border-t fixed bottom-0 left-0 right-0 md:relative md:w-[500px] md:mx-auto bg-white">
               <button
-                className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl"
+                className="p-3 w-[100px] md:w-[113px] bg-[#F2F4F7] rounded-3xl"
                 onClick={handleBack}
                 disabled={currentStep <= 1}
                 type="button"
@@ -462,15 +497,14 @@ function BookASession() {
                 Previous
               </button>
               {currentStep === 5 ? (
-                
-               <PayForSessionModal createPaymentIntent={createPaymentIntent}/>
+                <PayForSessionModal createPaymentIntent={createPaymentIntent} />
               ) : (
                 <button
-                  className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
+                  className="p-3 w-[100px] md:w-[113px] bg-[#1570EF] rounded-3xl text-white"
                   onClick={handleContinue}
-                  type={currentStep === 4 ? "submit":"button"}
+                  type={currentStep === 4 ? "submit" : "button"}
                 >
-                 {currentStep === 4 ? "Payment":"Next"}
+                  {currentStep === 4 ? "Payment" : "Next"}
                 </button>
               )}
             </div>
