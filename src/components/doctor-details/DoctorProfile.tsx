@@ -2,15 +2,29 @@ import React from "react";
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ServiceProviderAdapter, useUserQuery } from "@/adapters/ServiceProviders";
+import { queryKeys } from "@/constants";
+import { useSearchParams } from "next/navigation";
 
 function DoctorProfile() {
+  const searchParams = useSearchParams();
+  const providerId = searchParams.get("id")
+  const { data: providerDetails } = useUserQuery({
+    queryCallback: () =>
+      ServiceProviderAdapter.getServiceProviderDetails({
+       id:providerId,
+      }),
+    queryKey: [queryKeys.PROVIDER_DETAILS],
+  });
+  console.log("providers", providerDetails);
+  const details = providerDetails?.data
   return (
     <div className="w-[50%]  border-r pr-10">
       <div className="flex justify-between ">
         <div className="flex gap-5 relative">
-          <div className="bg-[#EAEEF4] rounded-md w-[100px]">
+          <div className="bg-[#EAEEF4] rounded-md w-[100px] h-[100px]">
             <Image
-              src={"/doctor-detail-pic.png"}
+              src={"/doctor-passport.png"}
               alt=""
               height={100}
               width={100}
@@ -18,10 +32,10 @@ function DoctorProfile() {
           </div>
           <div>
             <p className="text-[#0C1523] font-[500] text-[16px]">
-              Dr. Emily Harper, MD
+              {details?.first_name}  {details?.last_name} 
             </p>
             <p className="text-[#667085] font-[400] text-[14px]">
-              Cardiologist
+              {details?.specialty}
             </p>
             <p className="text-[#1570EF] font-[700] text-[18px] absolute bottom-0">
               NGN 40,000
@@ -55,7 +69,7 @@ function DoctorProfile() {
         <div className="w-[150px]">
           <div className="flex items-center mb-1 gap-1">
             <Image src={"/pink-star.svg"} alt="" width={24} height={24} />
-            <p className="font-[600] text-[16px]">4</p>
+            <p className="font-[600] text-[16px]">{details?.rating}</p>
           </div>
           <p className="font-[500] text-[14px] text-[#667085]">Reviews</p>
         </div>

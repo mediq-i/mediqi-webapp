@@ -7,18 +7,34 @@ import { Dialog } from "@headlessui/react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { FileText, FileUp, Trash2 } from "lucide-react";
+import { Calendar, FileText, FileUp, Trash2, User } from "lucide-react";
 import SelectDateAndTime from "../partials/SelectDateAndTime";
+import { useSearchParams } from "next/navigation";
+import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
+import { useToast } from "@/hooks/use-toast";
+import PayForSessionModal from "./PayForSessionModal";
+import { PaymentAdapter, usePaymentMutation } from "@/adapters/PaymentAdapter";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
-  // const [checked, setChecked] = useState(false);
+  const { toast } = useToast();
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [otherOption, setOtherOption] = useState("");
   const [files, setFiles] = useState<File[]>([]);
-
-  console.log("files", files);
+  const searchParams = useSearchParams();
+  const providerId = searchParams.get("id");
+  const [sessionData, setSessionData] = useState({
+    appointment_date: selectedDate,
+    patient_symptoms: selectedOptions,
+    patient_ailment_description: otherOption,
+    patient_symptom_duration: "",
+    status: "pending",
+    service_provider_id: providerId,
+  });
+  const [patientId, setPatientId] = useState()
+  const [appointmentId, setAppointmentId] = useState()
 
   const handleOptionChange = (option: string) => {
     if (option === "Other" && selectedOptions.includes("Other")) {
@@ -45,28 +61,76 @@ function BookASession() {
     }
   };
   const getProgress = () => {
-    return (currentStep / 5) * 100; // Assuming 3 steps plus submit button
+    return (currentStep / 5) * 100;
   };
-  const [formData] = useState({
-    username: "",
-    email: "",
-    password: "",
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setSessionData({ ...sessionData, [name]: value });
+  };
+  const bookAppointmentMutation = useBookingMutation({
+    mutationCallback: BookingAdapter.bookAppointment,
   });
+  const createPaymentIntentMutation = usePaymentMutation({
+    mutationCallback: PaymentAdapter.createPaymentIntent,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+        const res = await bookAppointmentMutation.mutateAsync({
+        appointment_date: selectedDate,
+        patient_symptoms: sessionData.patient_symptoms,
+        patient_ailment_description: sessionData.patient_ailment_description,
+        patient_symptom_duration: sessionData.patient_symptom_duration,
+        status: "pending",
+        service_provider_id: sessionData.service_provider_id,
+      });
+      setPatientId(res.data.appointment.patient_id);
+      console.log("patient id",res.data.appointment.patient_id);
+      setAppointmentId(res.data.appointment.id);
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
+      toast({
+        title: "Booking Successful",
+        description: "Appointment request sent successfully",
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
   };
-  // const handleKeyPress = (e: React.KeyboardEvent) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     handleContinue();
-  //   }
-  // };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const createPaymentIntent = async (e: any) => {
+    try {
+      e.preventDefault();
+      const res = await createPaymentIntentMutation.mutateAsync({
+        patientId:patientId,
+        providerId:providerId,
+        appointmentId:appointmentId,
+        amount: 40000,
+        currency:"NGN",
+        description: "Payment"
+    });
+    toast({
+      title: "Payment Initiated",
+      description: res.data?.message,
+    });
+    window.location.href = res?.data?.data?.paystack_authorization_url
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.response?.data?.message,
+      });
+    }
+  }
+
   const options = [
     "Others",
     "Anxiety",
@@ -94,6 +158,8 @@ function BookASession() {
                   ? "How are you feeling?"
                   : currentStep === 3
                   ? "Upload any medical document (optional)"
+                  : currentStep === 4
+                  ? "Summary"
                   : ""}
               </p>
               <Progress
@@ -101,7 +167,9 @@ function BookASession() {
                 className="w-[60%] mt-2 bg-[#0000001A]"
               />
             </div>
-            {currentStep === 1 && <SelectDateAndTime />}{" "}
+            {currentStep === 1 && (
+              <SelectDateAndTime selectDate={setSelectedDate} />
+            )}{" "}
             {currentStep === 2 && (
               <div className=" mt-10">
                 <div className="mb-5 cursor-pointer">
@@ -157,7 +225,12 @@ function BookASession() {
                   <label className="text-[#1D2939] text-[16px] font-[500]">
                     How long have you been experiencing these symptoms?
                   </label>
-                  <Textarea className="h-[89px]" />
+                  <Textarea
+                    className="h-[89px]"
+                    value={sessionData.patient_symptom_duration}
+                    name="patient_symptom_duration"
+                    onChange={(e) => handleChange(e)}
+                  />
                 </div>
                 {/* <div className="mb-5">
                   <label className="text-[#1D2939] text-[16px] font-[500]">
@@ -278,22 +351,128 @@ function BookASession() {
                 })}
               </div>
             )}
-            {currentStep === 4 && <div className="my-5 h-full relative"></div>}
-            {currentStep > 4 && <div className="my-5"></div>}
+            {currentStep === 4 && (
+              <div className="my-5 h-full relative">
+                <div>
+                  <div className=" pb-4 border-b border-dashed">
+                    <p className="font-[500] text-[#353535] text-[18px]">{`Cardiology session`}</p>
+                    <div className="flex items-center gap-2 my-4">
+                      <Calendar />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {JSON.stringify(selectedDate)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 my-4">
+                      <User />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Treatment overview`}</p>
+                  <div className="my-4 pb-4 border-b border-dashed">
+                    <p className="font-[500] text-[#1D2939] text-[14px]">{`Symptoms`}</p>
+
+                    <div>
+                      <div className="px-4 py-2 my-3 min-h-[63px] w-full rounded flex gap-3 flex-wrap relative">
+                        {selectedOptions?.map((symptom, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="bg-white border rounded-3xl p-2 flex gap-3 items-center"
+                            >
+                              {symptom}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="font-[500] text-[#1D2939] text-[14px]">{`Notes`}</p>
+                      <div className="bg-[#F9FAFB] h-[66px] p-3">
+                        <p className="flex gap-2 items-center">
+                          <FileText />
+                          {otherOption}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {currentStep > 4 && (
+              <div className="my-5 h-full relative">
+                <div>
+                  <div className=" pb-4 border-b border-dashed">
+                  <p className="font-[400] text-[#353535] text-[14  px]">{`Booking Fee`}</p>
+                    <p className="font-[500] text-[18px]">{`40,000`}</p>
+                   
+                  </div>
+
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Session overview`}</p>
+                  <div className="my-4 pb-4 border-b border-dashed">
+                  <div className="flex items-center gap-2 my-4">
+                      <Calendar />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`11:00 - 12:00 AM`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">
+                          {JSON.stringify(selectedDate)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 my-4">
+                      <User />
+                      <div>
+                        <p className="font-[500] text-[#1D2939] text-[16px]">{`Retro Okafor`}</p>
+                        <p className="font-[400] text-[#667085] text-[14px]">{`Cardiologist`}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="my-4">
+                  <p className="font-[500] text-[#667085] text-[18px]">{`Payment detail`}</p>
+                  <div className="pb-1 my-3 border-b flex justify-between">
+                    <p className="font-[400] text-[14px] text-[#4B5563]">Fee</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
+                  </div>
+                  <div className="pb-1 my-3 border-b flex justify-between">
+                    <p className="font-[400] text-[14px] text-[#4B5563]">Tax</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 199.00</p>
+                  </div>
+                  <div className="pb-1 my-3 flex justify-between">
+                    <p className="font-[600] text-[14px]">Total Payment</p>
+                    <p className="font-[500] text-[14px] text-[#111827]">NGN 40,000.00</p>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="p-3 flex justify-between border-t fixed bottom-0 m-auto w-[500px]  bg-white">
               <button
                 className="p-3 w-[113px] bg-[#F2F4F7] rounded-3xl"
                 onClick={handleBack}
                 disabled={currentStep <= 1}
+                type="button"
               >
                 Previous
               </button>
-              <button
-                className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
-                onClick={handleContinue}
-              >
-                Next
-              </button>
+              {currentStep === 5 ? (
+                
+               <PayForSessionModal createPaymentIntent={createPaymentIntent}/>
+              ) : (
+                <button
+                  className="p-3 w-[113px] bg-[#1570EF] rounded-3xl text-white"
+                  onClick={handleContinue}
+                  type={currentStep === 4 ? "submit":"button"}
+                >
+                 {currentStep === 4 ? "Payment":"Next"}
+                </button>
+              )}
             </div>
           </form>
         </div>

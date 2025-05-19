@@ -1,91 +1,130 @@
-"use client"
+"use client";
+import { getFormattedDate } from "@/utils";
 import { useCalendar } from "@h6s/calendar";
-import { format } from "date-fns";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  format,
+  addMonths,
+  endOfMonth,
+  differenceInDays,
+  isSameMonth,
+} from "date-fns";
+import { useEffect, useState, useRef, Dispatch, SetStateAction } from "react";
 
-export default function CustomCalendar() {
-  const {body, view } = useCalendar();
-  const currentDate = new Date();
-  const formattedDate = format(currentDate, "MMMM, yyyy");
-  const [selectedDate, setSelectedDate] = useState(currentDate);
+interface CalendarSectionProps {
+  title: string;
+  body: {
+    value: {
+      key: string;
+      value: ({
+        value: Date;
+      } & {
+        date: number;
+        isCurrentMonth: boolean;
+        isCurrentDate: boolean;
+        isWeekend: boolean;
+      } & {
+        key: string;
+      })[];
+    }[];
+  };
+  currentDate: Date;
+  isCurrentMonth: boolean;
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
+}
 
-  useEffect(() => {
-    view.showWeekView()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  
-  
+interface CalendarDay {
+  key: string;
+  value: Date;
+}
+
+interface CalendarWeek {
+  key: string;
+  value: CalendarDay[];
+}
+
+interface CalendarBody {
+  value: CalendarWeek[];
+}
+
+// Helper function to process calendar data
+const processCalendarData = (body: CalendarBody) => {
+  return {
+    weeks: body.value.map((week) => ({
+      key: week.key,
+      days: week.value,
+    })),
+    allDays: body.value.flatMap((week) => week.value),
+  };
+};
+
+function CalendarSection({
+  title,
+  body,
+  currentDate,
+  isCurrentMonth,
+  selectedDate,
+  setSelectedDate,
+}: CalendarSectionProps) {
+  const { weeks } = processCalendarData(body);
+
   return (
-    <div>
-      <p className="text-[16px] text-[#1D2939] font-[500]">
-        Choose Day, {formattedDate}
-      </p>
-      <div className="mt-5">
-        {/* {firstWeek.value.map((key, value)=>{
-            const formattedDayOfWeek = format(value, "EEE");
-            const formattedDayOfMonth = format(value, "dd");
-            const currentDateWithoutTime = new Date(
-              currentDate.getFullYear(),
-              currentDate.getMonth(),
-              currentDate.getDate()
-            );
-            const targetDateWithoutTime = new Date(
-              value.getFullYear(),
-              value.getMonth(),
-              value.getDate()
-            );
-
-            const hasDatePassed =
-              currentDateWithoutTime > targetDateWithoutTime;
-            return (
-
-            )
-        })} */}
-
-        {body.value.map(({ key, value: days }) => (
-          <div key={key} className=" gap-3  w-full flex flex-wrap">
-            {days.map(({ key, value }) => {
-              const formattedDayOfWeek = format(value, "EEE");
-              const formattedDayOfMonth = format(value, "dd");
+    <div className="mb-8">
+      <h3 className="text-[16px] text-[#1D2939] font-[500] mb-4">{title}</h3>
+      <div className={`w-full  ${!isCurrentMonth && "space-y-3"}`}>
+        {weeks.map((week) => (
+          <div key={week.key} className="grid grid-cols-7 gap-3 w-full">
+            {week.days.map(({ key, value: date }) => {
+              const formattedDayOfWeek = format(date, "EEE");
+              const formattedDayOfMonth = format(date, "dd");
               const currentDateWithoutTime = new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth(),
                 currentDate.getDate()
               );
               const targetDateWithoutTime = new Date(
-                value.getFullYear(),
-                value.getMonth(),
-                value.getDate()
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate()
               );
 
               const hasDatePassed =
                 currentDateWithoutTime > targetDateWithoutTime;
+              const isInCurrentMonth = isSameMonth(date, currentDate);
+              const isInNextMonth = isSameMonth(
+                date,
+                addMonths(currentDate, 1)
+              );
+
+              if (
+                (isCurrentMonth && (!isInCurrentMonth || hasDatePassed)) ||
+                (!isCurrentMonth && !isInNextMonth)
+              ) {
+                return null;
+              }
 
               return (
                 <div
                   key={key}
-                  onClick={()=> setSelectedDate(value)}
-                  className={
-                    hasDatePassed
-                      ? "hidden"
-                      : `border w-[77px] h-[72px] text-center flex  flex-col justify-center mb-3 rounded-md cursor-pointer ${format(selectedDate, "MMMM do, yyyy") === format(value, "MMMM do, yyyy") ? "text-[#1570EF] border border-[#1570EF]":"text-[#18181B]"}`
-                  }
+                  onClick={() => setSelectedDate(date)}
+                  className={`border h-[72px] text-center flex flex-col justify-center rounded-md cursor-pointer ${
+                    format(selectedDate, "yyyy-MM-dd") ===
+                    format(date, "yyyy-MM-dd")
+                      ? "text-[#1570EF] border border-[#1570EF]"
+                      : "text-[#18181B]"
+                  }`}
                 >
-                  {format(currentDate, "MMMM do, yyyy") ===
-                  format(value, "MMMM do, yyyy") ? (
-                    <p className={`text-[16px] font-[500] ${format(selectedDate, "MMMM do, yyyy") === format(value, "MMMM do, yyyy") ? "text-[#1570EF] ":"text-[#18181B]"}`}>
-                      {" "}
+                  {format(currentDate, "yyyy-MM-dd") ===
+                  format(date, "yyyy-MM-dd") ? (
+                    <p className="text-[16px] font-[500] text-[#1570EF]">
                       Today
                     </p>
                   ) : (
                     <div>
-                      <p className={`text-[12px] font-[400] ${format(selectedDate, "MMMM do, yyyy") === format(value, "MMMM do, yyyy") ? "text-[#1570EF] ":"text-[#18181B]"}`}>
-                        {" "}
+                      <p className="text-[12px] font-[400]">
                         {formattedDayOfWeek}
                       </p>
-                      <p className={`text-[20px] font-[700] ${format(selectedDate, "MMMM do, yyyy") === format(value, "MMMM do, yyyy") ? "text-[#1570EF] ":"text-[#18181B]"}`}>
-                        {" "}
+                      <p className="text-[20px] font-[700]">
                         {formattedDayOfMonth}
                       </p>
                     </div>
@@ -96,26 +135,98 @@ export default function CustomCalendar() {
           </div>
         ))}
       </div>
-      <div className="flex justify-end">
-      <button
-      className="font-[500] text-[14px] text-[#1570EF] flex items-center gap-1"
-        type="button"
-        onClick={(e) => {
-          e.preventDefault()
-          if (view.isMonthView) {
-            view.showWeekView();
-          } else if (view.isWeekView) {
-            view.showMonthView();
-          }
+    </div>
+  );
+}
 
-          console.log("rannnnnn");
-        }}
-      >
-        {view.isWeekView ? "Show full month": "Show current week"}
-        {view.isWeekView ? (<ChevronDown/>): (<ChevronUp/>)}
-      </button>
+export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetStateAction<Date | undefined>>}) {
+  const currentDate = new Date();
+  const isCloseToMonthEnd =
+    differenceInDays(endOfMonth(currentDate), currentDate) < 7;
+
+  // Create calendar instances for current and next month
+  const currentMonthCalendar = useCalendar({ defaultDate: currentDate });
+  const nextMonthCalendar = useCalendar({
+    defaultDate: addMonths(currentDate, 1),
+  });
+
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const initialSetupDone = useRef(false);
+  if (selectDate) {
+    selectDate(selectedDate)
+  }
+  useEffect(() => {
+    if (!initialSetupDone.current) {
+      currentMonthCalendar.view.showMonthView();
+      nextMonthCalendar.view.showMonthView();
+      initialSetupDone.current = true;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-[18px] font-[600] text-[#1D2939]">
+          Choose Day{" "}
+          <span className="text-[14px] ml-2 text-gray-500">
+            ({getFormattedDate(selectedDate)})
+          </span>
+        </h2>
+        {/* {isCloseToMonthEnd && (
+          <button
+            className="font-[500] text-[14px] text-[#1570EF] flex items-center gap-1"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowFullMonth(!showFullMonth);
+              // if (currentMonthCalendar.view.isMonthView) {
+              //   currentMonthCalendar.view.showWeekView();
+              // } else if (currentMonthCalendar.view.isWeekView) {
+              //   currentMonthCalendar.view.showMonthView();
+              // }
+            }}
+          >
+            {currentMonthCalendar.view.isWeekView
+              ? "Show full month"
+              : "Show current week"}
+            {currentMonthCalendar.view.isWeekView ? (
+              <ChevronDown />
+            ) : (
+              <ChevronUp />
+            )}
+          </button>
+        )} */}
       </div>
-      
+
+      {isCloseToMonthEnd ? (
+        <>
+          <CalendarSection
+            title={format(currentDate, "MMMM")}
+            body={currentMonthCalendar.body}
+            currentDate={currentDate}
+            isCurrentMonth={true}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+          <CalendarSection
+            title={format(addMonths(currentDate, 1), "MMMM")}
+            body={nextMonthCalendar.body}
+            currentDate={currentDate}
+            isCurrentMonth={false}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+        </>
+      ) : (
+        <CalendarSection
+          title={format(currentDate, "MMMM, yyyy")}
+          body={currentMonthCalendar.body}
+          currentDate={currentDate}
+          isCurrentMonth={true}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      )}
     </div>
   );
 }
