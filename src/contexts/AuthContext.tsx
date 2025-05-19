@@ -1,5 +1,13 @@
+"use client";
 // contexts/AuthContext.tsx
-import { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -13,17 +21,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = getCookie('authToken');
+    const token = getCookie("authToken");
     setIsAuthenticated(!!token);
   }, []);
 
   const login = (token: string) => {
-    setCookie('authToken', token, 7); // Set cookie for 7 days
+    setCookie("authToken", token, 7); // Set cookie for 7 days
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    deleteCookie('authToken');
+    deleteCookie("authToken");
     setIsAuthenticated(false);
   };
 
@@ -37,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -51,10 +59,10 @@ const setCookie = (name: string, value: string, days: number) => {
 
 const getCookie = (name: string) => {
   const nameEQ = `${name}=`;
-  const ca = document.cookie.split(';');
+  const ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    while (c.charAt(0) === " ") c = c.substring(1, c.length);
     if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
   }
   return null;
