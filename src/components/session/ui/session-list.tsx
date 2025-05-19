@@ -8,10 +8,9 @@ import { SessionHistory } from "@/adapters/types/BookingAdapterTypes";
 export default function SessionList() {
   const { data: sessions, isLoading } = useUserQuery<SessionHistory>({
     queryKey: ["sessions"],
-    queryCallback: () => BookingAdapter.getSessionHistory("pending"),
+    queryCallback: () => BookingAdapter.getSessionHistory("confirmed"),
     slug: "",
   });
-
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 gap-4">
@@ -25,7 +24,7 @@ export default function SessionList() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">
       {sessions?.data.map((session) => (
         <SessionCard key={session.id} session={session} />
       ))}

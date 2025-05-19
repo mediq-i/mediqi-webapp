@@ -65,19 +65,19 @@ const specialties = [
 function Specialties() {
   return (
     <div className="py-5">
-      <div className="flex justify-between">
+      <div className="flex flex-col sm:flex-row justify-between gap-2">
         <p className="font-[600] text-[18px] text-[#1D2939]">Specialties</p>
         <a href="" className="text-[#1570EF] text-[14px] font-[500]">
           See more specialties
         </a>
       </div>
 
-      <div className="py-3 grid grid-cols-4 gap-3">
+      <div className="py-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {specialties.map((specialty, index) => {
           return (
             <div
               key={index}
-              className={` border border-[#E5E7EB] rounded-md p-3 ${specialty.bg}`}
+              className={`border border-[#E5E7EB] rounded-md p-3 ${specialty.bg}`}
             >
               <Image
                 src={specialty.img}
@@ -86,8 +86,10 @@ function Specialties() {
                 height={42}
                 className="block mb-5"
               />
-              <p>{specialty.name}</p>
-              <p className="text-[#666666] text-[16px] font-[400]">
+              <p className="text-[16px] md:text-[18px] font-medium">
+                {specialty.name}
+              </p>
+              <p className="text-[#666666] text-[14px] md:text-[16px] font-[400]">
                 {specialty.description}
               </p>
             </div>

@@ -1,13 +1,15 @@
+"use client";
+
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import React from "react";
 import { LogoWhite } from "@/icons";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import { SignupForm } from "@/components/auth/modules";
 
-export const metadata: Metadata = {
-  title: "Sign Up / MEDQI-I",
-  description: "MEDQI-I",
-};
+// export const metadata: Metadata = {
+//   title: "Sign Up / MEDQI-I",
+//   description: "MEDQI-I",
+// };
 
 function SignUp() {
   return (

@@ -1,4 +1,5 @@
 "use client";
+import { DaySchedule } from "@/adapters/types/ServiceProviderTypes";
 import { getFormattedDate } from "@/utils";
 import { useCalendar } from "@h6s/calendar";
 import {
@@ -47,6 +48,23 @@ interface CalendarBody {
   value: CalendarWeek[];
 }
 
+// Add this interface for working hours
+interface WorkingHours {
+  monday?: DaySchedule;
+  tuesday?: DaySchedule;
+  wednesday?: DaySchedule;
+  thursday?: DaySchedule;
+  friday?: DaySchedule;
+  saturday?: DaySchedule;
+  sunday?: DaySchedule;
+}
+
+interface CustomCalendarProps {
+  selectDate?: Dispatch<SetStateAction<Date | undefined>>;
+  workingHours: WorkingHours;
+  onDateSelect: (date: Date) => void;
+}
+
 // Helper function to process calendar data
 const processCalendarData = (body: CalendarBody) => {
   return {
@@ -58,6 +76,12 @@ const processCalendarData = (body: CalendarBody) => {
   };
 };
 
+// Helper function to check if a day is available
+const isDayAvailable = (date: Date, workingHours: WorkingHours): boolean => {
+  const dayName = format(date, "EEEE").toLowerCase() as keyof WorkingHours;
+  return workingHours[dayName]?.isAvailable ?? false;
+};
+
 function CalendarSection({
   title,
   body,
@@ -65,7 +89,8 @@ function CalendarSection({
   isCurrentMonth,
   selectedDate,
   setSelectedDate,
-}: CalendarSectionProps) {
+  workingHours,
+}: CalendarSectionProps & { workingHours: WorkingHours }) {
   const { weeks } = processCalendarData(body);
 
   return (
@@ -96,6 +121,9 @@ function CalendarSection({
                 addMonths(currentDate, 1)
               );
 
+              const isAvailable = isDayAvailable(date, workingHours);
+              const isDisabled = hasDatePassed || !isAvailable;
+
               if (
                 (isCurrentMonth && (!isInCurrentMonth || hasDatePassed)) ||
                 (!isCurrentMonth && !isInNextMonth)
@@ -106,13 +134,19 @@ function CalendarSection({
               return (
                 <div
                   key={key}
-                  onClick={() => setSelectedDate(date)}
-                  className={`border h-[72px] text-center flex flex-col justify-center rounded-md cursor-pointer ${
-                    format(selectedDate, "yyyy-MM-dd") ===
-                    format(date, "yyyy-MM-dd")
-                      ? "text-[#1570EF] border border-[#1570EF]"
-                      : "text-[#18181B]"
-                  }`}
+                  onClick={() => !isDisabled && setSelectedDate(date)}
+                  className={`border h-[72px] text-center flex flex-col justify-center rounded-md 
+                    ${
+                      isDisabled
+                        ? "bg-gray-100 cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    }
+                    ${
+                      format(selectedDate, "yyyy-MM-dd") ===
+                      format(date, "yyyy-MM-dd")
+                        ? "text-[#1570EF] border-[#1570EF]"
+                        : "text-[#18181B]"
+                    }`}
                 >
                   {format(currentDate, "yyyy-MM-dd") ===
                   format(date, "yyyy-MM-dd") ? (
@@ -139,7 +173,12 @@ function CalendarSection({
   );
 }
 
-export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetStateAction<Date | undefined>>}) {
+export default function CustomCalendar({
+  selectDate,
+  workingHours,
+  //eslint-disable-next-line
+  onDateSelect,
+}: CustomCalendarProps) {
   const currentDate = new Date();
   const isCloseToMonthEnd =
     differenceInDays(endOfMonth(currentDate), currentDate) < 7;
@@ -153,7 +192,7 @@ export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetSt
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const initialSetupDone = useRef(false);
   if (selectDate) {
-    selectDate(selectedDate)
+    selectDate(selectedDate);
   }
   useEffect(() => {
     if (!initialSetupDone.current) {
@@ -161,7 +200,7 @@ export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetSt
       nextMonthCalendar.view.showMonthView();
       initialSetupDone.current = true;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -207,6 +246,7 @@ export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetSt
             isCurrentMonth={true}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            workingHours={workingHours}
           />
           <CalendarSection
             title={format(addMonths(currentDate, 1), "MMMM")}
@@ -215,6 +255,7 @@ export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetSt
             isCurrentMonth={false}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            workingHours={workingHours}
           />
         </>
       ) : (
@@ -225,6 +266,7 @@ export default function CustomCalendar({selectDate}:{selectDate?: Dispatch<SetSt
           isCurrentMonth={true}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          workingHours={workingHours}
         />
       )}
     </div>

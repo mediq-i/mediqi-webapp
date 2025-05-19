@@ -54,6 +54,7 @@ export default function LoginForm() {
       });
       localStorage.setItem("token", res?.data?.session?.access_token);
       localStorage.setItem("refreshToken", res.data.session.refresh_token);
+      localStorage.setItem("user_id", res?.data?.session?.user?.id);
       document.cookie = `authToken=${res?.data?.session?.access_token}; path=/`;
       toast({
         title: "Login Successful",

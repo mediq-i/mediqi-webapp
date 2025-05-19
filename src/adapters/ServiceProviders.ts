@@ -23,7 +23,9 @@ const ServiceProviderAdapter = {
     rating: string | null;
   }): Promise<SearchServiceProvider> => {
     const response = await userService.fetch<SearchServiceProvider>(
-      `search?specialty=${specialty}&languages=${languages}&rating=${rating}`
+      `search?specialty=${specialty || ""}&languages=${
+        languages || ""
+      }&rating=${rating || ""}`
     );
 
     return response;
