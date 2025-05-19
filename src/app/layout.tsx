@@ -12,6 +12,7 @@ import { UserProvider } from "@/providers/user-provider";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import dynamic from "next/dynamic";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const AgoraWrapper = dynamic(() => import("@/providers/agora-wrapper"), {
   ssr: false,
@@ -66,21 +67,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>
-          <AgoraWrapper>
-            <ReactQueryProvider>
-              <div className="flex h-screen">
-                {/* Mobile Sidebar Overlay */}
-                {sidebarOpen && (
-                  <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                  />
-                )}
+        <AuthProvider>
+          <UserProvider>
+            <AgoraWrapper>
+              <ReactQueryProvider>
+                <div className="flex h-screen">
+                  {/* Mobile Sidebar Overlay */}
+                  {sidebarOpen && (
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                      onClick={() => setSidebarOpen(false)}
+                    />
+                  )}
 
-                {/* Sidebar */}
-                <div
-                  className={`
+                  {/* Sidebar */}
+                  <div
+                    className={`
                   fixed md:static z-50 transform transition-transform duration-300 ease-in-out
                   ${
                     sidebarOpen
@@ -88,26 +90,27 @@ export default function RootLayout({
                       : "-translate-x-full md:translate-x-0"
                   }
                 `}
-                >
-                  <Sidebar onClose={() => setSidebarOpen(false)} />
-                </div>
-
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col md:ml-[0px] w-full">
-                  <div className="flex items-center justify-between p-4 md:hidden">
-                    <button onClick={() => setSidebarOpen(true)}>
-                      <Menu className="h-6 w-6" />
-                    </button>
-                    <div className="font-bold">MEDIQ-i</div>
+                  >
+                    <Sidebar onClose={() => setSidebarOpen(false)} />
                   </div>
-                  <Navbar />
-                  <Toaster />
-                  <main className="flex-1 overflow-y-auto">{children}</main>
+
+                  {/* Main Content */}
+                  <div className="flex-1 flex flex-col md:ml-[0px] w-full">
+                    <div className="flex items-center justify-between p-4 md:hidden">
+                      <button onClick={() => setSidebarOpen(true)}>
+                        <Menu className="h-6 w-6" />
+                      </button>
+                      <div className="font-bold">MEDIQ-i</div>
+                    </div>
+                    <Navbar />
+                    <Toaster />
+                    <main className="flex-1 overflow-y-auto">{children}</main>
+                  </div>
                 </div>
-              </div>
-            </ReactQueryProvider>
-          </AgoraWrapper>
-        </UserProvider>
+              </ReactQueryProvider>
+            </AgoraWrapper>
+          </UserProvider>
+        </AuthProvider>
       </body>
     </html>
   );
