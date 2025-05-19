@@ -1,12 +1,14 @@
+"use client";
+
 import AuthBanner from "@/components/partials/ui/AuthBanner";
 import { LogoWhite } from "@/icons";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import { ResetPasswordForm } from "@/components/auth/modules";
 
-export const metadata: Metadata = {
-  title: "Reset Password / MEDQI-i",
-  description: "MEDQI-I",
-};
+// export const metadata: Metadata = {
+//   title: "Reset Password / MEDQI-i",
+//   description: "MEDQI-I",
+// };
 
 function Auth() {
   return (

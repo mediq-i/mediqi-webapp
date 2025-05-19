@@ -22,8 +22,19 @@ export type Session = {
   patient_id: string;
   payment_status: string | null;
   payment_id: string | null;
+  agora_token: string;
+  agora_channel: string;
 };
 
 export type SessionHistory = {
   data: Session[];
+};
+
+export type GetAgoraToken = {
+  agoraTokenData: {
+    token: string;
+    channelName: string;
+    uid: string;
+    appId: string;
+  };
 };

@@ -7,6 +7,7 @@ export default function getFormattedDateAndTime(
     year: "numeric",
     minute: "numeric",
     hour: "numeric",
+    hour12: true,
   }).format(new Date(date!));
 
   return formattedDate;

@@ -14,13 +14,23 @@ import {
   ServiceProviderAdapter,
   useUserQuery,
 } from "@/adapters/ServiceProviders";
-import { format } from "date-fns";
+import { format, isBefore, isAfter, addMinutes } from "date-fns";
 import { ServiceProviderDetails } from "@/adapters/types/ServiceProviderTypes";
+import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Video } from "lucide-react";
+import { toast } from "sonner";
+
 interface SessionCardProps {
   session: Session;
 }
 
 export default function SessionCard({ session }: SessionCardProps) {
+  const router = useRouter();
+  // Generate 8-digit numeric UID
+  const uid = Math.floor(10000000 + Math.random() * 90000000);
+
   const { data: provider, isLoading: providerLoading } =
     useUserQuery<ServiceProviderDetails>({
       queryKey: ["provider", session.service_provider_id],
@@ -29,6 +39,12 @@ export default function SessionCard({ session }: SessionCardProps) {
           id: session.service_provider_id,
         }),
       slug: "",
+    });
+
+  const { mutate: generateToken, isPending: isGeneratingToken } =
+    useBookingMutation({
+      mutationCallback: BookingAdapter.generateToken,
+      params: session.id,
     });
 
   const formattedDate = format(
@@ -46,6 +62,52 @@ export default function SessionCard({ session }: SessionCardProps) {
       .map((n) => n[0])
       .join("")
       .toUpperCase();
+  };
+
+  const handleJoinSession = async () => {
+    // Check if we already have Agora credentials
+    if (session.agora_token && session.agora_channel) {
+      // Join directly with existing credentials
+      router.push(
+        `/appointment-room?token=${session.agora_token}&channel=${session.agora_channel}&uid=${uid}`
+      );
+    } else {
+      // Generate new token if none exists
+      generateToken(
+        {},
+        {
+          onSuccess: (response) => {
+            const { token, channelName, uid, appId } =
+              response.data.agoraTokenData;
+            router.push(
+              `/appointment-room?token=${token}&channel=${channelName}&uid=${uid}&appId=${appId}`
+            );
+          },
+          onError: (error) => {
+            toast.error("Failed to generate video call credentials", {
+              description:
+                "Please try again or contact support if the issue persists.",
+            });
+            console.error("Token generation error:", error);
+          },
+        }
+      );
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getSessionStatus = () => {
+    const now = new Date();
+    const sessionDate = new Date(session.appointment_date);
+    const sessionEndTime = addMinutes(sessionDate, 30);
+
+    if (isBefore(now, addMinutes(sessionDate, -5))) {
+      return "upcoming";
+    } else if (isAfter(now, sessionEndTime)) {
+      return "completed";
+    } else {
+      return "active";
+    }
   };
 
   return (
@@ -69,15 +131,15 @@ export default function SessionCard({ session }: SessionCardProps) {
           )}
           <div>
             <p className="text-[#090909] font-[700] text-[16px]">
-              {providerName}
+              Dr. {providerName}
             </p>
-            <p className="text-[#667085] font-[400] text-[14px]">
+            <p className="text-[#667085] font-[400] text-[14px] capitalize">
               {provider?.data.specialty || "Loading..."}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center mt-5 gap-1">
+        <div className="flex items-center mt-5 gap-2">
           <Dialog>
             <DialogTrigger className="w-[247px] p-3 bg-[#F2F4F7] rounded-3xl text-black">
               Session Details
@@ -161,8 +223,41 @@ export default function SessionCard({ session }: SessionCardProps) {
               </div>
             </DialogContent>
           </Dialog>
+          {/* 
+          {getSessionStatus() === "upcoming" && (
+            <Button disabled className="flex items-center gap-2 bg-gray-400">
+              <Clock className="h-4 w-4" />
+              Session starts in{" "}
+              {formatDistanceToNow(new Date(session.appointment_date))}
+            </Button>
+          )} */}
+          {/* 
+          {getSessionStatus() === "active" && (
+            <Button
+              onClick={handleJoinSession}
+              disabled={isGeneratingToken}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            >
+              <Video className="h-4 w-4" />
+              {isGeneratingToken ? "Connecting..." : "Join Session"}
+            </Button>
+          )} */}
 
-          {/* <RescheduleSession /> */}
+          {/* {getSessionStatus() === "completed" && (
+            <Button disabled className="flex items-center gap-2 bg-gray-400">
+              <CheckCircle className="h-4 w-4" />
+              Session Completed
+            </Button>
+          )} */}
+
+          <Button
+            onClick={handleJoinSession}
+            disabled={isGeneratingToken}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          >
+            <Video className="h-4 w-4" />
+            {isGeneratingToken ? "Connecting..." : "Join Session"}
+          </Button>
         </div>
       </div>
     </div>

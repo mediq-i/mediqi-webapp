@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { AxiosResponse } from "axios";
 import { apiInstance } from "@/config";
 
@@ -23,7 +23,6 @@ class ApiService {
   private get token(): string | null {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      console.log("the fetch", token)
       return token;
     }
     return null;

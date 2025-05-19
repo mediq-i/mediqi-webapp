@@ -9,6 +9,8 @@ import {
   House,
   Store,
   Wallet,
+  X,
+  Heart,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +28,7 @@ import {
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: House },
   { name: "Session", href: "/session", icon: CalendarPlus2 },
+  { name: "Vitals", href: "/profile/vitals", icon: Heart },
   { name: "Store", href: "#1", icon: Store },
   { name: "Payment", href: "/payment", icon: Wallet },
   {
@@ -52,12 +55,11 @@ const NAV_ITEMS = [
       { name: "HealthPedia", href: "/healthpedia" },
       { name: "About Us", href: "/about-us" },
       { name: "Terms and Policy", href: "/terms" },
-
     ],
   },
 ];
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const pathname = usePathname();
   const { data, isPending } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
@@ -66,9 +68,14 @@ const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className="w-[250px] h-full bg-white shadow-lg fixed p-1">
-      <div className="p-6">
-        <Image src="/mediqi-logo.svg" alt="Logo" width={30} height={30} />
+    <div className="w-[250px] h-full bg-white shadow-lg p-1">
+      <div className="p-4 md:p-6">
+        <div className="flex justify-between items-center md:block">
+          <Image src="/mediqi-logo.svg" alt="Logo" width={30} height={30} />
+          <button onClick={onClose} className="md:hidden">
+            <X className="h-6 w-6" />
+          </button>
+        </div>
 
         <div className="mt-4">
           {isPending ? (
@@ -162,7 +169,7 @@ const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative">
+      <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative hidden md:block">
         <p className="text-white font-[600] text-[18px] my-2">
           Refer A Friend & Earn
         </p>
