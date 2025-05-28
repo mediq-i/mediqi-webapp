@@ -13,11 +13,12 @@ import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Eye, EyeOff } from "lucide-react";
 
 export default function SignupForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -143,12 +144,6 @@ export default function SignupForm() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handlePassCodeChange = (value: string) => {
-    setFormData({ ...formData, ["password"]: value });
-    // if (value.length === 5) {
-    //   handleContinue();
-    // }
-  };
   const handleOTPChange = (value: string) => {
     setFormData({ ...formData, ["otp"]: value });
   };
@@ -314,56 +309,47 @@ export default function SignupForm() {
         {currentStep === 3 && (
           <div className="my-5 h-full relative">
             <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
-              Create passcode
+              Create password
             </p>
             <label
-              htmlFor="PassCode"
-              className="block text-[16px] font-[500] text-[#6C7278]"
+              htmlFor="password"
+              className="block text-[16px] font-[500] text-[#6C7278] mb-2"
             >
-              You will be able to login using the following passcode
-            </label>{" "}
-            <InputOTP
-              maxLength={6}
-              value={formData.password}
-              onChange={handlePassCodeChange}
-            >
-              <InputOTPGroup className="my-5 space-x-4">
-                <InputOTPSlot
-                  index={0}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-                <InputOTPSlot
-                  index={1}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-                <InputOTPSlot
-                  index={2}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-                <InputOTPSlot
-                  index={3}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-                <InputOTPSlot
-                  index={4}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-                <InputOTPSlot
-                  index={5}
-                  className="mr-3 border rounded-md lg:w-[56px] w-[51px] h-[54px] mx-1 bg-[#E4E7EC]"
-                />
-              </InputOTPGroup>
-            </InputOTP>
+              You will be able to login using this password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                maxLength={16}
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1570EF] focus:border-transparent pr-10"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
             <Button
               type="button"
               onClick={(e) => handleSubmit(e)}
-              className="w-full bg-[#1570EF] py-[22px] text-base rounded-[8px]"
+              className="w-full bg-[#1570EF] py-[22px] text-base rounded-[8px] mt-5"
               disabled={signUpMutation.isPending}
             >
               {signUpMutation.isPending ? (
                 <Loader2Icon className="animate-spin" />
               ) : (
-                " Continue"
+                "Continue"
               )}
             </Button>
           </div>

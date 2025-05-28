@@ -1,8 +1,7 @@
 "use client";
 
 import HomeHero from "@/components/home/ui/HomeHero";
-import Specialties from "@/components/home/ui/Specialties";
-import TopDoctors from "@/components/home/ui/TopDoctors";
+import VitalsCTA from "@/components/home/VitalsCTA";
 
 // import { Metadata } from "next";
 // import SEOWrapper from "@/utils/seo-wrapper";
@@ -14,10 +13,9 @@ import TopDoctors from "@/components/home/ui/TopDoctors";
 
 export default function Home() {
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-8">
       <HomeHero />
-      <Specialties />
-      <TopDoctors />
+      <VitalsCTA />
     </div>
   );
 }

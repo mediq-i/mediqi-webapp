@@ -13,7 +13,7 @@ export default function SessionList() {
   });
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1, 2, 3].map((i) => (
           <div key={i} className="animate-pulse">
             <div className="border rounded-xl p-3 w-[546px] h-[200px] bg-gray-100" />

@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { StickyNote } from "lucide-react";
+import { Loader2Icon, StickyNote } from "lucide-react";
 import React from "react";
 import { Session } from "@/adapters/types/BookingAdapterTypes";
 import {
@@ -112,7 +112,7 @@ export default function SessionCard({ session }: SessionCardProps) {
 
   return (
     <div>
-      <div className="border rounded-xl p-3 w-[546px]">
+      <div className="border rounded-xl p-3 ">
         <div className="mb-3 flex gap-3 p-2">
           <p className="border-r pr-3">{formattedDate}</p>
           {/* <p className="text-[#1570EF]">
@@ -256,7 +256,11 @@ export default function SessionCard({ session }: SessionCardProps) {
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
           >
             <Video className="h-4 w-4" />
-            {isGeneratingToken ? "Connecting..." : "Join Session"}
+            {isGeneratingToken ? (
+              <Loader2Icon className="h-4 w-4 animate-spin" />
+            ) : (
+              "Join Session"
+            )}
           </Button>
         </div>
       </div>

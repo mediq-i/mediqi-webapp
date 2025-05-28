@@ -1,56 +1,93 @@
 "use client";
 import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-// import { Slider } from "@/components/ui/slider";
 
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { UserAdapter, useUserQuery } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
-import Link from "next/link";
+import EnhancedDropdown from "./EnhancedDropdown";
+import { useUserQuery, UserAdapter } from "@/adapters/UserAdapter";
+import {
+  BabyIcon,
+  HeartPulseIcon,
+  StethoscopeIcon,
+  UtensilsIcon,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
-const specialties = ["General", "Cardiology", "Dermatologist", "Dentist"];
-const ratings = ["Any", "5.0", "4.0", "3.0", "2.0", "1.0"];
+const specialties = [
+  {
+    name: "General Practitioner",
+    slug: "general-medicine",
+    icon: <StethoscopeIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Gynecologist",
+    slug: "gynecology",
+    icon: <StethoscopeIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Pediatrician",
+    slug: "pediatrics",
+    icon: <BabyIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Cardiologist",
+    slug: "cardiology",
+    icon: <HeartPulseIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Dietician",
+    slug: "dietetics",
+    icon: <UtensilsIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Dermatologist",
+    slug: "dermatology",
+    icon: <StethoscopeIcon className="w-6 h-6 text-blue-500" />,
+  },
+  {
+    name: "Dentist",
+    slug: "dentistry",
+    icon: <StethoscopeIcon className="w-6 h-6 text-blue-500" />,
+  },
+];
+
+// const ratings = ["5.0", "4.5+", "4.0+", "3.5+", "3.0+"];
 const languages = ["English", "Igbo", "Yoruba", "Hausa"];
 
-function HomeHero() {
-  const [open, setOpen] = useState<boolean>(false);
-  const [languageOpen, setLanguageOpen] = useState<boolean>(false);
-
+export default function HomeHero() {
+  const router = useRouter();
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
     null
   );
-  const [selectedRating, setSelectedRating] = useState<string | null>(null);
+  // const [selectedRating, setSelectedRating] = useState<string | null>(null);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const serializedLanguages = selectedLanguages.join(",");
+
+  const handleSpecialtyChange = (value: string | string[]) => {
+    if (typeof value === "string") {
+      setSelectedSpecialty(value);
+    }
+  };
+
+  // const handleRatingChange = (value: string | string[]) => {
+  //   if (typeof value === "string") {
+  //     setSelectedRating(value);
+  //   }
+  // };
+
+  const handleLanguageChange = (value: string | string[]) => {
+    if (Array.isArray(value)) {
+      setSelectedLanguages(value);
+    }
+  };
+
   const { data } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
   });
 
-  const toggleLanguage = (language: string) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(language)
-        ? prev.filter((lang) => lang !== language)
-        : [...prev, language]
-    );
-  };
-
-  const handleClose = (
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    setOpen(false);
-  };
   return (
-    <div className="min-h-[300px] bg-[#E7F0FE] rounded-md relative px-4 py-6 md:px-8 md:py-0 ">
+    <div className="min-h-[300px] bg-[#E7F0FE] rounded-md relative px-4 py-6 md:px-8 md:pt-8">
       <div className="flex flex-col items-center justify-center gap-6 md:gap-10 h-full">
         <div className="text-lg md:text-xl w-full md:w-[90%] mx-auto font-semibold">
           <p className="text-center">
@@ -59,246 +96,48 @@ function HomeHero() {
         </div>
 
         {/* Search Container */}
-        <div className="w-full bg-white rounded-[30px] flex flex-col md:flex-row items-center justify-center px-4 md:px-8 py-3.5 gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="w-full md:w-auto text-left border-b md:border-b-0 md:border-r pr-4 pb-4 md:pb-0">
-              <p className="font-[600] text-[12px]">Specialty</p>
-              <p className="text-[#6B7280] font-[500] text-[14px]">
-                {selectedSpecialty ?? "What type of doctor"}
-              </p>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[90vw] md:w-[347px]">
-              <DropdownMenuLabel>Specialty</DropdownMenuLabel>
-              <Input
-                placeholder="Search specialty, symptoms"
-                type="search"
-                className="mt-3"
-              />
-              <DropdownMenuRadioGroup
-                value={selectedSpecialty ?? ""}
-                onValueChange={(value) => setSelectedSpecialty(value)}
-                className="flex flex-wrap p-1 gap-3 my-5"
-              >
-                {specialties.map((specialty) => (
-                  <DropdownMenuRadioItem
-                    key={specialty}
-                    value={specialty}
-                    className="w-[151px] border border-[#E5E7EB] rounded-md p-3"
-                  >
-                    <div className="flex justify-end">
-                      <input
-                        type="radio"
-                        checked={selectedSpecialty === specialty}
-                        readOnly
-                        className="form-radio text-blue-500 border-gray-300 focus:ring-blue-500"
-                      />
-                    </div>
-                    <Image
-                      src={"/dark-man.png"}
-                      alt="doctor"
-                      width={42}
-                      height={42}
-                    />
-                    <p>{specialty}</p>
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="w-full bg-white rounded-[30px] flex flex-col md:flex-row items-center justify-center px-4 md:px-8 py-3.5 gap-4 md:w-max">
+          <EnhancedDropdown
+            type="specialty"
+            label="Specialty"
+            placeholder="What type of doctor"
+            value={selectedSpecialty || ""}
+            options={specialties}
+            onChange={handleSpecialtyChange}
+          />
 
-          <DropdownMenu open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger
-              disabled
-              className="text-left border-b pb-4 md:border-r md:border-b-0 md:pr-4  md:pb-0 disabled:opacity-50 w-full md:w-auto"
-            >
-              <p className="font-[600] text-[12px]">Ratings</p>
-              <p className="text-[#6B7280] font-[500] text-[14px]">
-                {selectedRating ?? "Choose ratings"}
-              </p>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[347px] p-3">
-              <div className="flex justify-between px-2">
-                <DropdownMenuLabel>Ratings</DropdownMenuLabel>
-                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px] ">
-                  {" "}
-                  <button
-                    onClick={() => handleClose(setOpen)}
-                    className="text-black hover:text-red-700"
-                  >
-                    {" "}
-                    &#10005;{" "}
-                  </button>{" "}
-                </div>
-              </div>
-              <DropdownMenuRadioGroup
-                value={selectedRating ?? ""}
-                onValueChange={(value) => setSelectedRating(value)}
-                className="flex flex-wrap p-2 gap-3 my-5"
-              >
-                {ratings.map((rating) => (
-                  <DropdownMenuRadioItem
-                    key={rating}
-                    value={rating}
-                    className="rounded-3xl px-5 py-3 bg-[#F2F4F7] hover:bg-black hover:text-white"
-                  >
-                    {rating}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* <EnhancedDropdown
+            type="rating"
+            label="Ratings"
+            placeholder="Choose ratings"
+            value={selectedRating || ""}
+            options={ratings}
+            onChange={handleRatingChange}
+            disabled={!selectedSpecialty}
+          /> */}
 
-          {/* <DropdownMenu open={priceOpen} onOpenChange={setPriceOpen}>
-            <DropdownMenuTrigger className="text-left border-r pr-4">
-              <p className="font-[600] text-[12px]">Price</p>
-              <p className="text-[#6B7280] font-[500] text-[14px]">
-                {priceRange[0] !== 0 || priceRange[1] !== 100
-                  ? `N${priceRange[0]} - N${priceRange[1]}`
-                  : "Set your price"}
-              </p>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[347px] p-3">
-              <div className="flex justify-between">
-                <DropdownMenuLabel>Price</DropdownMenuLabel>
-                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
-                  {" "}
-                  <button
-                    onClick={() => handleClose(setPriceOpen)}
-                    className="text-black hover:text-red-700"
-                  >
-                    {" "}
-                    &#10005;{" "}
-                  </button>{" "}
-                </div>
-              </div>
-              <div className="flex justify-center gap-3 my-5">
-                <Input placeholder="Min" className="w-[150px]" />
-                <Input placeholder="Max" className="w-[150px]" />
-              </div>
-              <div>
-                <div className="flex justify-between">
-                  <p className="text-[#1D2939] font-[600] text-[12px]">N0</p>
-                  <p className="text-[#1D2939] font-[600] text-[12px]">N1m</p>
-                </div>
-                <Slider
-                  defaultValue={[35]}
-                  max={100}
-                  step={1}
-                  className="my-3"
-                />
-              </div>
-            </DropdownMenuContent>
+          <EnhancedDropdown
+            type="language"
+            label="Language spoken"
+            placeholder="Add languages"
+            value={selectedLanguages}
+            options={languages}
+            onChange={handleLanguageChange}
+          />
 
-          
-          </DropdownMenu> */}
-
-          <DropdownMenu open={languageOpen} onOpenChange={setLanguageOpen}>
-            <DropdownMenuTrigger className="text-left w-full md:w-auto">
-              <p className="font-[600] text-[12px]">Language spoken</p>
-              <p className="text-[#6B7280] font-[500] text-[14px]">
-                {selectedLanguages.length
-                  ? selectedLanguages.join(", ")
-                  : "Add languages"}
-              </p>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuContent className="w-[250px] flex flex-col gap-6 p-3">
-              <div className="flex justify-between">
-                <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
-                <div className="flex justify-center rounded-full bg-[#F2F4F7] w-[30px]">
-                  {" "}
-                  <button
-                    onClick={() => handleClose(setLanguageOpen)}
-                    className="text-black hover:text-red-700"
-                  >
-                    {" "}
-                    &#10005;{" "}
-                  </button>{" "}
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  English
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Igbo
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Hausa
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Yoruba
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Efik
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox />
-                <label
-                  htmlFor=""
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Pidgin
-                </label>
-              </div>
-            </DropdownMenuContent> */}
-
-            <DropdownMenuContent className="w-[250px] p-3">
-              <DropdownMenuLabel>Language Spoken</DropdownMenuLabel>
-              <div className="space-y-3">
-                {languages.map((lang) => (
-                  <div key={lang} className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={selectedLanguages.includes(lang)}
-                      onCheckedChange={() => toggleLanguage(lang)}
-                    />
-                    <label className="text-sm font-medium">{lang}</label>
-                  </div>
-                ))}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Link
-            href={`/service-providers?specialty=${
-              selectedSpecialty || ""
-            }&ratings=${selectedRating || ""}&languages=${
-              serializedLanguages || ""
-            }`}
-            className="w-full md:w-auto"
+          <Button
+            onClick={() =>
+              router.push(
+                `/service-providers?specialty=${
+                  selectedSpecialty || ""
+                }&languages=${selectedLanguages.join(",")}`
+              )
+            }
+            className="w-full md:w-auto bg-blue-600 text-white rounded-lg py-4 hover:bg-blue-700 transition-colors"
+            disabled={!selectedSpecialty || !selectedLanguages.length}
           >
-            <button className="w-full bg-[#1570EF] hover:bg-[#1570EF]/90 transition-all duration-100 rounded-full text-sm py-[14px] px-6 text-white font-semibold">
-              Find Now
-            </button>
-          </Link>
+            Search
+          </Button>
         </div>
 
         {/* Badge Section */}
@@ -338,5 +177,3 @@ function HomeHero() {
     </div>
   );
 }
-
-export default HomeHero;
