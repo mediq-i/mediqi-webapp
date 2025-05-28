@@ -394,8 +394,14 @@ export default function SignupForm() {
       </form>
       {currentStep >= 2 ? null : (
         <p className="text-[14px] font-[400] absolute bottom-10 text-center p-3">
-          By creating an account or signing you agree to our{" "}
-          <span className="font-[700] underline">Terms and Conditions</span>
+          By creating an account or signing up you agree to our{" "}
+          <a
+            href="https://www.mediqihealth.com/user-agreement"
+            target="_blank"
+            className="font-[700] underline"
+          >
+            Terms and Conditions
+          </a>
         </p>
       )}
     </>
