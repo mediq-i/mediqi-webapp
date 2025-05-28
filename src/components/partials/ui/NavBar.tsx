@@ -3,8 +3,10 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserAdapter, useUserQuery } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
+import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
+  const pathname = usePathname();
   const { data } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
@@ -12,7 +14,12 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="w-full h-16 bg-white flex items-center justify-between px-4 md:px-6 py-4 md:py-6">
-      <div className="font-bold hidden md:block">Home</div>
+      <div className="font-bold hidden md:block capitalize">
+        {pathname === "/"
+          ? "Home"
+          : pathname.split("/")[1].charAt(0).toUpperCase() +
+            pathname.split("/")[1].slice(1)}
+      </div>
       <div className="flex items-center gap-4 md:gap-6">
         <div className="hidden md:flex items-center gap-2">
           <CircleHelp width={24} height={24} />

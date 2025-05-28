@@ -5,9 +5,9 @@ import {
   ChevronDown,
   ChevronUp,
   CircleUser,
-  EllipsisVertical,
+  // EllipsisVertical,
   House,
-  Store,
+  // Store,
   Wallet,
   X,
   Heart,
@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   { name: "Home", href: "/", icon: House },
   { name: "Session", href: "/session", icon: CalendarPlus2 },
   { name: "Vitals", href: "/profile/vitals", icon: Heart },
-  { name: "Store", href: "#1", icon: Store },
+  // { name: "Store", href: "#1", icon: Store },
   { name: "Payment", href: "/payment", icon: Wallet },
   {
     name: "Profile",
@@ -43,20 +43,20 @@ const NAV_ITEMS = [
       { name: "Order History", href: "/profile/order-history" },
     ],
   },
-  {
-    name: "More",
-    href: "#4",
-    icon: EllipsisVertical,
-    childPages: [
-      { name: "Payment Method", href: "/payment-method" },
-      { name: "FAQs", href: "/faqs" },
-      { name: "Get Help", href: "/help" },
-      { name: "Feedback", href: "/feedback" },
-      { name: "HealthPedia", href: "/healthpedia" },
-      { name: "About Us", href: "/about-us" },
-      { name: "Terms and Policy", href: "/terms" },
-    ],
-  },
+  // {
+  //   name: "More",
+  //   href: "#4",
+  //   icon: EllipsisVertical,
+  //   childPages: [
+  //     { name: "Payment Method", href: "/payment-method" },
+  //     { name: "FAQs", href: "/faqs" },
+  //     { name: "Get Help", href: "/help" },
+  //     { name: "Feedback", href: "/feedback" },
+  //     { name: "HealthPedia", href: "/healthpedia" },
+  //     { name: "About Us", href: "/about-us" },
+  //     { name: "Terms and Policy", href: "/terms" },
+  //   ],
+  // },
 ];
 
 const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
@@ -169,7 +169,7 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
         </nav>
       </div>
 
-      <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative hidden md:block">
+      {/* <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative hidden md:block">
         <p className="text-white font-[600] text-[18px] my-2">
           Refer A Friend & Earn
         </p>
@@ -179,7 +179,7 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
         <button className="border-4 border-[#11111133] bg-[#FFBC0B] w-[212px] rounded-3xl p-2">
           Refer A Friend
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
