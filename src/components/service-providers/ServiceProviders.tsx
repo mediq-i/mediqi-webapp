@@ -92,7 +92,9 @@ function ServiceProviders() {
                   Dr. {doctor.first_name} {doctor.last_name}
                 </p>
                 <p className="text-[#667085] text-[12px] md:text-[14px] font-[400] mb-3 capitalize">
-                  {doctor.specialty}
+                  {doctor.specialty === "general-medicine"
+                    ? "General Practitioner"
+                    : doctor.specialty}
                 </p>
 
                 <div className="flex items-center gap-2 md:gap-3 justify-between">
@@ -113,7 +115,7 @@ function ServiceProviders() {
                     </p>
                   )}
                   <p className="font-black text-[14px] md:text-[16px]">
-                    NGN {doctor.price?.toLocaleString() || "1,500"}
+                    NGN 2,000
                   </p>
                 </div>
               </div>

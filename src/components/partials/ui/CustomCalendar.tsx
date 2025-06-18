@@ -77,9 +77,16 @@ const processCalendarData = (body: CalendarBody) => {
 };
 
 // Helper function to check if a day is available
-const isDayAvailable = (date: Date, workingHours: WorkingHours): boolean => {
+const isDayAvailable = (
+  date: Date,
+  workingHours: WorkingHours | null
+): boolean => {
+  if (!workingHours) return false;
+
   const dayName = format(date, "EEEE").toLowerCase() as keyof WorkingHours;
-  return workingHours[dayName]?.isAvailable ?? false;
+  const daySchedule = workingHours[dayName];
+
+  return daySchedule?.isAvailable ?? false;
 };
 
 function CalendarSection({
@@ -90,7 +97,7 @@ function CalendarSection({
   selectedDate,
   setSelectedDate,
   workingHours,
-}: CalendarSectionProps & { workingHours: WorkingHours }) {
+}: CalendarSectionProps & { workingHours: WorkingHours | null }) {
   const { weeks } = processCalendarData(body);
 
   return (
@@ -191,9 +198,14 @@ export default function CustomCalendar({
 
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const initialSetupDone = useRef(false);
-  if (selectDate) {
-    selectDate(selectedDate);
-  }
+
+  // Move state update to useEffect
+  useEffect(() => {
+    if (selectDate) {
+      selectDate(selectedDate);
+    }
+  }, [selectedDate, selectDate]);
+
   useEffect(() => {
     if (!initialSetupDone.current) {
       currentMonthCalendar.view.showMonthView();

@@ -109,7 +109,7 @@ function DoctorProfile() {
               {details?.specialty}
             </p>
             <p className="text-[#1570EF] font-[700] mt-2 text-[16px] md:text-[18px]">
-              NGN {details?.price?.toLocaleString() || "1,500"}
+              NGN {details?.price?.toLocaleString() || "2,000"} per session
             </p>
           </div>
         </div>

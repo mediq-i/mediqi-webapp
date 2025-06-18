@@ -7,12 +7,11 @@ import { Dialog } from "@headlessui/react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { Calendar, FileText, FileUp, Trash2 } from "lucide-react";
+import { Calendar, FileText, FileUp, Trash2, Check } from "lucide-react";
 import SelectDateAndTime from "../partials/SelectDateAndTime";
 import { useSearchParams } from "next/navigation";
 import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
 import { useToast } from "@/hooks/use-toast";
-import PayForSessionModal from "./PayForSessionModal";
 import { PaymentAdapter, usePaymentMutation } from "@/adapters/PaymentAdapter";
 import { queryKeys } from "@/constants";
 import {
@@ -25,6 +24,7 @@ import {
   getErrorMessage,
   getFormattedDateAndTime,
 } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 function BookASession() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -47,6 +47,8 @@ function BookASession() {
   });
   const [patientId, setPatientId] = useState();
   const [appointmentId, setAppointmentId] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: provider, isLoading } = useUserQuery({
     queryCallback: () =>
@@ -100,6 +102,7 @@ function BookASession() {
   const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      setIsSubmitting(true);
 
       // Create FormData instance
       const formData = new FormData();
@@ -136,23 +139,28 @@ function BookASession() {
         title: "Booking Successful",
         description: "Appointment request sent successfully",
       });
+
+      // Move to payment step after successful booking
+      setCurrentStep(5);
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
         description: getErrorMessage(error),
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const createPaymentIntent = async (e: any) => {
+  const createPaymentIntent = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      setIsSubmitting(true);
       const res = await createPaymentIntentMutation.mutateAsync({
         patientId: patientId,
         providerId: providerId,
         appointmentId: appointmentId,
-        amount: 1500,
+        amount: 2000,
         currency: "NGN",
         description: "Payment",
         subAccountId: provider?.data?.sub_account_id,
@@ -162,28 +170,129 @@ function BookASession() {
         description: res.data?.message,
       });
       window.location.href = res?.data?.data?.paystack_authorization_url;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred during payment";
       toast({
         variant: "destructive",
         title: "Error",
-        description: error?.response?.data?.message,
+        description: errorMessage,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const options = [
-    "Others",
-    "Anxiety",
-    "Loss of appetite",
-    "Sweating",
-    "Weight loss",
+    // General Symptoms
     "Fever",
-    "Depression",
-    "Insomnia",
+    "Fatigue",
+    "Headache",
+    "Dizziness",
+    "Nausea",
+    "Vomiting",
+    "Loss of appetite",
+    "Weight loss",
+    "Weight gain",
+    "Sweating",
+    "Chills",
     "Weakness",
+    "Insomnia",
+    "Anxiety",
+    "Depression",
+    "Stress",
+
+    // Pain Related
+    "Chest pain",
+    "Abdominal pain",
+    "Back pain",
+    "Joint pain",
+    "Muscle pain",
+    "Neck pain",
+    "Headache",
+    "Ear pain",
+    "Eye pain",
+    "Tooth pain",
+
+    // Respiratory
+    "Cough",
+    "Shortness of breath",
+    "Wheezing",
+    "Chest tightness",
+    "Runny nose",
+    "Sore throat",
+    "Sinus congestion",
+    "Difficulty breathing",
+
+    // Digestive
+    "Diarrhea",
+    "Constipation",
+    "Bloating",
+    "Indigestion",
+    "Heartburn",
+    "Stomach cramps",
+    "Acid reflux",
+    "Loss of appetite",
+
+    // Skin Related
+    "Rash",
+    "Itching",
+    "Hives",
+    "Skin discoloration",
+    "Dry skin",
+    "Acne",
+    "Eczema",
+    "Skin lesions",
+    "Bruising",
+
+    // Neurological
+    "Dizziness",
+    "Vertigo",
+    "Numbness",
+    "Tingling",
+    "Seizures",
+    "Memory problems",
+    "Confusion",
+    "Difficulty concentrating",
+    "Tremors",
+
+    // Urinary
+    "Frequent urination",
+    "Painful urination",
+    "Blood in urine",
+    "Urinary urgency",
+    "Difficulty urinating",
+    "Incontinence",
+
+    // Vision and Hearing
+    "Blurred vision",
+    "Eye redness",
+    "Eye discharge",
+    "Hearing loss",
+    "Ringing in ears",
+    "Ear discharge",
+    "Sensitivity to light",
+
+    // Mental Health
+    "Anxiety",
+    "Depression",
+    "Mood swings",
+    "Irritability",
+    "Panic attacks",
     "Suicidal thoughts",
-    "Tummy ache",
+    "Hallucinations",
+
+    // Other
+    "Swelling",
+    "Lymph node enlargement",
+    "Fever",
+    "Night sweats",
+    "Dehydration",
+    "Allergic reactions",
+    "Hair loss",
+    "Nail changes",
   ];
 
   return (
@@ -218,34 +327,40 @@ function BookASession() {
               />
             )}{" "}
             {currentStep === 2 && (
-              <div className=" mt-10">
-                <div className="mb-5 cursor-pointer">
+              <div className="mt-10">
+                <div className="mb-5">
                   <label className="text-[#1D2939] text-[16px] font-[500]">
                     What symptoms have you been experiencing?
                   </label>
-                  <div className="px-4 py-2 my-3 min-h-[63px] w-full border rounded flex gap-3 bg-[#E8E8E8] flex-wrap relative">
-                    {selectedOptions.length > 0 ? (
-                      selectedOptions.map((symptom, index) => {
-                        return (
+                  <div className="relative">
+                    <div
+                      className="px-4 py-2 my-3 min-h-[63px] w-full border rounded flex gap-3 bg-[#E8E8E8] flex-wrap relative cursor-pointer"
+                      onClick={() => setIsOpen(true)}
+                    >
+                      {selectedOptions.length > 0 ? (
+                        selectedOptions.map((symptom, index) => (
                           <div
                             key={index}
                             className="bg-white border rounded-3xl p-2 flex gap-3 items-center"
                           >
                             {symptom}
                             <button
-                              onClick={() => handleOptionChange(symptom)}
-                              className="text-[12px]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOptionChange(symptom);
+                              }}
+                              className="text-[12px] hover:text-red-500"
                             >
                               X
                             </button>
                           </div>
-                        );
-                      })
-                    ) : (
-                      <div
-                        className="absolute right-4 bottom-7"
-                        onClick={() => setIsOpen(true)}
-                      >
+                        ))
+                      ) : (
+                        <span className="text-gray-500">
+                          Select symptoms...
+                        </span>
+                      )}
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
                         <Image
                           src={"/dropdown-icon.svg"}
                           alt=""
@@ -253,7 +368,63 @@ function BookASession() {
                           height={9}
                         />
                       </div>
-                    )}
+                    </div>
+
+                    <Dialog
+                      open={isOpen}
+                      onClose={() => setIsOpen(false)}
+                      className="relative z-50"
+                    >
+                      <div className="fixed inset-0 bg-black/30" />
+                      <div className="fixed inset-0 flex items-center justify-center p-4">
+                        <Dialog.Panel className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+                          <div className="p-4 border-b">
+                            <Input
+                              placeholder="Search symptoms..."
+                              className="w-full"
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                          </div>
+                          <div className="p-4 overflow-y-auto flex-1">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              {options
+                                .filter((option) =>
+                                  option
+                                    .toLowerCase()
+                                    .includes(searchQuery.toLowerCase())
+                                )
+                                .map((option) => (
+                                  <button
+                                    key={option}
+                                    onClick={() => handleOptionChange(option)}
+                                    className={`p-2 text-left rounded-lg transition-colors ${
+                                      selectedOptions.includes(option)
+                                        ? "bg-[#1D2939] text-white"
+                                        : "hover:bg-gray-100"
+                                    }`}
+                                  >
+                                    {option}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+                          <div className="p-4 border-t flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Close
+                            </Button>
+                            <Button
+                              onClick={() => setIsOpen(false)}
+                              className="bg-[#1D2939] text-white"
+                            >
+                              Done
+                            </Button>
+                          </div>
+                        </Dialog.Panel>
+                      </div>
+                    </Dialog>
                   </div>
                 </div>
                 {selectedOptions.includes("Others") && (
@@ -279,68 +450,8 @@ function BookASession() {
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
-                {/* <div className="mb-5">
-                  <label className="text-[#1D2939] text-[16px] font-[500]">
-                    Please specify how you are feeling
-                  </label>
-                  <Textarea className="h-[89px]" />
-                </div> */}
-
-                <div className="p-6">
-                  {/* <button
-                    onClick={() => setIsOpen(true)}
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                  >
-                    {selectedOptions.length > 0
-                      ? selectedOptions.join(", ")
-                      : "Select Options"}
-                  </button> */}
-
-                  <Dialog
-                    open={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    className="relative z-10"
-                  >
-                    <div className="fixed inset-0 bg-black bg-opacity-30" />
-
-                    <div className="fixed inset-0 flex items-center justify-center">
-                      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md z-20">
-                        <Dialog.Title className="text-xl font-semibold mb-4">
-                          <Input
-                            placeholder="Search symptoms"
-                            className="p-5"
-                          />
-                        </Dialog.Title>
-                        <div className="flex flex-wrap gap-2">
-                          {options.map((option) => (
-                            <button
-                              key={option}
-                              className={`px-4 py-2 rounded-3xl cursor-pointer transition duration-200 hover:bg-[#1D2939] hover:text-white ${
-                                selectedOptions.includes(option)
-                                  ? "bg-[#1D2939] text-white"
-                                  : "bg-[#E4E7EC]"
-                              }`}
-                              onClick={() => handleOptionChange(option)}
-                            >
-                              {option}
-                            </button>
-                          ))}
-                        </div>
-
-                        <div className="mt-6 flex justify-end">
-                          <button
-                            onClick={() => setIsOpen(false)}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-3xl"
-                          >
-                            Add
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </Dialog>
-                </div>
               </div>
-            )}{" "}
+            )}
             {currentStep === 3 && (
               <div className="my-5 relative h-full">
                 <p className="font-[500] text-[16px] text-[#353535]">Upload</p>
@@ -401,7 +512,7 @@ function BookASession() {
             {currentStep === 4 && (
               <div className="my-5 h-full relative">
                 <div>
-                  <div className=" pb-4 border-b border-dashed">
+                  <div className="pb-4 border-b border-dashed">
                     <div className="flex items-center gap-2 my-4">
                       <Calendar />
                       <div>
@@ -435,79 +546,87 @@ function BookASession() {
                     </div>
                   </div>
                 </div>
+
+                <div className="flex justify-between mt-6">
+                  <Button
+                    onClick={handleBack}
+                    variant="outline"
+                    className="rounded-full"
+                    disabled={isSubmitting}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    className="bg-[#1D2939] text-white rounded-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      "Proceed to Payment"
+                    )}
+                  </Button>
+                </div>
               </div>
             )}
-            {currentStep > 4 && (
+            {currentStep === 5 && (
               <div className="my-5 h-full relative">
-                <div>
-                  <div className=" pb-4 border-b border-dashed">
-                    <p className="font-[400] text-[#353535] text-[14  px]">{`Booking Fee`}</p>
-                    <p className="font-[500] text-[18px]">{`40,000`}</p>
+                <div className="text-center">
+                  <div className="mb-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Check className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Booking Successful!
+                    </h3>
+                    <p className="text-gray-600">
+                      Your appointment has been scheduled. Please proceed with
+                      the payment to confirm your booking.
+                    </p>
                   </div>
 
-                  <p className="font-[500] text-[#667085] text-[18px]">{`Session overview`}</p>
-                  <div className="my-4 pb-4 border-b border-dashed">
-                    <div className="flex items-center gap-2 my-4">
-                      <Calendar />
-                      <div>
-                        <p className="font-[500] text-[#1D2939] text-[16px]">
-                          30 Mins Session
-                        </p>
-                        <p className="font-[400] text-[#667085] text-[14px]">
-                          {getFormattedDateAndTime(selectedDate)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="my-4">
-                    <p className="font-[500] text-[#667085] text-[18px]">{`Payment Details`}</p>
-                    <div className="pb-1 my-3 border-b flex justify-between">
-                      <p className="font-[400] text-[14px] text-[#4B5563]">
-                        Fee
-                      </p>
-                      <p className="font-[500] text-[14px] text-[#111827]">
-                        NGN 40,000.00
-                      </p>
-                    </div>
-                    <div className="pb-1 my-3 border-b flex justify-between">
-                      <p className="font-[400] text-[14px] text-[#4B5563]">
-                        Tax
-                      </p>
-                      <p className="font-[500] text-[14px] text-[#111827]">
-                        NGN 199.00
-                      </p>
-                    </div>
-                    <div className="pb-1 my-3 flex justify-between">
-                      <p className="font-[600] text-[14px]">Total Payment</p>
-                      <p className="font-[500] text-[14px] text-[#111827]">
-                        NGN 40,000.00
-                      </p>
-                    </div>
+                  <div className="flex justify-center mt-6">
+                    <Button
+                      onClick={createPaymentIntent}
+                      className="bg-[#1D2939] text-white rounded-full px-8"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Processing...
+                        </div>
+                      ) : (
+                        "Proceed to Payment"
+                      )}
+                    </Button>
                   </div>
                 </div>
               </div>
             )}
-            <div className="p-3 flex justify-between border-t fixed bottom-0 left-0 right-0 md:relative md:w-[500px] md:mx-auto bg-white">
-              <button
-                className="p-3 w-[100px] md:w-[113px] bg-[#F2F4F7] rounded-3xl"
-                onClick={handleBack}
-                disabled={currentStep <= 1}
-                type="button"
-              >
-                Previous
-              </button>
-              {currentStep === 5 ? (
-                <PayForSessionModal createPaymentIntent={createPaymentIntent} />
-              ) : (
-                <button
-                  className="p-3 w-[100px] md:w-[113px] bg-[#1570EF] rounded-3xl text-white"
-                  onClick={handleContinue}
-                  type={currentStep === 4 ? "submit" : "button"}
+            {currentStep < 4 && (
+              <div className="flex justify-between mt-6">
+                <Button
+                  onClick={handleBack}
+                  variant="outline"
+                  className="rounded-full"
+                  disabled={isSubmitting}
                 >
-                  {currentStep === 4 ? "Payment" : "Next"}
-                </button>
-              )}
-            </div>
+                  Back
+                </Button>
+                <Button
+                  onClick={handleContinue}
+                  className="bg-[#1D2939] text-white rounded-full"
+                  disabled={isSubmitting}
+                >
+                  Continue
+                </Button>
+              </div>
+            )}
           </form>
         </div>
       </div>

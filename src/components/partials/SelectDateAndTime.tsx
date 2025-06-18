@@ -45,6 +45,19 @@ function SelectDateAndTime({
     night: [],
   });
 
+  // Move useEffect hooks to the top
+  useEffect(() => {
+    if (selectDate) {
+      selectDate(selectedDate);
+    }
+  }, [selectedDate, selectDate]);
+
+  useEffect(() => {
+    if (selectTime) {
+      selectTime(selectedTime);
+    }
+  }, [selectedTime, selectTime]);
+
   // Function to categorize time slots
   const categorizeTimeSlots = (slots: { start: string; end: string }[]) => {
     const categorized = {
@@ -126,14 +139,6 @@ function SelectDateAndTime({
         No schedule information available
       </div>
     );
-  }
-
-  if (selectDate) {
-    selectDate(selectedDate);
-  }
-
-  if (selectTime) {
-    selectTime(selectedTime);
   }
 
   return (

@@ -7,10 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { ChevronRight, CreditCard, Wallet } from "lucide-react";
+import { ChevronRight, CreditCard, Loader2, Wallet } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function PayForSessionModal({createPaymentIntent}:{createPaymentIntent:(e: any) => Promise<void>}) {
+function PayForSessionModal({
+  createPaymentIntent,
+  isLoading,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createPaymentIntent: (e: any) => Promise<void>;
+  isLoading: boolean;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -28,16 +34,20 @@ function PayForSessionModal({createPaymentIntent}:{createPaymentIntent:(e: any) 
         <div>
           <div className="text-center">
             <p className="text-[14px] font-[500] text-[#667085]">Amount</p>
-            <p className="text-[28px] font-[600] text-[#1D2939]">40,000</p>
+            <p className="text-[28px] font-[600] text-[#1D2939]">2,000</p>
           </div>
           <div className="mt-3">
             <p className="text-[18px] font-[500] text-[#667085]">
               Select a payment option
             </p>
-            <div className="flex items-center justify-between my-3 cursor-pointer hover:bg-[#fbfbfb]" onClick={createPaymentIntent}>
+            <button
+              className="flex w-full items-center justify-between my-3 cursor-pointer hover:bg-[#fbfbfb]"
+              onClick={createPaymentIntent}
+              disabled={isLoading}
+            >
               <div className="flex gap-3 items-center my-3">
                 <div className="bg-[#7A5AF8] w-[50px] h-[50px] rounded-full flex justify-center items-center">
-                  <CreditCard color="white"/>
+                  <CreditCard color="white" />
                 </div>
                 <div>
                   <p className="text-[20px] font-[600] text-[#1D2939]">
@@ -49,12 +59,19 @@ function PayForSessionModal({createPaymentIntent}:{createPaymentIntent:(e: any) 
                 </div>
               </div>
 
-              <ChevronRight/>
-            </div>
-            <div className="flex items-center justify-between my-3 cursor-pointer hover:bg-[#fbfbfb]" >
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <ChevronRight />
+              )}
+            </button>
+            <button
+              className="flex w-full disabled:opacity-50 disabled:cursor-not-allowed items-center justify-between my-3 cursor-pointer hover:bg-[#fbfbfb]"
+              disabled
+            >
               <div className="flex gap-3 items-center my-3">
                 <div className="bg-[#EE46BC] w-[50px] h-[50px] rounded-full flex justify-center items-center">
-                  <Wallet color="white"/>
+                  <Wallet color="white" />
                 </div>
                 <div>
                   <p className="text-[20px] font-[600] text-[#1D2939]">
@@ -65,12 +82,12 @@ function PayForSessionModal({createPaymentIntent}:{createPaymentIntent:(e: any) 
                   </p>
                 </div>
                 <div className="bg-[#FEDF89] p-3 rounded-lg">
-                    <p>Wallet Balance: NGN 2,300</p>
+                  <p>Coming Soon</p>
                 </div>
               </div>
 
-              <ChevronRight/>
-            </div>
+              <ChevronRight />
+            </button>
           </div>
         </div>
         <DialogFooter></DialogFooter>
