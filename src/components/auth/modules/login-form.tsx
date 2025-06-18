@@ -4,13 +4,14 @@ import { AuthAdapter, useAuthMutation } from "@/adapters/AuthAdapter";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,8 +27,16 @@ export default function LoginForm() {
   const forgotPasswordMutation = useAuthMutation({
     mutationCallback: AuthAdapter.forgotPassword,
   });
+
   const forgotPassword = async () => {
     try {
+      if (!formData.email) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Email is required",
+        });
+      }
       await forgotPasswordMutation.mutateAsync({
         email: formData.email,
       });
@@ -70,7 +79,7 @@ export default function LoginForm() {
     }
   };
   return (
-    <div className="lg:mt-[200px] p- h-screen lg:h-auto relative">
+    <div className="lg:mt-[200px] px-6 lg:px-0 lg:pt-0 pt-8 h-screen lg:h-auto relative">
       <div className="mb-[50px]">
         <p className="text-[#1C2634] font-[700] text-[32px] mb-5">
           Welcome back
@@ -86,13 +95,22 @@ export default function LoginForm() {
           className="lg:my-5 block border w-full px-4 py-2 rounded text-black mb-3"
         />
 
-        <input
-          type="password"
-          placeholder="Passcode"
-          name="password"
-          onChange={handleChange}
-          className="lg:my-5 block border w-full px-4 py-2 rounded text-black"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Passcode"
+            name="password"
+            onChange={handleChange}
+            className="lg:my-5 block border w-full px-4 py-2 rounded text-black pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <div className="flex justify-between my-5">
           <div className="flex items-center gap-1">
             <Checkbox id="remember" />
