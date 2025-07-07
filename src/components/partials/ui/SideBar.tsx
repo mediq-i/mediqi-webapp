@@ -11,6 +11,7 @@ import {
   Wallet,
   X,
   Heart,
+  Pill,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,6 +30,7 @@ const NAV_ITEMS = [
   { name: "Home", href: "/", icon: House },
   { name: "Session", href: "/session", icon: CalendarPlus2 },
   { name: "Vitals", href: "/profile/vitals", icon: Heart },
+  { name: "Prescriptions", href: "/profile/prescriptions", icon: Pill },
   // { name: "Store", href: "#1", icon: Store },
   { name: "Payment", href: "/payment", icon: Wallet },
   {
