@@ -1,24 +1,11 @@
 "use client";
 import React, { Dispatch, SetStateAction, useState, useEffect } from "react";
-import CustomCalendar from "../partials/ui/CustomCalendar";
+import MonthlyAvailabilityCalendar from "../partials/ui/MonthlyAvailabilityCalendar";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { format, parse } from "date-fns";
-import {
-  DaySchedule,
-  ServiceProviderDetails,
-} from "@/adapters/types/ServiceProviderTypes";
+import { ServiceProviderDetails } from "@/adapters/types/ServiceProviderTypes";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface WorkingHours {
-  monday?: DaySchedule;
-  tuesday?: DaySchedule;
-  wednesday?: DaySchedule;
-  thursday?: DaySchedule;
-  friday?: DaySchedule;
-  saturday?: DaySchedule;
-  sunday?: DaySchedule;
-}
 
 interface SelectDateAndTimeProps {
   selectDate?: Dispatch<SetStateAction<Date | undefined>>;
@@ -84,15 +71,23 @@ function SelectDateAndTime({
 
   // Update available slots when date changes
   useEffect(() => {
-    if (selectedDate && provider?.data.working_hours) {
-      const dayName = format(
-        selectedDate,
-        "EEEE"
-      ).toLowerCase() as keyof WorkingHours;
-      const daySchedule = provider.data.working_hours[dayName];
+    if (selectedDate && provider?.data.monthly_availability) {
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+      const day = selectedDate.getDate();
 
-      if (daySchedule?.isAvailable && daySchedule.slots) {
-        setAvailableSlots(categorizeTimeSlots(daySchedule.slots));
+      // Check if the selected date is in the current monthly availability data
+      if (
+        year === provider.data.monthly_availability.year &&
+        month === provider.data.monthly_availability.month
+      ) {
+        const dayAvailability = provider.data.monthly_availability.days[day];
+
+        if (dayAvailability?.isAvailable && dayAvailability.slots) {
+          setAvailableSlots(categorizeTimeSlots(dayAvailability.slots));
+        } else {
+          setAvailableSlots({ morning: [], afternoon: [], night: [] });
+        }
       } else {
         setAvailableSlots({ morning: [], afternoon: [], night: [] });
       }
@@ -144,10 +139,10 @@ function SelectDateAndTime({
   return (
     <div className="my-4 md:my-8 pb-5">
       <div className="overflow-x-auto">
-        <CustomCalendar
+        <MonthlyAvailabilityCalendar
           selectDate={setSelectedDate}
-          workingHours={provider.data.working_hours}
-          onDateSelect={(date) => setSelectedDate(date)}
+          monthlyAvailability={provider.data.monthly_availability}
+          onDateSelect={(date: Date) => setSelectedDate(date)}
         />
       </div>
 

@@ -27,6 +27,7 @@ export type SearchServiceProvider = {
         saturday?: DaySchedule;
         sunday?: DaySchedule;
       };
+      monthly_availability: MonthlyAvailability;
     }
   ];
 };
@@ -35,6 +36,31 @@ export type DaySchedule = {
   isAvailable: boolean;
   slots: { start: string; end: string }[];
 };
+
+export interface TimeSlot {
+  start: string; // HH:mm format
+  end: string; // HH:mm format
+}
+
+export interface DayAvailability {
+  isAvailable: boolean;
+  slots: TimeSlot[];
+}
+
+export interface MonthlyAvailability {
+  year: number;
+  month: number; // 1-12
+  days: {
+    [day: number]: DayAvailability; // day: 1-31
+  };
+}
+export interface MonthlyAvailability {
+  year: number;
+  month: number; // 1-12
+  days: {
+    [day: number]: DayAvailability; // day: 1-31
+  };
+}
 
 export type ServiceProviderDetails = {
   data: {
@@ -65,5 +91,6 @@ export type ServiceProviderDetails = {
       saturday?: DaySchedule;
       sunday?: DaySchedule;
     };
+    monthly_availability: MonthlyAvailability;
   };
 };

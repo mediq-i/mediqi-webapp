@@ -10,15 +10,6 @@ import { queryKeys } from "@/constants";
 import { useSearchParams } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, parse } from "date-fns";
-
-// Helper function to format time
-const formatTimeSlot = (slot: { start: string; end: string }) => {
-  const formatTime = (time: string) => {
-    return format(parse(time, "HH:mm", new Date()), "h:mm a");
-  };
-  return `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
-};
 
 function DoctorProfile() {
   const searchParams = useSearchParams();
@@ -38,16 +29,6 @@ function DoctorProfile() {
     if (!firstName || !lastName) return "DR";
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   };
-
-  const daysOfWeek = [
-    { key: "monday", label: "Monday" },
-    { key: "tuesday", label: "Tuesday" },
-    { key: "wednesday", label: "Wednesday" },
-    { key: "thursday", label: "Thursday" },
-    { key: "friday", label: "Friday" },
-    { key: "saturday", label: "Saturday" },
-    { key: "sunday", label: "Sunday" },
-  ] as const;
 
   if (isLoading) {
     return (
@@ -161,12 +142,7 @@ function DoctorProfile() {
           >
             About
           </TabsTrigger>
-          <TabsTrigger
-            value="working time"
-            className="data-[state=active]:shadow-none data-[state=active]:border-dashed data-[state=active]:border-b data-[state=active]:border-[#1570EF] w-[100px] md:w-[150px] data-[state=active]:rounded-none"
-          >
-            Working Time
-          </TabsTrigger>
+
           <TabsTrigger
             disabled
             value="reviews"
@@ -181,50 +157,6 @@ function DoctorProfile() {
           className="pt-10 text-[#667085] font-[400] text-[16px]"
         >
           {details?.bio || "No bio available"}
-        </TabsContent>
-
-        <TabsContent
-          value="working time"
-          className="pt-10 text-[#667085] font-[400] text-[16px]"
-        >
-          <div className="space-y-4">
-            {daysOfWeek.map(({ key, label }) => {
-              const daySchedule = details?.working_hours?.[key];
-
-              return (
-                <div
-                  key={key}
-                  className={`flex items-start gap-4 p-4 rounded-lg border
-                    ${!daySchedule?.isAvailable ? "bg-gray-50" : ""}`}
-                >
-                  <div className="w-32 font-medium text-gray-900">{label}</div>
-
-                  <div className="flex-1">
-                    {daySchedule?.isAvailable ? (
-                      <div className="space-y-2">
-                        {daySchedule.slots.map((slot, index) => (
-                          <div
-                            key={index}
-                            className="inline-block px-3 py-1 mr-2 mb-2 text-sm bg-blue-50 text-blue-700 rounded-full"
-                          >
-                            {formatTimeSlot(slot)}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-gray-500">Not Available</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {!details?.working_hours && (
-            <div className="text-center text-gray-500 py-4">
-              Working hours not specified
-            </div>
-          )}
         </TabsContent>
 
         <TabsContent
