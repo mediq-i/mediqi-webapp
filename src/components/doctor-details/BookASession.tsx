@@ -74,7 +74,8 @@ function BookASession() {
       );
     }
   };
-  const handleContinue = () => {
+  const handleContinue = (e: React.FormEvent) => {
+    e.preventDefault();
     setCurrentStep((prevStep) => prevStep + 1);
   };
   const handleBack = () => {
@@ -299,7 +300,7 @@ function BookASession() {
     <div className="w-full lg:w-[50%] pb-10">
       <div>
         <div>
-          <form onSubmit={handleSubmit} className="relative w-full p-3">
+          <form className="relative w-full p-3">
             <div>
               <p className="font-[500] text-[18px] md:text-[20px]">
                 {currentStep === 1
@@ -620,7 +621,7 @@ function BookASession() {
                 </Button>
                 <Button
                   onClick={handleContinue}
-                  className="bg-[#1D2939] text-white rounded-full"
+                  className="bg-[#7f8a97] text-white rounded-full"
                   disabled={isSubmitting}
                 >
                   Continue
