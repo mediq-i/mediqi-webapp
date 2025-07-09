@@ -39,6 +39,7 @@ export default function LoginForm() {
       }
       await forgotPasswordMutation.mutateAsync({
         email: formData.email,
+        domainOrigin: "patients-webapp",
       });
       toast({
         title: "Password reset email sent successfully",
