@@ -7,14 +7,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Loader2Icon, StickyNote } from "lucide-react";
+import { CheckCircle, Clock, Loader2Icon, StickyNote } from "lucide-react";
 import React from "react";
 import { Session } from "@/adapters/types/BookingAdapterTypes";
 import {
   ServiceProviderAdapter,
   useUserQuery,
 } from "@/adapters/ServiceProviders";
-import { format, isBefore, isAfter, addMinutes } from "date-fns";
+import {
+  format,
+  isBefore,
+  isAfter,
+  addMinutes,
+  formatDistanceToNow,
+} from "date-fns";
 import { ServiceProviderDetails } from "@/adapters/types/ServiceProviderTypes";
 import { BookingAdapter, useBookingMutation } from "@/adapters/BookingAdapter";
 import { useRouter } from "next/navigation";
@@ -223,15 +229,15 @@ export default function SessionCard({ session }: SessionCardProps) {
               </div>
             </DialogContent>
           </Dialog>
-          {/* 
+
           {getSessionStatus() === "upcoming" && (
             <Button disabled className="flex items-center gap-2 bg-gray-400">
               <Clock className="h-4 w-4" />
               Session starts in{" "}
               {formatDistanceToNow(new Date(session.appointment_date))}
             </Button>
-          )} */}
-          {/* 
+          )}
+
           {getSessionStatus() === "active" && (
             <Button
               onClick={handleJoinSession}
@@ -239,18 +245,22 @@ export default function SessionCard({ session }: SessionCardProps) {
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
             >
               <Video className="h-4 w-4" />
-              {isGeneratingToken ? "Connecting..." : "Join Session"}
+              {isGeneratingToken ? (
+                <Loader2Icon className="h-4 w-4 animate-spin" />
+              ) : (
+                "Join Session"
+              )}
             </Button>
-          )} */}
+          )}
 
-          {/* {getSessionStatus() === "completed" && (
+          {getSessionStatus() === "completed" && (
             <Button disabled className="flex items-center gap-2 bg-gray-400">
               <CheckCircle className="h-4 w-4" />
               Session Completed
             </Button>
-          )} */}
+          )}
 
-          <Button
+          {/* <Button
             onClick={handleJoinSession}
             disabled={isGeneratingToken}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
@@ -261,7 +271,7 @@ export default function SessionCard({ session }: SessionCardProps) {
             ) : (
               "Join Session"
             )}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

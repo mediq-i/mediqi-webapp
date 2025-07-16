@@ -521,7 +521,14 @@ function BookASession() {
                           30 Mins Session
                         </p>
                         <p className="font-[400] text-[#667085] text-[14px]">
-                          {getFormattedDateAndTime(selectedDate)}
+                          {selectedDate && selectedTime
+                            ? getFormattedDateAndTime(
+                                combineDateAndTime(
+                                  selectedDate,
+                                  selectedTime.replace(/\s/g, "")
+                                )
+                              )
+                            : "Date and time not selected"}
                         </p>
                       </div>
                     </div>

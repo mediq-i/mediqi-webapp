@@ -23,6 +23,7 @@ export default function SessionTabs() {
           </TabsTrigger>
           <TabsTrigger
             value="completed"
+            disabled
             className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md px-4  flex items-center gap-2"
           >
             <CheckCircle2 className="h-4 w-4" />
@@ -30,6 +31,7 @@ export default function SessionTabs() {
           </TabsTrigger>
           <TabsTrigger
             value="pending"
+            disabled
             className="data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md px-4  flex items-center gap-2"
           >
             <Clock className="h-4 w-4" />

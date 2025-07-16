@@ -33,7 +33,7 @@ export default function VideoCall() {
   const [micOn, setMic] = useState(true);
   const [cameraOn, setCamera] = useState(true);
   const [lastWarningTime, setLastWarningTime] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(300);
+  // const [timeLeft, setTimeLeft] = useState(300);
 
   // Get tracks using hooks
   const audioTrack = useLocalMicrophoneTrack(micOn);
@@ -59,7 +59,6 @@ export default function VideoCall() {
   );
 
   const handlePublishTracks = async () => {
-    console.log(readyToPublish);
     try {
       // Double check connection status
       if (!isConnected) {
@@ -106,8 +105,6 @@ export default function VideoCall() {
   const remoteUsers = useRemoteUsers();
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
 
-  console.log(remoteUsers);
-
   // Play remote audio tracks
   // Play audio tracks for remote users only
   audioTracks.map((track) => track.play());
@@ -149,19 +146,19 @@ export default function VideoCall() {
   }, [connectionState]);
 
   // Timer countdown
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleEndCall();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setTimeLeft((prev) => {
+  //       if (prev <= 1) {
+  //         handleEndCall();
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   const handleVideoMute = async () => {
     if (cameraTrack.localCameraTrack) {
@@ -207,12 +204,12 @@ export default function VideoCall() {
     <div className="min-h-screen bg-gray-900 p-2 md:p-6">
       <div className="max-w-7xl mx-auto relative">
         {/* Timer */}
-        <div className="absolute top-2 md:top-4 right-2 md:right-4 z-10">
+        {/* <div className="absolute top-2 md:top-4 right-2 md:right-4 z-10">
           <div className="bg-gray-800 rounded-lg px-2 md:px-4 py-1 md:py-2 text-white text-sm md:text-base">
             {Math.floor(timeLeft / 60)}:
             {(timeLeft % 60).toString().padStart(2, "0")}
           </div>
-        </div>
+        </div> */}
 
         {/* Video Container */}
         <div className="flex flex-col md:flex-row gap-4 h-[calc(100vh-120px)]">
