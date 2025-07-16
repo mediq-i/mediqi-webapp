@@ -120,7 +120,7 @@ function ServiceProviders() {
                     </p>
                   ) : (
                     <p className="font-black text-[14px] md:text-[16px]">
-                      NGN 2,000
+                      NGN 2,500
                     </p>
                   )}
                 </div>
