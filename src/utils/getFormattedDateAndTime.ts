@@ -10,6 +10,7 @@ export default function getFormattedDateAndTime(
     minute: "numeric",
     hour: "numeric",
     hour12: true,
+    timeZone: "UTC",
   }).format(new Date(date));
 
   return formattedDate;
