@@ -12,6 +12,7 @@ import {
   X,
   Heart,
   Pill,
+  Book,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +38,11 @@ const NAV_ITEMS = [
     name: "Profile",
     href: "/profile",
     icon: CircleUser,
+  },
+  {
+    name: "MEDIQ-i Blog",
+    href: "https://www.mediqihealth.com/blog",
+    icon: Book,
   },
   // {
   //   name: "More",

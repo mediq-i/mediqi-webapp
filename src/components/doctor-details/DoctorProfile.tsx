@@ -94,7 +94,7 @@ function DoctorProfile() {
               NGN{" "}
               {details?.id === "0ac3ba83-f000-4615-964f-b4520f1a2446"
                 ? "5,000"
-                : "2,000"}{" "}
+                : "2,500"}{" "}
               per session
             </p>
           </div>
