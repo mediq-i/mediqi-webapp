@@ -1,34 +1,34 @@
-// Add this function to your component or utils fil
-const combineDateAndTime = (date: Date | undefined, time: string): string => {
+const combineDateAndTime = (date: string, time: string): string => {
   if (!date || !time) return "";
 
-  // Get the date parts
-  const [month, day, year] = date.toLocaleDateString().split("/");
+  // Parse the date (MM/DD/YYYY format)
+  const [month, day, year] = date.split("/").map(Number);
 
-  // Convert time to 24-hour format
-  //eslint-disable-next-line
-  let [hours, minutes] = time.split(":");
-  const period = time.slice(-2); // Get AM/PM
-
-  // Convert to 24-hour format if PM
-  if (period.toLowerCase() === "pm" && hours !== "12") {
-    hours = String(parseInt(hours) + 12);
-  }
-  // Handle 12 AM case
-  if (period.toLowerCase() === "am" && hours === "12") {
-    hours = "00";
+  // Parse the time (H:MM AM/PM format)
+  const timeMatch = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (!timeMatch) {
+    throw new Error("Invalid time format. Expected format: H:MM AM/PM");
   }
 
-  // Create new Date object with combined date and time
-  const combinedDate = new Date(
-    parseInt(year),
-    parseInt(month) - 1, // months are 0-based
-    parseInt(day),
-    parseInt(hours),
-    parseInt(minutes.replace(/[^\d]/g, "")) // remove any non-digit characters
-  );
+  const [, hours, minutes, period] = timeMatch;
+  let hoursInt = parseInt(hours);
+  const minutesInt = parseInt(minutes);
 
-  return combinedDate.toISOString();
+  // Convert to 24-hour format
+  if (period.toLowerCase() === "pm" && hoursInt !== 12) {
+    hoursInt += 12;
+  } else if (period.toLowerCase() === "am" && hoursInt === 12) {
+    hoursInt = 0;
+  }
+
+  // Create ISO string manually to avoid timezone conversion
+  const isoString = `${year}-${String(month).padStart(2, "0")}-${String(
+    day
+  ).padStart(2, "0")}T${String(hoursInt).padStart(2, "0")}:${String(
+    minutesInt
+  ).padStart(2, "0")}:00.000Z`;
+
+  return isoString;
 };
 
 export default combineDateAndTime;

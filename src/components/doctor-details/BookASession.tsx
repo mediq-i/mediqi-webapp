@@ -58,8 +58,6 @@ function BookASession() {
     queryKey: [queryKeys.PROVIDER_DETAILS],
   });
 
-  console.log(selectedDate?.toLocaleDateString(), selectedTime);
-
   const handleOptionChange = (option: string) => {
     if (option === "Other" && selectedOptions.includes("Other")) {
       setSelectedOptions(selectedOptions.filter((o) => o !== "Other"));
@@ -108,11 +106,13 @@ function BookASession() {
       // Create FormData instance
       const formData = new FormData();
 
-      // Clean up the time string (remove AM/PM for parsing)
-      const cleanTime = selectedTime.replace(/\s/g, "");
-
       // Combine date and time into ISO string
-      const appointmentDateTime = combineDateAndTime(selectedDate, cleanTime);
+      const appointmentDateTime = combineDateAndTime(
+        selectedDate?.toLocaleDateString() || "",
+        selectedTime
+      );
+
+      console.log(appointmentDateTime);
 
       // Add basic appointment data
       formData.append("appointment_date", appointmentDateTime);
@@ -149,6 +149,7 @@ function BookASession() {
         title: "Error",
         description: getErrorMessage(error),
       });
+      console.log(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -524,8 +525,8 @@ function BookASession() {
                           {selectedDate && selectedTime
                             ? getFormattedDateAndTime(
                                 combineDateAndTime(
-                                  selectedDate,
-                                  selectedTime.replace(/\s/g, "")
+                                  selectedDate?.toLocaleDateString() || "",
+                                  selectedTime
                                 )
                               )
                             : "Date and time not selected"}
