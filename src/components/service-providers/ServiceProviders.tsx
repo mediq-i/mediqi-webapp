@@ -114,9 +114,15 @@ function ServiceProviders() {
                       No ratings yet
                     </p>
                   )}
-                  <p className="font-black text-[14px] md:text-[16px]">
-                    NGN 2,000
-                  </p>
+                  {doctor.id === "0ac3ba83-f000-4615-964f-b4520f1a2446" ? (
+                    <p className="font-black text-[14px] md:text-[16px]">
+                      NGN 5,000
+                    </p>
+                  ) : (
+                    <p className="font-black text-[14px] md:text-[16px]">
+                      NGN 2,000
+                    </p>
+                  )}
                 </div>
               </div>
             </Link>

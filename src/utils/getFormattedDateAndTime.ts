@@ -1,6 +1,8 @@
 export default function getFormattedDateAndTime(
   date: Date | string | undefined
 ) {
+  if (!date) return "";
+
   const formattedDate = Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "long",
@@ -8,7 +10,7 @@ export default function getFormattedDateAndTime(
     minute: "numeric",
     hour: "numeric",
     hour12: true,
-  }).format(new Date(date!));
+  }).format(new Date(date));
 
   return formattedDate;
 }

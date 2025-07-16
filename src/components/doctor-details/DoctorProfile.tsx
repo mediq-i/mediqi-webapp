@@ -89,8 +89,13 @@ function DoctorProfile() {
             <p className="text-[#667085] font-[400] text-[12px] md:text-[14px] capitalize">
               {details?.specialty}
             </p>
+
             <p className="text-[#1570EF] font-[700] mt-2 text-[16px] md:text-[18px]">
-              NGN {details?.price?.toLocaleString() || "2,000"} per session
+              NGN{" "}
+              {details?.id === "0ac3ba83-f000-4615-964f-b4520f1a2446"
+                ? "5,000"
+                : "2,000"}{" "}
+              per session
             </p>
           </div>
         </div>
