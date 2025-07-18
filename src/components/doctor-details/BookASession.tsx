@@ -217,12 +217,12 @@ function BookASession() {
       );
     }
   };
-  const handleContinue = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleContinue = (e?: React.FormEvent) => {
+    e?.preventDefault();
     setCurrentStep((prevStep) => prevStep + 1);
   };
-  const handleBack = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleBack = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (currentStep <= 1) {
       window.location.href = "/auth";
     } else {
@@ -253,10 +253,22 @@ function BookASession() {
       const formData = new FormData();
 
       // Combine date and time into ISO string
-      const appointmentDateTime = combineDateAndTime(
-        selectedDate?.toLocaleDateString() || "",
-        selectedTime
-      );
+      let appointmentDateTime = "";
+      try {
+        appointmentDateTime = combineDateAndTime(
+          selectedDate?.toLocaleDateString() || "",
+          selectedTime
+        );
+      } catch (error) {
+        console.error("Error combining date and time:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description:
+            "There was an error processing the date and time. Please try again.",
+        });
+        return;
+      }
 
       console.log(appointmentDateTime);
 
@@ -508,7 +520,18 @@ function BookASession() {
             {currentStep === 3 && (
               <div className="my-5 relative h-full">
                 <p className="font-[500] text-[16px] text-[#353535]">Upload</p>
-                <Dropzone onDrop={(acceptedFiles) => setFiles(acceptedFiles)}>
+                <Dropzone
+                  onDrop={(acceptedFiles) => setFiles(acceptedFiles)}
+                  onError={(error) => {
+                    console.error("Dropzone error:", error);
+                    toast({
+                      variant: "destructive",
+                      title: "Upload Error",
+                      description:
+                        "There was an error with the file upload. Please try again.",
+                    });
+                  }}
+                >
                   {({ getRootProps, getInputProps }) => (
                     <section className="border-dashed border-[#CACACA] border h-[130px] text-center p-5 rounded-sm mt-3 cursor-pointer">
                       <div {...getRootProps()}>
