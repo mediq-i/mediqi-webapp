@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedRoute from "@/utils/protected-route";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -31,7 +32,9 @@ export default function AppointmentRoom() {
         </div>
       }
     >
-      <VideoCall />
+      <ProtectedRoute>
+        <VideoCall />
+      </ProtectedRoute>
     </Suspense>
   );
 }

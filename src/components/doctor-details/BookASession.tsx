@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog } from "@headlessui/react";
@@ -48,6 +48,7 @@ function BookASession() {
   const [patientId, setPatientId] = useState();
   const [appointmentId, setAppointmentId] = useState();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: provider, isLoading } = useUserQuery({
@@ -57,6 +58,150 @@ function BookASession() {
       }),
     queryKey: [queryKeys.PROVIDER_DETAILS],
   });
+
+  // Define options array before using it in filteredOptions
+  const options = [
+    // General Symptoms
+    "Fever",
+    "Fatigue",
+    "Headache",
+    "Dizziness",
+    "Nausea",
+    "Vomiting",
+    "Loss of appetite",
+    "Weight loss",
+    "Weight gain",
+    "Sweating",
+    "Chills",
+    "Weakness",
+    "Insomnia",
+    "Anxiety",
+    "Depression",
+    "Stress",
+
+    // Pain Related
+    "Chest pain",
+    "Abdominal pain",
+    "Back pain",
+    "Joint pain",
+    "Muscle pain",
+    "Neck pain",
+    "Ear pain",
+    "Eye pain",
+    "Tooth pain",
+
+    // Respiratory
+    "Cough",
+    "Shortness of breath",
+    "Wheezing",
+    "Chest tightness",
+    "Runny nose",
+    "Sore throat",
+    "Sinus congestion",
+    "Difficulty breathing",
+
+    // Digestive
+    "Diarrhea",
+    "Constipation",
+    "Bloating",
+    "Indigestion",
+    "Heartburn",
+    "Stomach cramps",
+    "Acid reflux",
+
+    // Skin Related
+    "Rash",
+    "Itching",
+    "Hives",
+    "Skin discoloration",
+    "Dry skin",
+    "Acne",
+    "Eczema",
+    "Skin lesions",
+    "Bruising",
+
+    // Neurological
+    "Vertigo",
+    "Numbness",
+    "Tingling",
+    "Seizures",
+    "Memory problems",
+    "Confusion",
+    "Difficulty concentrating",
+    "Tremors",
+
+    // Urinary
+    "Frequent urination",
+    "Painful urination",
+    "Blood in urine",
+    "Urinary urgency",
+    "Difficulty urinating",
+    "Incontinence",
+
+    // Vision and Hearing
+    "Blurred vision",
+    "Eye redness",
+    "Eye discharge",
+    "Hearing loss",
+    "Ringing in ears",
+    "Ear discharge",
+    "Sensitivity to light",
+
+    // Mental Health
+    "Mood swings",
+    "Irritability",
+    "Panic attacks",
+    "Suicidal thoughts",
+    "Hallucinations",
+
+    // Other
+    "Swelling",
+    "Lymph node enlargement",
+    "Night sweats",
+    "Dehydration",
+    "Allergic reactions",
+    "Hair loss",
+    "Nail changes",
+  ];
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Memoized filtered options with precise matching
+  const filteredOptions = useMemo(() => {
+    if (!debouncedSearchQuery.trim()) return options;
+
+    const searchTerms = debouncedSearchQuery
+      .toLowerCase()
+      .split(" ")
+      .filter((term) => term.length > 0);
+
+    return options.filter((option) => {
+      const optionLower = option.toLowerCase();
+
+      // Check if ALL search terms are found in the option
+      return searchTerms.every((term) => {
+        // Only match if the term is at least 3 characters or is a complete word
+        if (term.length < 3) {
+          // For short terms, require exact word boundaries
+          const words = optionLower.split(" ");
+          return words.some((word) => word === term || word.startsWith(term));
+        } else {
+          // For longer terms, allow partial matches but require they start at word boundaries
+          const words = optionLower.split(" ");
+          return words.some(
+            (word) => word.startsWith(term) || word.includes(term)
+          );
+        }
+      });
+    });
+  }, [debouncedSearchQuery, options]);
 
   const handleOptionChange = (option: string) => {
     if (option === "Other" && selectedOptions.includes("Other")) {
@@ -76,7 +221,8 @@ function BookASession() {
     e.preventDefault();
     setCurrentStep((prevStep) => prevStep + 1);
   };
-  const handleBack = () => {
+  const handleBack = (e: React.FormEvent) => {
+    e.preventDefault();
     if (currentStep <= 1) {
       window.location.href = "/auth";
     } else {
@@ -187,116 +333,6 @@ function BookASession() {
     }
   };
 
-  const options = [
-    // General Symptoms
-    "Fever",
-    "Fatigue",
-    "Headache",
-    "Dizziness",
-    "Nausea",
-    "Vomiting",
-    "Loss of appetite",
-    "Weight loss",
-    "Weight gain",
-    "Sweating",
-    "Chills",
-    "Weakness",
-    "Insomnia",
-    "Anxiety",
-    "Depression",
-    "Stress",
-
-    // Pain Related
-    "Chest pain",
-    "Abdominal pain",
-    "Back pain",
-    "Joint pain",
-    "Muscle pain",
-    "Neck pain",
-    "Headache",
-    "Ear pain",
-    "Eye pain",
-    "Tooth pain",
-
-    // Respiratory
-    "Cough",
-    "Shortness of breath",
-    "Wheezing",
-    "Chest tightness",
-    "Runny nose",
-    "Sore throat",
-    "Sinus congestion",
-    "Difficulty breathing",
-
-    // Digestive
-    "Diarrhea",
-    "Constipation",
-    "Bloating",
-    "Indigestion",
-    "Heartburn",
-    "Stomach cramps",
-    "Acid reflux",
-    "Loss of appetite",
-
-    // Skin Related
-    "Rash",
-    "Itching",
-    "Hives",
-    "Skin discoloration",
-    "Dry skin",
-    "Acne",
-    "Eczema",
-    "Skin lesions",
-    "Bruising",
-
-    // Neurological
-    "Dizziness",
-    "Vertigo",
-    "Numbness",
-    "Tingling",
-    "Seizures",
-    "Memory problems",
-    "Confusion",
-    "Difficulty concentrating",
-    "Tremors",
-
-    // Urinary
-    "Frequent urination",
-    "Painful urination",
-    "Blood in urine",
-    "Urinary urgency",
-    "Difficulty urinating",
-    "Incontinence",
-
-    // Vision and Hearing
-    "Blurred vision",
-    "Eye redness",
-    "Eye discharge",
-    "Hearing loss",
-    "Ringing in ears",
-    "Ear discharge",
-    "Sensitivity to light",
-
-    // Mental Health
-    "Anxiety",
-    "Depression",
-    "Mood swings",
-    "Irritability",
-    "Panic attacks",
-    "Suicidal thoughts",
-    "Hallucinations",
-
-    // Other
-    "Swelling",
-    "Lymph node enlargement",
-    "Fever",
-    "Night sweats",
-    "Dehydration",
-    "Allergic reactions",
-    "Hair loss",
-    "Nail changes",
-  ];
-
   return (
     <div className="w-full lg:w-[50%] pb-10">
       <div>
@@ -388,27 +424,42 @@ function BookASession() {
                             />
                           </div>
                           <div className="p-4 overflow-y-auto flex-1">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {options
-                                .filter((option) =>
-                                  option
-                                    .toLowerCase()
-                                    .includes(searchQuery.toLowerCase())
-                                )
-                                .map((option) => (
-                                  <button
-                                    key={option}
-                                    onClick={() => handleOptionChange(option)}
-                                    className={`p-2 text-left rounded-lg transition-colors ${
-                                      selectedOptions.includes(option)
-                                        ? "bg-[#1D2939] text-white"
-                                        : "hover:bg-gray-100"
-                                    }`}
-                                  >
-                                    {option}
-                                  </button>
-                                ))}
-                            </div>
+                            {(() => {
+                              if (
+                                filteredOptions.length === 0 &&
+                                debouncedSearchQuery.trim()
+                              ) {
+                                return (
+                                  <div className="text-center py-8">
+                                    <p className="text-gray-500 text-sm">
+                                      No symptoms found matching &quot;
+                                      {debouncedSearchQuery}&quot;
+                                    </p>
+                                    <p className="text-gray-400 text-xs mt-2">
+                                      Try a different search term
+                                    </p>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  {filteredOptions.map((option) => (
+                                    <button
+                                      key={option}
+                                      onClick={() => handleOptionChange(option)}
+                                      className={`p-2 text-left rounded-lg transition-colors ${
+                                        selectedOptions.includes(option)
+                                          ? "bg-[#1D2939] text-white"
+                                          : "hover:bg-gray-100"
+                                      }`}
+                                    >
+                                      {option}
+                                    </button>
+                                  ))}
+                                </div>
+                              );
+                            })()}
                           </div>
                           <div className="p-4 border-t flex justify-end gap-2">
                             <Button

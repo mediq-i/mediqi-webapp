@@ -13,6 +13,7 @@ import {
   Heart,
   Pill,
   Book,
+  LogOut,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +22,8 @@ import { usePathname } from "next/navigation";
 import { useUserQuery, UserAdapter } from "@/adapters/UserAdapter";
 import { queryKeys } from "@/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 // import {
 //   Collapsible,
 //   CollapsibleContent,
@@ -62,14 +65,29 @@ const NAV_ITEMS = [
 
 const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
   const { data, isPending } = useUserQuery({
     queryCallback: UserAdapter.getUserProfile,
     queryKey: [queryKeys.USER_PROFILE],
   });
   // const [isOpen, setIsOpen] = React.useState(false);
 
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user_id");
+
+    // Call the logout function from AuthContext
+    logout();
+
+    // Redirect to login page
+    router.push("/auth/login");
+  };
+
   return (
-    <div className="w-[250px] h-full bg-white shadow-lg p-1">
+    <div className="w-[250px] h-full bg-white shadow-lg p-1 flex flex-col">
       <div className="p-4 md:p-6">
         <div className="flex justify-between items-center md:block">
           <Image src="/mediqi-logo.svg" alt="Logo" width={30} height={30} />
@@ -185,6 +203,17 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             );
           })}
         </nav>
+      </div>
+
+      {/* Logout button at the bottom */}
+      <div className="mt-auto p-4">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-3 border-2 border-red-200 text-red-600 font-[600] hover:border-red-400 hover:text-red-700 rounded-xl transition-all duration-75 w-full"
+        >
+          <LogOut className="stroke-[1.5px]" />
+          <span className="text-sm">Logout</span>
+        </button>
       </div>
 
       {/* <div className="w-[240px] m-auto bg-gradient-to-r from-[#BDB4FE] via-[#A391FC] to-[#7A5AF8] rounded-md text-center p-4 relative hidden md:block">

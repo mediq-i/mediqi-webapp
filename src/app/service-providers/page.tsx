@@ -1,12 +1,15 @@
 import ServiceProviders from "@/components/service-providers/ServiceProviders";
+import ProtectedRoute from "@/utils/protected-route";
 import { Suspense } from "react";
 
 function ServiceProvidersPage() {
   return (
     <Suspense>
-      <div className="p-6">
-        <ServiceProviders />
-      </div>
+      <ProtectedRoute>
+        <div className="p-6">
+          <ServiceProviders />
+        </div>
+      </ProtectedRoute>
     </Suspense>
   );
 }
