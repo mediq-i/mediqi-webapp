@@ -2,6 +2,7 @@
 
 import HomeHero from "@/components/home/ui/HomeHero";
 import VitalsCTA from "@/components/home/VitalsCTA";
+import ProtectedRoute from "@/utils/protected-route";
 
 // import { Metadata } from "next";
 // import SEOWrapper from "@/utils/seo-wrapper";
@@ -13,9 +14,11 @@ import VitalsCTA from "@/components/home/VitalsCTA";
 
 export default function Home() {
   return (
-    <div className="p-6 space-y-8">
-      <HomeHero />
-      <VitalsCTA />
-    </div>
+    <ProtectedRoute>
+      <div className="p-6 space-y-8">
+        <HomeHero />
+        <VitalsCTA />
+      </div>
+    </ProtectedRoute>
   );
 }

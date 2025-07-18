@@ -29,6 +29,7 @@ import {
   prescriptionsAdapter,
   usePrescriptionsQuery,
 } from "@/adapters/PrescriptionsAdapter";
+import ProtectedRoute from "@/utils/protected-route";
 
 // Type definition for individual prescription item
 interface PrescriptionItem {
@@ -372,299 +373,308 @@ export default function PrescriptionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
-              <Pill className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+                <Pill className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              </div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                My Prescriptions
+              </h1>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-              My Prescriptions
-            </h1>
+            <p className="text-sm sm:text-base text-gray-600">
+              View and manage all your prescribed medications
+            </p>
           </div>
-          <p className="text-sm sm:text-base text-gray-600">
-            View and manage all your prescribed medications
-          </p>
-        </div>
 
-        {/* Search and Filter Bar */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Search medications, doctors, or notes..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
-              />
+          {/* Search and Filter Bar */}
+          <div className="mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Search medications, doctors, or notes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-11 sm:h-12 text-sm sm:text-base"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="h-11 sm:h-12 px-3 sm:px-4 text-sm"
+                >
+                  <Filter className="w-4 h-4 mr-1.5 sm:mr-2" />
+                  Filter
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="h-11 sm:h-12 px-3 sm:px-4 text-sm"
+          </div>
+
+          {/* Prescriptions Grid */}
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredPrescriptions.map((prescription) => (
+              <Card
+                key={prescription.id}
+                className="hover:shadow-lg transition-shadow duration-200 border-0 shadow-sm"
               >
-                <Filter className="w-4 h-4 mr-1.5 sm:mr-2" />
-                Filter
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Prescriptions Grid */}
-        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredPrescriptions.map((prescription) => (
-            <Card
-              key={prescription.id}
-              className="hover:shadow-lg transition-shadow duration-200 border-0 shadow-sm"
-            >
-              <CardHeader className="pb-2 sm:pb-3 px-4 sm:px-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg">
-                      <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 truncate">
-                        {prescription.medication}
-                      </CardTitle>
-                      <p className="text-xs sm:text-sm text-gray-500">
-                        {prescription.dosage}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex-shrink-0 ml-2">
-                    {getStatusBadge(prescription.created_at)}
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-                {/* Prescription Details */}
-                <div className="space-y-2.5 sm:space-y-3">
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
-                    <span className="text-gray-600">Frequency:</span>
-                    <span className="font-medium truncate">
-                      {prescription.frequency}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
-                    <span className="text-gray-600">Duration:</span>
-                    <span className="font-medium">{prescription.duration}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
-                    <span className="text-gray-600">Prescribed by:</span>
-                    <span className="font-medium truncate">
-                      {prescription.service_provider}
-                    </span>
-                  </div>
-
-                  {prescription.notes && (
-                    <div className="flex items-start gap-2 text-xs sm:text-sm">
-                      <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <CardHeader className="pb-2 sm:pb-3 px-4 sm:px-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg">
+                        <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                      </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-gray-600">Notes:</span>
-                        <p className="font-medium text-gray-900 mt-1 break-words">
-                          {prescription.notes}
+                        <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                          {prescription.medication}
+                        </CardTitle>
+                        <p className="text-xs sm:text-sm text-gray-500">
+                          {prescription.dosage}
                         </p>
                       </div>
                     </div>
-                  )}
-                </div>
+                    <div className="flex-shrink-0 ml-2">
+                      {getStatusBadge(prescription.created_at)}
+                    </div>
+                  </div>
+                </CardHeader>
 
-                {/* Prescription Date */}
-                <div className="pt-2 sm:pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500">
-                    Prescribed on{" "}
-                    {format(new Date(prescription.created_at), "MMM dd, yyyy")}
-                  </p>
-                </div>
+                <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
+                  {/* Prescription Details */}
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-gray-600">Frequency:</span>
+                      <span className="font-medium truncate">
+                        {prescription.frequency}
+                      </span>
+                    </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-2 pt-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 text-xs h-8 sm:h-9"
-                      >
-                        <Eye className="w-3 h-3 mr-1" />
-                        <span className="hidden sm:inline">View Details</span>
-                        <span className="sm:hidden">View</span>
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md w-[95vw] sm:w-auto mx-4">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                          <Pill className="w-5 h-5 text-blue-600" />
-                          {prescription.medication}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-600">Dosage:</span>
-                            <p className="font-medium">{prescription.dosage}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Duration:</span>
-                            <p className="font-medium">
-                              {prescription.duration}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">Frequency:</span>
-                            <p className="font-medium">
-                              {prescription.frequency}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-600">
-                              Prescribed by:
-                            </span>
-                            <p className="font-medium">
-                              {prescription.service_provider}
-                            </p>
-                          </div>
-                        </div>
-                        {prescription.notes && (
-                          <div>
-                            <span className="text-gray-600 text-sm">
-                              Notes:
-                            </span>
-                            <p className="font-medium mt-1">
-                              {prescription.notes}
-                            </p>
-                          </div>
-                        )}
-                        <div className="text-xs text-gray-500">
-                          Prescribed on{" "}
-                          {format(
-                            new Date(prescription.created_at),
-                            "MMM dd, yyyy 'at' h:mm a"
-                          )}
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-gray-600">Duration:</span>
+                      <span className="font-medium">
+                        {prescription.duration}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                      <span className="text-gray-600">Prescribed by:</span>
+                      <span className="font-medium truncate">
+                        {prescription.service_provider}
+                      </span>
+                    </div>
+
+                    {prescription.notes && (
+                      <div className="flex items-start gap-2 text-xs sm:text-sm">
+                        <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <span className="text-gray-600">Notes:</span>
+                          <p className="font-medium text-gray-900 mt-1 break-words">
+                            {prescription.notes}
+                          </p>
                         </div>
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-xs h-8 sm:h-9"
-                    onClick={() => generatePDF(prescription)}
-                  >
-                    <Download className="w-3 h-3 mr-1" />
-                    <span className="hidden sm:inline">Generate PDF</span>
-                    <span className="sm:hidden">PDF</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    )}
+                  </div>
 
-        {/* Empty State */}
-        {filteredPrescriptions.length === 0 && (
-          <div className="text-center py-8 sm:py-12">
-            <div className="p-3 sm:p-4 bg-gray-100 rounded-full w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-              <Pill className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+                  {/* Prescription Date */}
+                  <div className="pt-2 sm:pt-3 border-t border-gray-100">
+                    <p className="text-xs text-gray-500">
+                      Prescribed on{" "}
+                      {format(
+                        new Date(prescription.created_at),
+                        "MMM dd, yyyy"
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 text-xs h-8 sm:h-9"
+                        >
+                          <Eye className="w-3 h-3 mr-1" />
+                          <span className="hidden sm:inline">View Details</span>
+                          <span className="sm:hidden">View</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md w-[95vw] sm:w-auto mx-4">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center gap-2">
+                            <Pill className="w-5 h-5 text-blue-600" />
+                            {prescription.medication}
+                          </DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
+                            <div>
+                              <span className="text-gray-600">Dosage:</span>
+                              <p className="font-medium">
+                                {prescription.dosage}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Duration:</span>
+                              <p className="font-medium">
+                                {prescription.duration}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Frequency:</span>
+                              <p className="font-medium">
+                                {prescription.frequency}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">
+                                Prescribed by:
+                              </span>
+                              <p className="font-medium">
+                                {prescription.service_provider}
+                              </p>
+                            </div>
+                          </div>
+                          {prescription.notes && (
+                            <div>
+                              <span className="text-gray-600 text-sm">
+                                Notes:
+                              </span>
+                              <p className="font-medium mt-1">
+                                {prescription.notes}
+                              </p>
+                            </div>
+                          )}
+                          <div className="text-xs text-gray-500">
+                            Prescribed on{" "}
+                            {format(
+                              new Date(prescription.created_at),
+                              "MMM dd, yyyy 'at' h:mm a"
+                            )}
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 text-xs h-8 sm:h-9"
+                      onClick={() => generatePDF(prescription)}
+                    >
+                      <Download className="w-3 h-3 mr-1" />
+                      <span className="hidden sm:inline">Generate PDF</span>
+                      <span className="sm:hidden">PDF</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredPrescriptions.length === 0 && (
+            <div className="text-center py-8 sm:py-12">
+              <div className="p-3 sm:p-4 bg-gray-100 rounded-full w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                <Pill className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                No prescriptions found
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4">
+                {searchTerm
+                  ? "Try adjusting your search terms"
+                  : "You don't have any prescriptions yet"}
+              </p>
+              {!searchTerm && (
+                <Button className="bg-blue-600 hover:bg-blue-700 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
+                  Get Your First Prescription
+                </Button>
+              )}
             </div>
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-              No prescriptions found
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 px-4">
-              {searchTerm
-                ? "Try adjusting your search terms"
-                : "You don't have any prescriptions yet"}
-            </p>
-            {!searchTerm && (
-              <Button className="bg-blue-600 hover:bg-blue-700 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">
-                Get Your First Prescription
-              </Button>
-            )}
-          </div>
-        )}
+          )}
 
-        {/* Summary Stats */}
-        {filteredPrescriptions.length > 0 && (
-          <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="p-1.5 sm:p-2 bg-green-50 rounded-lg">
-                    <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+          {/* Summary Stats */}
+          {filteredPrescriptions.length > 0 && (
+            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-green-50 rounded-lg">
+                      <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">
+                        Active Prescriptions
+                      </p>
+                      <p className="text-lg sm:text-xl font-semibold text-gray-900">
+                        {
+                          filteredPrescriptions.filter((p) => {
+                            const days = Math.floor(
+                              (new Date().getTime() -
+                                new Date(p.created_at).getTime()) /
+                                (1000 * 60 * 60 * 24)
+                            );
+                            return days <= 30;
+                          }).length
+                        }
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Active Prescriptions
-                    </p>
-                    <p className="text-lg sm:text-xl font-semibold text-gray-900">
-                      {
-                        filteredPrescriptions.filter((p) => {
-                          const days = Math.floor(
-                            (new Date().getTime() -
-                              new Date(p.created_at).getTime()) /
-                              (1000 * 60 * 60 * 24)
-                          );
-                          return days <= 30;
-                        }).length
-                      }
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg">
-                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">
+                        Total Prescriptions
+                      </p>
+                      <p className="text-lg sm:text-xl font-semibold text-gray-900">
+                        {filteredPrescriptions.length}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Total Prescriptions
-                    </p>
-                    <p className="text-lg sm:text-xl font-semibold text-gray-900">
-                      {filteredPrescriptions.length}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="p-1.5 sm:p-2 bg-purple-50 rounded-lg">
-                    <User className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-purple-50 rounded-lg">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">
+                        Healthcare Providers
+                      </p>
+                      <p className="text-lg sm:text-xl font-semibold text-gray-900">
+                        {
+                          new Set(
+                            filteredPrescriptions.map((p) => p.service_provider)
+                          ).size
+                        }
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Healthcare Providers
-                    </p>
-                    <p className="text-lg sm:text-xl font-semibold text-gray-900">
-                      {
-                        new Set(
-                          filteredPrescriptions.map((p) => p.service_provider)
-                        ).size
-                      }
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

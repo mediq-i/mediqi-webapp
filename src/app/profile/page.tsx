@@ -1,12 +1,15 @@
-import ProfileNameForm from '@/components/profile/ProfileNameForm';
-import React from 'react';
+import ProfileNameForm from "@/components/profile/ProfileNameForm";
+import ProtectedRoute from "@/utils/protected-route";
+import React from "react";
 
 function ProfilePage() {
-    return (
-        <div className='p-6'>
-            <ProfileNameForm/>
-        </div>
-    );
+  return (
+    <ProtectedRoute>
+      <div className="p-6">
+        <ProfileNameForm />
+      </div>
+    </ProtectedRoute>
+  );
 }
 
 export default ProfilePage;
