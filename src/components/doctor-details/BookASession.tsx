@@ -599,7 +599,11 @@ function BookASession() {
                           {selectedDate && selectedTime
                             ? getFormattedDateAndTime(
                                 combineDateAndTime(
-                                  selectedDate?.toLocaleDateString() || "",
+                                  selectedDate.toLocaleDateString("en-US", {
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    year: "numeric",
+                                  }) || "",
                                   selectedTime
                                 )
                               )
